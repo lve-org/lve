@@ -19,6 +19,7 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
 
 
 class LambdaChecker(BaseChecker):
+    """Checker which uses a lambda function to check safety."""
 
     def __init__(self, func):
         self.func = eval(func)
