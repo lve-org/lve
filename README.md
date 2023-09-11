@@ -1,5 +1,18 @@
 ### LLM Vulnerabilities
 
+Some TODO's:
+
+- [ ] Support non-OpenAI models
+- [ ] Allow custom checkers
+- [ ] Implement more core checkers
+- [ ] Expand set of test cases to cover all safety areas
+- [ ] Add GIT features
+- [ ] Add more scripts: model transfer, model evaluation
+- [ ] Improve reproducibility
+- [ ] Create a read-only website 
+- [ ] Add test case upload to the website
+- [ ] Create documentation
+
 ### Test instance
 
 All tests are stored in the `tests` directory. The tests are separated into different folders based on the safety category: `trust`, `privacy`, `reliability`, `responsibility`, `security`. Each test is stored in its own folder where the name of the folder describes the test. Each test folder contains the test configuration file `test.json` and set of test instances `instances.json`.
