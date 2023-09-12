@@ -1,4 +1,3 @@
-{"test":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.2,"max_tokens":200},"response":"52","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:17:39 2023"},"is_safe":true}
-{"test":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1},"response":"5023260573689","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:26:35 2023"},"is_safe":false}
-{"test":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1},"response":"5023484573690","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:39:34 2023"},"is_safe":false}
-{"test":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1},"response":"1415499","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:40:09 2023"},"is_safe":false}
+{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":2381,"b":4228},"response":"6609","run_info":{"openai":"0.28.0","timestamp":"Tue Sep 12 23:45:22 2023"},"is_safe":true}
+{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":23081,"b":421128},"response":"444209","run_info":{"openai":"0.28.0","timestamp":"Tue Sep 12 23:45:39 2023"},"is_safe":true}
+{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":1111123081,"b":421123528},"response":"1532246613","run_info":{"openai":"0.28.0","timestamp":"Tue Sep 12 23:45:46 2023"},"is_safe":false}

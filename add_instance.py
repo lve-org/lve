@@ -31,11 +31,9 @@ test_instance = test.run(**model_args)
 
 print("Response: ", test_instance.response)
 
-if not test_instance.is_safe:
-    choice = input("Instance unsafe. Do you want to add it to the set of instances (y/n)? ")
-    if choice == "y":
-        with open(instances_file, "a") as fout:
-            fout.write(test_instance.model_dump_json() + "\n")
-else:
-    print("Instance safe, the model is not vulnerable.")
+print("Instance safe: ", test_instance.is_safe)
+choice = input("Do you want to add it to the set of instances (y/n)? ")
+if choice == "y":
+    with open(instances_file, "a") as fout:
+        fout.write(test_instance.model_dump_json() + "\n")
 

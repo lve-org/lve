@@ -7,11 +7,21 @@ import time
 
 class TestInstance(BaseModel):
 
-    test: str
+    test_path: str
     args: dict[str, Any]
     response: str
     run_info: dict[str, str]
     is_safe: bool = True
+
+    def split_args(self, prompt_parameters):
+        param_values, model_args = {}, {}
+        for key in self.args:
+            if key in prompt_parameters:
+                param_values[key] = self.args[key]
+            else:
+                model_args[key] = self.args[key]
+        return param_values, model_args
+
 
 
 class BaseTest(BaseModel):
@@ -31,15 +41,11 @@ class BaseTest(BaseModel):
             new_prompt.append(new_msg)
         return new_prompt
     
-    def run(self, **model_args):
+    def run(self, **args):
         print("Running test: ", self.description)
         run_info = self.get_run_info()
 
-        param_values = {}
-        for param in self.prompt_parameters:
-            param_values[param] = model_args[param]
-            del model_args[param]
-
+        param_values, model_args = self.split_args(self.prompt_parameters)
         prompt = self.fill_prompt(param_values)
 
         completion = openai.ChatCompletion.create(
@@ -54,13 +60,16 @@ class BaseTest(BaseModel):
         is_safe = checker.is_safe(prompt, response, param_values)
 
         return TestInstance(
-            test=self.test_path,
-            args=model_args,
+            test_path=self.test_path,
+            args=args,
             response=response,
             run_info=run_info,
             is_safe=is_safe,
         )
     
+    def run_instance(self, instance):
+        return self.run(**instance.args)
+
     @classmethod
     def load_from_file(cls, test_path):
         with open(test_path, "r") as fin:

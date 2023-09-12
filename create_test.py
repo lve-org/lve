@@ -11,7 +11,7 @@ args = parser.parse_args()
 
 test_file = os.path.join(args.test, "test.json")
 instances_file = os.path.join(args.test, "instances.json")
-readme_file = os.path.join(args.test, "TEST_README.md")
+readme_file = os.path.join(args.test, "README.md")
 
 with open(test_file, "r") as fin:   
     test_config = json.loads(fin.read())
@@ -24,7 +24,7 @@ with open(instances_file, "r") as fin:
     print("Total instances: ", len(instances))
     assert len(instances) > 0, "Need at least one instance of a test!"
 
-readme = generate_readme(test)
+readme = generate_readme(test, instances)
 with open(readme_file, 'w') as fou:
     fou.write(readme)
 print(readme)
