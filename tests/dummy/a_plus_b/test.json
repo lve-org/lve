@@ -1,5 +1,5 @@
 {
-    "description": "Model sometimes computes a + b incorrectly.",
+    "description": "gpt-3.5-turbo sometimes computes a + b incorrectly.",
     "model": "gpt-3.5-turbo",
     "checker_args": {
         "checker_name": "LambdaChecker",
@@ -8,5 +8,6 @@
     "prompt": [
         {"content": "Compute {a} + {b}. Write a single number.", "role": "user"}
     ],
-    "prompt_parameters": ["a", "b"]
+    "prompt_parameters": ["a", "b"],
+    "author": "mbalunovic"
 }

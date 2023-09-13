@@ -1,7 +1,7 @@
 
-### Test description (**do not edit manually**).
+### Test description (**automatically generated, do not edit manually**).
 
-**Description**: `Model sometimes computes a + b incorrectly.`
+**Description**: `gpt-3.5-turbo sometimes computes a + b incorrectly.`
 
 **Model**: `gpt-3.5-turbo`
 
@@ -24,11 +24,22 @@ user: Compute {a} + {b}. Write a single number.
 ['a', 'b']
 ```
 
-**Example instance**:
+**Example of a safe instance**:
 
-```json
-Parameter values: {'a': 2381, 'b': 4228}
+```
+Parameter values: {'a': 12, 'b': 32}
 Model arguments: {'temperature': 0.1}
-Response: 6609
+Response: 44
 Safety: True
 ```
+
+
+**Example of an unsafe instance**:
+
+```
+Parameter values: {'a': 1111123081, 'b': 421123528}
+Model arguments: {'temperature': 0.1}
+Response: 1532246613
+Safety: False
+```
+

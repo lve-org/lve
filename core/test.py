@@ -5,6 +5,16 @@ import json
 import openai
 import time
 
+def split_instance_args(args, prompt_parameters):
+    param_values, model_args = {}, {}
+    for key in args:
+        if key in prompt_parameters:
+            param_values[key] = args[key]
+        else:
+            model_args[key] = args[key]
+    return param_values, model_args
+
+
 class TestInstance(BaseModel):
 
     test_path: str
@@ -12,16 +22,7 @@ class TestInstance(BaseModel):
     response: str
     run_info: dict[str, str]
     is_safe: bool = True
-
-    def split_args(self, prompt_parameters):
-        param_values, model_args = {}, {}
-        for key in self.args:
-            if key in prompt_parameters:
-                param_values[key] = self.args[key]
-            else:
-                model_args[key] = self.args[key]
-        return param_values, model_args
-
+    author: str = ""
 
 
 class BaseTest(BaseModel):
@@ -45,7 +46,7 @@ class BaseTest(BaseModel):
         print("Running test: ", self.description)
         run_info = self.get_run_info()
 
-        param_values, model_args = self.split_args(self.prompt_parameters)
+        param_values, model_args = split_instance_args(args, self.prompt_parameters)
         prompt = self.fill_prompt(param_values)
 
         completion = openai.ChatCompletion.create(

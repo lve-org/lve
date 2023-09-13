@@ -13,7 +13,7 @@ Some TODO's:
 - [ ] Add test case upload to the website
 - [ ] Create documentation
 
-### Test instance
+### Test specification
 
 All tests are stored in the `tests` directory. The tests are separated into different folders based on the safety category: `trust`, `privacy`, `reliability`, `responsibility`, `security`. Each test is stored in its own folder where the name of the folder describes the test. Each test folder contains the test configuration file `test.json` and set of test instances `instances.json`.
 
@@ -41,7 +41,14 @@ For the above example, one line could be:
 {"test":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1},"response":"1415499","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:40:09 2023"},"is_safe":false}
 ```
 
+### How to create a test?
 
+To create a test you should create a test config in the `test.json` file in the appropriate folder and add at least one instance where the test results in an unsafe behavior (see next section on how to add test instances).
+Then, to create a test you should run `create_test.py` script, for example:
+
+```bash
+python create_test.py --test tests/dummy/a_plus_b/
+```
 
 ### How can you contribute?
 
