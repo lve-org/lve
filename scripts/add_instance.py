@@ -16,6 +16,7 @@ args = parser.parse_args()
 
 test_file = os.path.join(args.test, "test.json")
 
+
 test = BaseTest.load_from_file(test_file)
 
 model_args = vars(args).copy()
@@ -36,9 +37,10 @@ print("Response: ", test_instance.response)
 
 print("Instance safe: ", test_instance.is_safe)
 if args.output_file is not None:
+    output_file = os.path.join(args.test, "instances", args.output_file)
     print("Would you like to save this instance? (y/n)")
     user_res = input().lower().strip()
     if user_res == "y":
-        with open(args.output_file, "a") as fout:
+        with open(output_file, "a") as fout:
             fout.write(test_instance.model_dump_json() + "\n")
 
