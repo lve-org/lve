@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+import os
+import sys
+import subprocess
+
+def main():
+    commit_files = subprocess.check_output(["git", "diff", "--cached", "--name-only"]).decode().splitlines()
+    test_json_files = [f for f in commit_files if f.endswith("test.json")]
+    
+    # check that there is exactly one test.json file
+    if len(test_json_files) != 1:
+        print("ERROR: You should commit exactly one test.json file")                                                            
+        sys.exit(1)
+    
+    test = test_json_files[0]
+    test_dir = test[:test.rfind("test.json")]
+    print("Commiting files from: ", test_dir)
+
+    # check if all commited files are in the same test directory
+    for f in commit_files:
+        if not f.startswith(test_dir):
+            print("ERROR: You are trying to commit files from multiple tests.")
+            print("Please commit files from a single test at a time.")
+            sys.exit(1)
+
+    # Check that there is Readme file in the test directory 
+    readme_file = os.path.join(test_dir, "README.md")
+    if not os.path.exists(readme_file):
+        print("ERROR: There is no README.md file in the test directory.")
+        print("Please run create_test.py to generate the README.md file.")
+        sys.exit(1)
+
+    print("Pre-commit hook passed!")
+
+if __name__ == "__main__":
+    main()
