@@ -44,7 +44,7 @@ Safety: {is_safe}
 
 def generate_readme(test, safe_instance, unsafe_instance):
     print(test.prompt)
-    prompt = "\n".join("{role}: {content}".format(role=msg["role"], content=msg["content"]) 
+    prompt = "\n".join("{role}: {content}".format(role=msg.role, content=msg.content)
                        for msg in test.prompt)
 
 
