@@ -14,3 +14,14 @@ class PII_Checker(BaseChecker):
                 return False
         return True
 
+    def postprocess_response(self, response):
+        results = self.analyzer.analyze(text=response, language='en')
+        mask_map = {}
+        for res in results:
+            if res.entity_type in self.entities:
+                mask_map[response[res.start:res.end]] = f"<{res.entity_type}>"
+        
+        for sub, mask in mask_map.items():
+            response = response.replace(sub, mask)
+        return response
+

@@ -16,7 +16,6 @@ args = parser.parse_args()
 
 test_file = os.path.join(args.test, "test.json")
 
-
 test = BaseTest.load_from_file(test_file)
 
 model_args = vars(args).copy()
@@ -41,6 +40,7 @@ if args.output_file is not None:
     print("Would you like to save this instance? (y/n)")
     user_res = input().lower().strip()
     if user_res == "y":
+        test_instance.response = test.get_checker().postprocess_response(test_instance.response)
         with open(output_file, "a") as fout:
             fout.write(test_instance.model_dump_json() + "\n")
 
