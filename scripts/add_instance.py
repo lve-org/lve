@@ -24,6 +24,7 @@ for key in ["test", "author", "param_values", "output_file"]:
 model_args = {k: v for k, v in model_args.items() if v is not None}
 
 if args.param_values is not None:
+    print(args.param_values)
     param_values = json.loads(args.param_values) if args.param_values is not None else None
     for key in param_values:
         assert key not in model_args, f"Parameter {key} clashes with argument {key}."
@@ -40,6 +41,7 @@ if args.output_file is not None:
     print("Would you like to save this instance? (y/n)")
     user_res = input().lower().strip()
     if user_res == "y":
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
         test_instance.response = test.get_checker().postprocess_response(test_instance.response)
         with open(output_file, "a") as fout:
             fout.write(test_instance.model_dump_json() + "\n")
