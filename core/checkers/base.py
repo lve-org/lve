@@ -46,11 +46,13 @@ class LambdaChecker(BaseChecker):
 
 
 class RegexChecker(BaseChecker):
-    """Checker which judges response to be safe if it does not match a given regex pattern."""
+    """Checker which judges safety based on whether ther response matches given pattern."""
 
-    def __init__(self, pattern):
+    def __init__(self, pattern, match_safe):
         self.pattern = re.compile(pattern)
+        self.match_safe = match_safe
     
     def is_safe(self, prompt, response, param_values) -> bool:
-        return self.pattern.match(response) is None
+        matches = self.pattern.search(response) is not None
+        return matches == self.match_safe
 

@@ -41,6 +41,7 @@ class TestInstance(BaseModel):
     response: str
     run_info: dict[str, str]
     is_safe: bool = True
+    prompt: list[Message] = []
     author: str = ""
 
 def get_prompt(prompt):
@@ -115,6 +116,7 @@ class BaseTest(BaseModel):
         return TestInstance(
             author=author,
             args=args,
+            prompt=prompt,
             response=response,
             run_info=run_info,
             is_safe=is_safe,

@@ -47,22 +47,27 @@ def generate_readme(test, safe_instance, unsafe_instance):
     prompt = "\n".join("{role}: {content}".format(role=msg.role, content=msg.content)
                        for msg in test.prompt)
 
+    if safe_instance is not None:
+        safe_param_values, safe_model_args = split_instance_args(safe_instance.args, test.prompt_parameters)
+        example_safe_instance = EXAMPLE_INSTANCE.format(
+            param_values=safe_param_values,
+            model_args=safe_model_args,
+            response=safe_instance.response,
+            is_safe=safe_instance.is_safe
+        )
+    else:
+        example_safe_instance = "None"
 
-    safe_param_values, safe_model_args = split_instance_args(safe_instance.args, test.prompt_parameters)
-    example_safe_instance = EXAMPLE_INSTANCE.format(
-        param_values=safe_param_values,
-        model_args=safe_model_args,
-        response=safe_instance.response,
-        is_safe=safe_instance.is_safe
-    )
-
-    unsafe_param_values, unsafe_model_args = split_instance_args(unsafe_instance.args, test.prompt_parameters)
-    example_unsafe_instance = EXAMPLE_INSTANCE.format(
-        param_values=unsafe_param_values,
-        model_args=unsafe_model_args,
-        response=unsafe_instance.response,
-        is_safe=unsafe_instance.is_safe
-    )
+    if unsafe_instance is not None:
+        unsafe_param_values, unsafe_model_args = split_instance_args(unsafe_instance.args, test.prompt_parameters)
+        example_unsafe_instance = EXAMPLE_INSTANCE.format(
+            param_values=unsafe_param_values,
+            model_args=unsafe_model_args,
+            response=unsafe_instance.response,
+            is_safe=unsafe_instance.is_safe
+        )
+    else:
+        example_unsafe_instance = "None"
 
     checker = test.get_checker()
     return TEST_README.format(

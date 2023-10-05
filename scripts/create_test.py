@@ -32,15 +32,21 @@ for instance_file in os.listdir(instances_dir):
 print("Total safe: ", len(safe_instances))
 print("Total unsafe: ", len(unsafe_instances))
 
-if len(safe_instances) == 0 or len(unsafe_instances) == 0:
-    print("Need at least one safe and one unsafe instance (currently safe={}, unsafe={})!".format(
+if len(unsafe_instances) == 0:
+    print("Need at least one unsafe instance (currently safe={}, unsafe={})!".format(
         len(safe_instances), len(unsafe_instances)))
     exit(1)
 
-readme = generate_readme(test, safe_instances[0], unsafe_instances[0])
+if len(safe_instances) == 0:
+    print("Warning: Consider adding at least one safe instance (though not required)!")
+
+example_safe_inst = None if len(safe_instances) == 0 else safe_instances[0]
+example_unsafe_inst = None if len(unsafe_instances) == 0 else unsafe_instances[0]
+
+readme = generate_readme(test, example_safe_inst, example_unsafe_inst)
 with open(readme_file, 'w') as fou:
     fou.write(readme)
-print(readme)
+
 
 
 

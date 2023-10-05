@@ -33,9 +33,10 @@ if args.param_values is not None:
 print("Running instance with the arguments:", model_args)
 test_instance = test.run(args.author, **model_args)
 
+print("Prompt: ", test_instance.prompt)
 print("Response: ", test_instance.response)
-
 print("Instance safe: ", test_instance.is_safe)
+
 if args.output_file is not None:
     output_file = os.path.join(args.test, "instances", args.output_file)
     print("Would you like to save this instance? (y/n)")
