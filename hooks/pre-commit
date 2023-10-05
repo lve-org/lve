@@ -4,10 +4,17 @@ import sys
 import subprocess
 
 def main():
+    print("Running pre-commit hook...")
     commit_files = subprocess.check_output(["git", "diff", "--cached", "--name-only"]).decode().splitlines()
+
+    # If commit does not contain any files from tests directory, then no additional check is needed
+    if not any([f.startswith("tests/") for f in commit_files]):
+        print("Pre-commit hook passed!")
+        sys.exit(0)
+
     test_json_files = [f for f in commit_files if f.endswith("test.json")]
     
-    # check that there is exactly one test.json file
+    # Check that there is exactly one test.json file
     if len(test_json_files) != 1:
         print("ERROR: You should commit exactly one test.json file")                                                            
         sys.exit(1)
@@ -16,11 +23,11 @@ def main():
     test_dir = test[:test.rfind("test.json")]
     print("Commiting files from: ", test_dir)
 
-    # check if all commited files are in the same test directory
+    # Check if all commited files are in the same test directory
     for f in commit_files:
         if not f.startswith(test_dir):
-            print("ERROR: You are trying to commit files from multiple tests.")
-            print("Please commit files from a single test at a time.")
+            print(f"ERROR: You are trying to commit files outside of {test_dir} directory.")
+            print("Please commit only files from a single test at a time.")
             sys.exit(1)
 
     # Check that there is Readme file in the test directory 
@@ -30,6 +37,18 @@ def main():
         print("Please run create_test.py to generate the README.md file.")
         sys.exit(1)
 
+    # Check that there exists instances directory
+    instances_dir = os.path.join(test_dir, "instances")
+    if not os.path.exists(instances_dir):
+        print("ERROR: There is no instances directory in the test directory.")
+        print("Please use add_test.py to generate the instances directory and add new instances.")
+        sys.exit(1)
+
+    # Check that there is at least one instance in the instances directory
+    if len(os.listdir(instances_dir)) == 0:
+        print("ERROR: There are no instances in the instances directory.")
+        print("Please use add_test.py to generate the instances directory and add new instances.")
+    
     print("Pre-commit hook passed!")
 
 if __name__ == "__main__":
