@@ -1,18 +1,12 @@
-### LLM Vulnerabilities
+# LVE Repository
 
-Some TODO's:
+A repository of Language Model Vulnerabilities and Exposures (LVE), inspired by the [Common Vulnerabilities and Exposures (CVE)](https://cve.mitre.org/) repository.
 
-- [ ] Support non-OpenAI models
-- [ ] Allow custom checkers
-- [ ] Implement more core checkers
-- [ ] Expand set of test cases to cover all safety areas
-- [ ] Add more scripts: model transfer, model evaluation
-- [ ] Improve reproducibility
-- [ ] Create a read-only website 
-- [ ] Add test case upload to the website
-- [ ] Create documentation
+### Browsing the LVE repository
 
-### Getting started
+The LVE repository is organized into different categories, each containing a set of LVEs. All LVEs are stored in the `tests/` directory. LVEs are grouped into different categories: `trust`, `privacy`, `reliability`, `responsibility`, `security`. Each LVE is stored in its own folder where the name of the folder describes the test. 
+
+### Contributing to the LVE repository
 
 To get started with LVE testing, you need to install the `lve` CLI tool. To so, run the following command in the root directory of this repository:
 
@@ -154,3 +148,15 @@ lve status
     Wraps `git status` and groups changes into LVEs. This command is useful to check which LVEs have
     been changed and which files have been added or modified.
 ```
+
+### Roadmap
+
+- [ ] Support non-OpenAI models
+- [ ] Allow custom checkers
+- [ ] Implement more core checkers
+- [ ] Expand set of test cases to cover all safety areas
+- [ ] Add more scripts: model transfer, model evaluation
+- [ ] Improve reproducibility
+- [ ] Create a read-only website 
+- [ ] Add test case upload to the website
+- [ ] Create documentation
