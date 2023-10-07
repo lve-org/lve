@@ -27,9 +27,12 @@ def main(args):
     test_json_files = [f for f in changed if f.endswith("test.json")]
 
     # check that there is exactly one test.json file
-    if len(test_json_files) != 1:
+    if len(test_json_files) > 1:
         print(error("Error: Cannot commit LVE, the current working tree contains changes to more than a single LVE/test.json file.\n\nCurrent Git Changes:"), end="\n")
         os.system("git status")
+        sys.exit(1)
+    elif len(test_json_files) == 0:
+        print("No LVE changes to commit. To commit other changes, please follow standard Git procedures.")
         sys.exit(1)
     
     test = test_json_files[0]

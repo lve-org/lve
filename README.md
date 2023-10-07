@@ -6,32 +6,54 @@ Some TODO's:
 - [ ] Allow custom checkers
 - [ ] Implement more core checkers
 - [ ] Expand set of test cases to cover all safety areas
-- [ ] Add GIT features
 - [ ] Add more scripts: model transfer, model evaluation
 - [ ] Improve reproducibility
 - [ ] Create a read-only website 
 - [ ] Add test case upload to the website
 - [ ] Create documentation
 
+### Recording an LVE
 
-### Protocol for adding new tests
+To reproduce and help verify an LVE, you can record instances of existing LVEs:
 
-Please follow this protocol to add new tests:
+```
+# run 'lve record' for an interactive prompting session
+lve record tests/security/chatgpt_prompt_injection/openai--gpt-35-turbo
+```
 
-1. Create a folder for your new test in the `tests` subdirectory. Please carefully choose the subdirectory for your test (e.g. for privacy related tests choose `privacy` subdirectory).
-2. Create test configuration file `test.json` in your folder following the formatting shown below.
-3. Now add instances of your test using the script `add_instances.py`, for example:
-    ```bash
-    python scripts/add_instance.py --test tests/dummy/cars --temperature 1.0 --output-file random.json
-    ```
-4. Once you have at least 1 safe and 1 unsafe instance, you can create the test from your configuration by running the `create_test.py` script, for example:
-    ```bash
-    python scripts/create_test.py --test tests/dummy/cars
-    ```
+> You can record multiple instances in one session by specifying `--loop` as an argument to `lve record`.
 
-### Test specification
+With the `record` command, your goal is to find inputs that break the safety condition checked by the chosen LVE. 
 
-All tests are stored in the `tests` directory. The tests are separated into different folders based on the safety category: `trust`, `privacy`, `reliability`, `responsibility`, `security`. Each test is stored in its own folder where the name of the folder describes the test. Each test folder contains the test configuration file `test.json` and set of test instances `instances.json`.
+### Documenting a New LVE
+
+If you have found a model vulenerability or failure mode that is not yet covered by the existing LVEs, you can create a new LVE and submit it to the repository.
+
+To create and submit a new LVE, follow these steps:
+
+```
+# prepare a new LVE directory (choose an appropriate category when prompted)
+lve prepare chatgpt_prompt_injection
+
+# record and document initial instances of the LVE (interactive CLI)
+lve record tests/security/chatgpt_prompt_injection/openai--gpt-35-turbo
+```
+
+Repeat the `lve record` command until you have collected enough instances of the LVE.
+
+Finally, commit and push the new LVE+instances to GitHub:
+
+```
+# commit and push the new LVE+instances to GitHub
+lve commit
+
+# Create a PR to merge your new LVE+instances into the main repo
+lve pr 
+```
+
+### LVE specification
+
+All LVEs are stored in the `tests/` directory. LVEs are grouped into different categories: `trust`, `privacy`, `reliability`, `responsibility`, `security`. Each LVE is stored in its own folder where the name of the folder describes the test. Each test folder contains the test configuration file `test.json` and set of test instances `instances.json`.
 
 The JSON file `test.json` contains the test configuration. Test is just a template and needs to be instantiated with the model parameters (e.g. temperature) and values for the placeholders in the prompt (e.g. `a`=5 and `b`=10).
 
@@ -70,3 +92,51 @@ You can contribute through one of the following:
 - Try to reproduce existing tests by running them yourself and adding a new instance
 - General contributions to the codebase (e.g. taking one of the Github issues)
 
+### LVE Tools
+
+Next to `prepare`, `record`, `commit` and `pr`, the `lve` CLI tool provides a number of utilities to help with the documentation and tracking of LVEs:
+
+```
+The 'lve' command line tool can be used to record and document language model vulnerabilities and
+exposures (LVEs).
+
+This tool is designed to be used in a terminal environment, and is intended to
+be used by security researchers and language model developers.
+
+Commands:
+
+lve record <lve-path> [--temperature <temperature>] [--file <name>.json]
+
+    Records a new instance of the given LVE. The <category> and <lve-id> correspond to
+    the category and LVE number of the LVE being recorded.
+
+lve prepare <NAME> [--model <model>] [--description <description>]
+
+    Prepares a new LVE with the given name. Use this command to create a new LVE test case, e.g. lve
+    prepare privacy/leak-chatgpt --model chatgpt --description "ChatGPT leaks private information".
+
+
+    This creates the necessary files and directories to record new instances of a new LVE.
+
+lve commit
+
+    Commits changes to an LVE. You can only commit changes to a single LVE at a time. This command
+    will check that the changes are valid and that the LVE is ready to be committed.
+
+lve pr
+
+    Creates a new pull request for the current changes in the repository. This command requires the
+    `gh` command line tool to be installed and configured. As an alternative, you can also fork and
+    create a pull request with your changes manually.
+
+lve show tests/<category>/<lve-id>
+
+    Shows basic information on the given LVE, including the number of recorded instances and the
+    last recorded instance.
+
+lve run tests/<category>/<lve-id> [INSTANCES_FILE] [INDEX]
+
+    Re-runs recorded instances of the given LVE. If INSTANCES_FILE is not specified, the first
+    instances file found in the LVE directory will be used. If INDEX is specified, only the instance
+    at the given index will be run. Otherwise, all instances will be run.
+```
