@@ -1,6 +1,6 @@
 import argparse
-from .repo import get_active_repo
-from .errors import NoSuchLVEError, InvalidLVEError
+from lve.repo import get_active_repo
+from lve.errors import NoSuchLVEError, InvalidLVEError
 import termcolor
 import os
 import sys
@@ -8,7 +8,7 @@ from lve.lve import LVE
 from lve.repo import get_active_repo
 import subprocess
 from .termutils import error, warning
-from lve.readme_generator import patch_readme
+from lve.cli.readme_generator import patch_readme
 import questionary
 
 def main(args):

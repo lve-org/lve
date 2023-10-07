@@ -15,6 +15,7 @@ from .commit import main as commit_main
 from .status import main as status_main
 from .prepare import main as prepare_main
 from .pr import main as pr_main
+from .run import main as run_main
 
 DOCUMENTATION = f"""\
 The 'lve' command line tool can be used to record and document language model vulnerabilities and exposures (LVEs). 
@@ -24,7 +25,7 @@ be used by security researchers and language model developers.
 
 Commands:
 
-{termcolor.colored('lve record', attrs=['bold'])} tests/<category>/<lve-id> [--temperature <temperature>] [--file <name>.json]
+{termcolor.colored('lve record', attrs=['bold'])} <lve-path> [--temperature <temperature>] [--file <name>.json]
 
     Records a new instance of the given LVE. The <category> and <lve-id> correspond to
     the category and LVE number of the LVE being recorded.
@@ -34,19 +35,25 @@ Commands:
 
     Prepares a new LVE with the given name. Use this command to create a new LVE test case, e.g. lve prepare privacy/leak-chatgpt --model chatgpt --description "ChatGPT leaks private information".
     
+
+
     This creates the necessary files and directories to record new instances of a new LVE.
+
+{termcolor.colored('lve commit', attrs=['bold'])}
+
+    Commits changes to an LVE. You can only commit changes to a single LVE at a time. This command will check that the changes are valid and that the LVE is ready to be committed. 
+
+{termcolor.colored('lve pr', attrs=['bold'])}
+
+    Creates a new pull request for the current changes in the repository. This command requires the `gh` command line tool to be installed and configured. As an alternative, you can also fork and create a pull request with your changes manually.
 
 {termcolor.colored('lve show', attrs=['bold'])} tests/<category>/<lve-id>
 
     Shows basic information on the given LVE, including the number of recorded instances and the last recorded instance.
 
-{termcolor.colored('lve commit', attrs=['bold'])}
+{termcolor.colored('lve run', attrs=['bold'])} tests/<category>/<lve-id> [INSTANCES_FILE] [INDEX]
 
-    Commit changes to an LVE. You can only commit changes to a single LVE at a time. This command will check that the changes are valid and that the LVE is ready to be committed. 
-
-{termcolor.colored('lve pr', attrs=['bold'])}
-
-    Create a new pull request for the current changes in the repository. This command requires the `gh` command line tool to be installed and configured. As an alternative, you can also fork and create a pull request with your changes manually.
+    Re-runs recorded instances of the given LVE. If INSTANCES_FILE is not specified, the first instances file found in the LVE directory will be used. If INDEX is specified, only the instance at the given index will be run. Otherwise, all instances will be run.
 
 """
 
@@ -74,7 +81,8 @@ def main():
         "prepare": prepare_main,
         "commit": commit_main,
         "status": status_main,
-        "pr": pr_main
+        "pr": pr_main,
+        "run": run_main
     }
 
     if cmd not in cmds:

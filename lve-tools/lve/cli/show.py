@@ -1,6 +1,6 @@
 import argparse
-from .repo import get_active_repo
-from .errors import NoSuchLVEError, InvalidLVEError
+from lve.repo import get_active_repo
+from lve.errors import NoSuchLVEError, InvalidLVEError
 import termcolor
 import os
 from lve.lve import LVE

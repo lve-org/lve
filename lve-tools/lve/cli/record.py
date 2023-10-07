@@ -1,8 +1,8 @@
 import argparse
-from .repo import get_active_repo
+from lve.repo import get_active_repo
 from .termutils import spinner, line, block_line
 from lve.lve import LVE
-from .errors import NoSuchLVEError, InvalidLVEError
+from lve.errors import NoSuchLVEError, InvalidLVEError
 import os
 import termcolor
 import questionary

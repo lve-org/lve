@@ -2,7 +2,8 @@ import json
 import os
 import time
 from enum import Enum
-from typing import Any, List, Union
+from typing import Any, List, Union, Optional
+import inspect
 
 import openai
 from lve.checkers import get_checker
@@ -44,7 +45,7 @@ class TestInstance(BaseModel):
     response: str
     run_info: dict[str, str]
     passed: bool = True
-    author: str = ""
+    author: Optional[str] = None
 
 def get_prompt(prompt):
     if isinstance(prompt, str):
@@ -64,9 +65,9 @@ class LVE(BaseModel):
     description: str
     model: str
     checker_args: dict[str, Any]
-    author: Union[None, str] = None
+    author: Optional[str] = None
 
-    prompt_file: Union[None, str] = None
+    prompt_file: Optional[str] = None
     prompt: Union[str, list[Message]] = None
     prompt_parameters: Union[list[str], None] = None
 
@@ -153,8 +154,8 @@ class LVE(BaseModel):
             passed=is_safe,
         )
     
-    def run_instance(self, instance):
-        return self.run(**instance.args)
+    async def run_instance(self, instance):
+        return await self.run(**instance.args)
     
     def __hash__(self):
         return hash(self.path)
@@ -234,7 +235,14 @@ class LVE(BaseModel):
     def get_checker(self):
         checker_args = self.checker_args.copy()
         checker_name = checker_args.pop("checker_name")
-        return get_checker(checker_name)(**checker_args)
+        checker_cls = get_checker(checker_name)
+
+        sig = inspect.signature(checker_cls)
+        for param in sig.parameters:
+            if param not in checker_args:
+                raise ValueError(f"Checker {checker_name} requires parameter '{param}' but it was not specified in {self.path}/test.json.")
+
+        return checker_cls(**checker_args)
     
     def get_run_info(self):
         return {

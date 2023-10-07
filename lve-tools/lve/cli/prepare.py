@@ -1,7 +1,7 @@
 import argparse
 import questionary
 import termcolor
-from .repo import get_active_repo, LVERepo, file_system_repr
+from lve.repo import get_active_repo, LVERepo, file_system_repr
 import os
 
 TEST_JSON_TEMPLATE = """\
