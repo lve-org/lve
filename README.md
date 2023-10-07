@@ -1,6 +1,21 @@
-# LVE Repository
+<div align="center">
+  <h3 align="center">LVE Repository</h3>
 
-A repository of Language Model Vulnerabilities and Exposures (LVE), inspired by the [Common Vulnerabilities and Exposures (CVE)](https://cve.mitre.org/) repository.
+  <p align="center">
+    A repository of known Language Model Vulnerabilities and Exposures (LVE).<br/> Inspired by the <a href="https://cve.mitre.org/">Common Vulnerabilities and Exposures (CVE)</a> repository.
+    <br />
+    <br />
+    <a href="#browsing-the-lve-repository">Browse LVEs</a>
+    ·
+    <a href="#documenting-a-new-lve">Add New LVE</a>
+    ·
+    <a href="#recording-an-lve">Re-Produce LVEs</a>
+    <br/>
+    <br/>
+    <!-- <a href="https://discord.gg/7eJP4fcyNT"><img src="https://img.shields.io/discord/1091288833997410414?style=plastic&logo=discord&color=blueviolet&logoColor=white" height=18/></a> -->
+    <a href="https://badge.fury.io/py/lve-tools"><img src="https://badge.fury.io/py/lve-tools.svg?cacheSeconds=3600" alt="PyPI version" height=18></a>
+  </p>
+</div>
 
 ### Browsing the LVE repository
 
