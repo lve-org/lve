@@ -55,6 +55,10 @@ Commands:
 
     Re-runs recorded instances of the given LVE. If INSTANCES_FILE is not specified, the first instances file found in the LVE directory will be used. If INDEX is specified, only the instance at the given index will be run. Otherwise, all instances will be run.
 
+{termcolor.colored('lve status', attrs=['bold'])} 
+
+    Wraps `git status` and groups changes into LVEs. This command is useful to check which LVEs have been changed and which files have been added or modified.
+
 """
 
 def documentation():

@@ -12,6 +12,27 @@ Some TODO's:
 - [ ] Add test case upload to the website
 - [ ] Create documentation
 
+### Getting started
+
+To get started with LVE testing, you need to install the `lve` CLI tool. To so, run the following command in the root directory of this repository:
+
+```
+pip install -e .
+``` 
+
+> TODO: Replace with pip install lve-tools once published on PyPI.
+
+Once installed, you can run `lve` to see the list of available commands. To help grow the LVE repository, there are two main ways to contribute:
+
+- [Document and create new LVEs](#documenting-a-new-lve)
+- [Re-produce and verify existing LVEs](#recording-an-lve)
+
+Other ways to contribute include:
+
+- Transfering existing, model-specific LVEs to new models and model families.
+- Re-produce existing LVE instances by [running them yourself](#lve-tools).
+- General contributions [to the codebase](#lve-tools) (e.g. bug fixes, new checkers, improved CLI tooling).
+
 ### Recording an LVE
 
 To reproduce and help verify an LVE, you can record instances of existing LVEs:
@@ -80,18 +101,6 @@ For the above example, one line could be:
 {"test":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1},"response":"1415499","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:40:09 2023"},"is_safe":false}
 ```
 
-
-
-### How can you contribute?
-
-You can contribute through one of the following:
-
-- Create a new test following the procedure described above
-- Add a new instance of the existing test
-- Transfer existing test to a new model
-- Try to reproduce existing tests by running them yourself and adding a new instance
-- General contributions to the codebase (e.g. taking one of the Github issues)
-
 ### LVE Tools
 
 Next to `prepare`, `record`, `commit` and `pr`, the `lve` CLI tool provides a number of utilities to help with the documentation and tracking of LVEs:
@@ -139,4 +148,9 @@ lve run tests/<category>/<lve-id> [INSTANCES_FILE] [INDEX]
     Re-runs recorded instances of the given LVE. If INSTANCES_FILE is not specified, the first
     instances file found in the LVE directory will be used. If INDEX is specified, only the instance
     at the given index will be run. Otherwise, all instances will be run.
+
+lve status
+
+    Wraps `git status` and groups changes into LVEs. This command is useful to check which LVEs have
+    been changed and which files have been added or modified.
 ```
