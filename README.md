@@ -1,14 +1,14 @@
 <div align="center">
   <h1 align="center">LVE Repository</h1>
   <p align="center">
-    A repository of known Language Model Vulnerabilities and Exposures (LVE).<br/> Inspired by the <a href="https://cve.mitre.org/">Common Vulnerabilities and Exposures (CVE)</a> repository.
+    A repository of Language Model Vulnerabilities and Exposures (LVEs).
     <br />
     <br />
     <a href="/tests">Browse LVEs</a>
     ·
-    <a href="#documenting-a-new-lve">Add New LVE</a>
+    <a href="#documenting-a-new-lve">Add LVE</a>
     ·
-    <a href="#recording-an-lve">Re-Produce LVEs</a>
+    <a href="#recording-an-lve">Verify LVEs</a>
     <br/>
     <br/>
     <!-- <a href="https://discord.gg/7eJP4fcyNT"><img src="https://img.shields.io/discord/1091288833997410414?style=plastic&logo=discord&color=blueviolet&logoColor=white" height=18/></a> -->
@@ -18,11 +18,14 @@
 
 ### Browsing the LVE repository
 
-The LVE repository is organized into different categories, each containing a set of LVEs. All LVEs are stored in the `tests/` directory. LVEs are grouped into different categories: `trust`, `privacy`, `reliability`, `responsibility`, `security`. Each LVE is stored in its own folder where the name of the folder describes the test. 
+The LVE repository is organized into different categories, each containing a set of LVEs. All LVEs are stored in the `tests/` directory. LVEs are grouped into different categories, like `trust`, `privacy`, `reliability`, `responsibility`, `security`. 
+
+To start browsing the LVE repository, you can either [browse LVEs on GitHub](/tests) or clone the repository and browse locally.
+
 
 ### Contributing to the LVE repository
 
-To get started with LVE testing, you need to install the `lve` CLI tool. To so, run the following command in the root directory of this repository:
+To get started with LVE testing, you need to install the `lve` CLI tool. To do so, run the following command in the root directory of this repository:
 
 ```
 pip install -e .
@@ -30,15 +33,15 @@ pip install -e .
 
 > TODO: Replace with pip install lve-tools once published on PyPI.
 
-Once installed, you can run `lve` to see the list of available commands. To help grow the LVE repository, there are two main ways to contribute:
+Once installed, you can run the [`lve`](#lve-tools) command, to see the list of available actions. To help grow the LVE repository, there are two main ways to contribute:
 
 - [Document and create new LVEs](#documenting-a-new-lve)
 - [Re-produce and verify existing LVEs](#recording-an-lve)
 
 Other ways to contribute include:
 
-- Transfering existing, model-specific LVEs to new models and model families.
-- Re-produce existing LVE instances by [running them yourself](#lve-tools).
+- Transferring existing, model-specific LVEs to new models and model families.
+- Re-producing existing LVE *instances* by [running them yourself](#lve-tools).
 - General contributions [to the codebase](#lve-tools) (e.g. bug fixes, new checkers, improved CLI tooling).
 
 ### Recording an LVE
@@ -56,12 +59,12 @@ With the `record` command, your goal is to find inputs that break the safety con
 
 ### Documenting a New LVE
 
-If you have found a model vulenerability or failure mode that is not yet covered by an existing LVE, you can create a new one and submit it to the repository.
+If you have found a model vulenerability or failure mode that is not yet covered by an existing LVE, you can create and report a new LVE and submit it to the repository.
 
 To create and submit a new LVE, follow these steps:
 
 ```
-# prepare a new LVE directory (choose an appropriate category when prompted)
+# prepare a new LVE directory (choose an appropriate category once prompted)
 lve prepare chatgpt_prompt_injection
 
 # record and document initial instances of the LVE (interactive CLI)
@@ -73,18 +76,20 @@ Repeat the `lve record` command until you have collected enough instances of the
 Finally, commit and push the new LVE+instances to GitHub:
 
 ```
-# commit and push the new LVE+instances to GitHub
+# commit the new LVE+instances to Git history
 lve commit
 
 # Create a PR to merge your new LVE+instances into the main repo
 lve pr 
 ```
 
-### LVE specification
+### LVE Specification Format
 
-All LVEs are stored in the `tests/` directory. LVEs are grouped into different categories: `trust`, `privacy`, `reliability`, `responsibility`, `security`. Each LVE is stored in its own folder where the name of the folder describes the test. Each test folder contains the test configuration file `test.json` and set of test instances `instances.json`.
+All LVEs can be found in the `tests/` directory, grouped by category subfolders like `trust` and `privacy`.
 
-The JSON file `test.json` contains the test configuration. Test is just a template and needs to be instantiated with the model parameters (e.g. temperature) and values for the placeholders in the prompt (e.g. `a`=5 and `b`=10).
+Since LVEs can apply across models, we include corresponding test configurations for each affected model. For example, for an LVE `tests/math/a_plus_b` that was recorded for the model `openai/gpt-3.5-turbo`, instances and test configuration are stored in `tests/math/a_plus_b/openai--gpt-35-turbo`.
+
+In this folder, the `test.json` configuration file defines a prompt template and the checking logic of the LVE:
 
 ```json
 {
@@ -101,12 +106,14 @@ The JSON file `test.json` contains the test configuration. Test is just a templa
 }
 ```
 
-The JSON file `instances.json` contains instances of the (one instance per line).
-These are typically generated automatically through the script `add_instances.py`.
-For the above example, one line could be:
+Next to the `test.json` file, the `instances/` directory contains the recorded instances per LVE/model configuration.
+
+Each instance is generated using [`lve record`](#recording-an-lve). To create an LVE instance, `lve record` instantiates the prompt template using concrete placeholder values as provided by the user. It then runs the prompt against the model using a provided inference configuration (e.g. `temperature`) and finally applies the LVE's checking logic to determine whether the model's response passes or fails the LVE.
+
+After running the model and checking the resulting output, `lve record` stores information on the recorded instance in the `instances/` directory, which includes JSON lines of the following format:
 
 ```json
-{"test":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1},"response":"1415499","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:40:09 2023"},"is_safe":false}
+{"test":"tests/math/a_plus_b/openai--gpt-35-turbo/test.json","args":{"temperature":0.1},"response":"1415499","run_info":{"openai":"0.28.0","timestamp":"Mon Sep 11 23:40:09 2023"},"passed":false}
 ```
 
 ### LVE Tools
