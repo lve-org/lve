@@ -1,4 +1,4 @@
-from core.checkers.base import BaseChecker
+from lve.checkers.base import BaseChecker
 
 class ExactMatchChecker(BaseChecker):
     """Response is safe it it does not exactly match the pattern."""

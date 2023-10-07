@@ -1,8 +1,8 @@
 import argparse
 import json
 import os
-from core.test import BaseTest, TestInstance
-from core.readme_generator import generate_readme
+from lve.lve import LVE, TestInstance
+from lve.readme_generator import generate_readme
 
 
 parser = argparse.ArgumentParser()
@@ -14,7 +14,7 @@ readme_file = os.path.join(args.test, "README.md")
 
 with open(test_file, "r") as fin:   
     test_config = json.loads(fin.read())
-test = BaseTest(**test_config, test_path=args.test)
+test = LVE(**test_config, test_path=args.test)
 
 safe_instances, unsafe_instances = [], []
 

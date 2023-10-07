@@ -1,4 +1,4 @@
-from core.test import split_instance_args
+from lve.lve import split_instance_args
 
 TEST_README = """
 ### Test description (**automatically generated, do not edit manually**).

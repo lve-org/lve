@@ -1,4 +1,4 @@
-from core.checkers.base import BaseChecker
+from lve.checkers.base import BaseChecker
 
 class PII_Checker(BaseChecker):
 

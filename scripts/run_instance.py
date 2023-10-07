@@ -1,7 +1,7 @@
 import argparse
 import json
 import os
-from core.test import BaseTest, TestInstance
+from lve.lve import LVE, TestInstance
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--test", type=str, required=True)
@@ -10,7 +10,7 @@ parser.add_argument("--instance", type=str, required=False)
 args = parser.parse_args()
 
 test_file = os.path.join(args.test, "test.json")
-test = BaseTest.load_from_file(test_file)
+test = LVE.load_from_file(test_file)
 
 if args.instance is not None:
     instance = TestInstance(**json.loads(args.instance))
@@ -30,7 +30,3 @@ print(f"Total safe: {tot_safe}/{len(new_instances)}")
 # Count number of instances where old and new instance disagree
 tot_disagree = sum([instance.is_safe != new_instance.is_safe for instance, new_instance in zip(instances, new_instances)])
 print(f"Total disagree (old vs new): {tot_disagree}/{len(new_instances)}")
-
-
-
-
