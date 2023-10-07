@@ -1,6 +1,5 @@
 <div align="center">
-  <h3 align="center">LVE Repository</h3>
-
+  <h1 align="center">LVE Repository</h1>
   <p align="center">
     A repository of known Language Model Vulnerabilities and Exposures (LVE).<br/> Inspired by the <a href="https://cve.mitre.org/">Common Vulnerabilities and Exposures (CVE)</a> repository.
     <br />
