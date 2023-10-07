@@ -11,7 +11,10 @@ import textwrap
 
 from .record import main as record_main
 from .show import main as show_main
+from .commit import main as commit_main
+from .status import main as status_main
 from .prepare import main as prepare_main
+from .pr import main as pr_main
 
 DOCUMENTATION = f"""\
 The 'lve' command line tool can be used to record and document language model vulnerabilities and exposures (LVEs). 
@@ -36,15 +39,12 @@ Commands:
 {termcolor.colored('lve show', attrs=['bold'])} tests/<category>/<lve-id>
 
     Shows basic information on the given LVE, including the number of recorded instances and the last recorded instance.
-"""
-# not available yet
-"""
 
-{termcolor.colored('lve commit <NAME> [--model <model>] [--description <description>]', attrs=['bold'])}
+{termcolor.colored('lve commit', attrs=['bold'])}
 
-    Commit changes to the LVE with the given name. This command should be run after 'lve record' has been used to record new instances of an LVE. This command will create a new commit but not push it to the remote repository.
+    Commit changes to an LVE. You can only commit changes to a single LVE at a time. This command will check that the changes are valid and that the LVE is ready to be committed. 
 
-{termcolor.colored('lve pr <NAME> [--model <model>] [--description <description>]', attrs=['bold'])}
+{termcolor.colored('lve pr', attrs=['bold'])}
 
     Create a new pull request for the current changes in the repository. This command requires the `gh` command line tool to be installed and configured. As an alternative, you can also fork and create a pull request with your changes manually.
 
@@ -71,9 +71,10 @@ def main():
     cmds = {
         "record": record_main,
         "show": show_main,
-        "prepare": prepare_main
-        # "commit": commit,
-        # "pr": pr
+        "prepare": prepare_main,
+        "commit": commit_main,
+        "status": status_main,
+        "pr": pr_main
     }
 
     if cmd not in cmds:

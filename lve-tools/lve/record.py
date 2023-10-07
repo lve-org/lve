@@ -50,6 +50,9 @@ async def main(args):
     while True:
         print("\n" + line())
         print("Recording new instance of", termcolor.colored(lve.name, "green"))
+        print(line())
+        print("Prompt:")
+        print(lve.prompt, end="\n")
         print(line(), end="\n\n")
 
         print("temperature:", termcolor.colored(args.temperature, "yellow"))
@@ -102,15 +105,15 @@ async def main(args):
         async with spinner("Running model..."):
             test_instance = await lve.run(args.author, **model_args, **prompt_inputs, verbose=True)
 
-        if test_instance.is_safe:
+        if test_instance.passed:
             print("\n\n" + termcolor.colored(line(), "green"))
             print("Response:", str([test_instance.response])[1:-1])
-            print(termcolor.colored("TEST PASSED", "green"))
+            print(termcolor.colored("MODEL PASSED THE TEST", "green"))
             print(termcolor.colored(line(), "green"))
         else:
             print("\n\n" + termcolor.colored(line(), "red"))
             print("Response:", str([test_instance.response])[1:-1])
-            print(termcolor.colored("TEST FAILED", "red"))
+            print(termcolor.colored("MODEL FAILED THE TEST", "red"))
             print(termcolor.colored(block_line(), "red"))
 
         try:

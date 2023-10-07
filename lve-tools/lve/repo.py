@@ -4,6 +4,7 @@ import os
 import json
 from .errors import *
 import subprocess
+from git import Repo
 
 def file_system_repr(model_name: str) -> str:
     model_name = model_name.replace("/", "--")
@@ -18,6 +19,7 @@ class LVERepo:
     def __init__(self, path, remote):
         self.path = path
         self.remote = remote
+        self.git_repo = Repo(path)
     
     def get_create_issue_link(self):
         """
@@ -33,6 +35,22 @@ class LVERepo:
             return subprocess.check_output(["git", "config", "--get", "remote.origin.url"], cwd=self.path).decode("utf-8").strip()
         except:
             raise LVEError("Could not determine remote URL of LVE repository.")
+
+    def changed_files(self):
+        """
+        Returns a list of all changed files in the repository according to Git.
+
+        This includes files that have been changed or added (untracked files).
+        """
+        return [item.a_path for item in self.git_repo.index.diff(None)] + [item.a_path for item in self.git_repo.index.diff("HEAD")] + self.git_repo.untracked_files
+
+    def added_files(self):
+        """
+        Returns a list of all added files in the repository according to Git.
+
+        This only includes files that have been newly added (untracked files).
+        """
+        return self.git_repo.untracked_files
 
     def resolve(self, category, name, model):
         """

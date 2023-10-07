@@ -36,3 +36,9 @@ class spinner:
     
     async def __aexit__(self, exc_type, exc, tb):
         self.spinner_task.cancel()
+
+def error(msg):
+    return termcolor.colored(msg, "red")
+
+def warning(msg):
+    return termcolor.colored(msg, "yellow")

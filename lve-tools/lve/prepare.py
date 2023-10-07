@@ -251,7 +251,7 @@ def main(args):
                 f.write(readme_contents)
             print("[✔︎] Created README.md at " + os.path.join(path, "README.md") + ".")
 
-            print("\nNext steps:")
+            print("\nNext steps:\n")
             print(f"[ ] Fill in the checker details in {filepath}")
             if prompt_skipped:
                 print(f"[ ] Fill in the prompt in {os.path.join(path, 'test.prompt')}")

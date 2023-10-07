@@ -54,7 +54,8 @@ def get_prompt(prompt):
 
 class LVE(BaseModel):
     """
-    Base class for an LVE test.
+    Base class for an LVE test case, as represented
+    by a directory with a test.json file.
     """
     name: str
     category: str
@@ -96,7 +97,7 @@ class LVE(BaseModel):
         
         # at this point, self.prompt_file has been already loaded
         if self.prompt is None:
-            raise ValueError(f"Must specify a prompt in {self.path}/test.json.")
+            raise ValueError(f"Must specify a prompt in {self.path}/test.json. Either fill in the test.prompt file or specify a prompt directly in test.json.")
 
         if 'checker_name' not in self.checker_args:
             raise ValueError(f"You must specify a checker_name under chercker_args in in {self.path}/test.json.")
@@ -154,6 +155,9 @@ class LVE(BaseModel):
     
     def run_instance(self, instance):
         return self.run(**instance.args)
+    
+    def __hash__(self):
+        return hash(self.path)
 
     @classmethod
     def load_from_file(cls, test_path):
