@@ -5,7 +5,7 @@
     A repository of known Language Model Vulnerabilities and Exposures (LVE).<br/> Inspired by the <a href="https://cve.mitre.org/">Common Vulnerabilities and Exposures (CVE)</a> repository.
     <br />
     <br />
-    <a href="#browsing-the-lve-repository">Browse LVEs</a>
+    <a href="/lve-cli/tests">Browse LVEs</a>
     ·
     <a href="#documenting-a-new-lve">Add New LVE</a>
     ·
