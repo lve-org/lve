@@ -56,7 +56,7 @@ With the `record` command, your goal is to find inputs that break the safety con
 
 ### Documenting a New LVE
 
-If you have found a model vulenerability or failure mode that is not yet covered by the existing LVEs, you can create a new LVE and submit it to the repository.
+If you have found a model vulenerability or failure mode that is not yet covered by an existing LVE, you can create a new one and submit it to the repository.
 
 To create and submit a new LVE, follow these steps:
 
