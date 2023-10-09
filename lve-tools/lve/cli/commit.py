@@ -22,21 +22,18 @@ def main(args):
     args = parser.parse_args(args)
 
     repo = get_active_repo()
-    changed = repo.changed_files()
+    lves = list(repo.changed_lves())
 
-    test_json_files = [f for f in changed if f.endswith("test.json")]
-
-    # check that there is exactly one test.json file
-    if len(test_json_files) > 1:
+    # check that there is exactly one changed LVE
+    if len(lves) > 1:
         print(error("Error: Cannot commit LVE, the current working tree contains changes to more than a single LVE/test.json file.\n\nCurrent Git Changes:"), end="\n")
         os.system("git status")
         sys.exit(1)
-    elif len(test_json_files) == 0:
+    elif len(lves) == 0:
         print("No LVE changes to commit. To commit other changes, please follow standard Git procedures.")
         sys.exit(1)
     
-    test = test_json_files[0]
-    lve = LVE.from_path(os.path.dirname(test))
+    lve = lves[0]
     repo = get_active_repo()
     
     assert lve.path.startswith(repo.path), "The changed LVE is not part of the active LVE repository: {} is not in {}".format(lve.path, repo.path)
@@ -46,7 +43,7 @@ def main(args):
     print("Path:", os.path.relpath(lve.path, repo.path), end="\n\n")
 
     # check if all commited files are in the same test directory
-    not_in_lve_dir = [f for f in changed if not os.path.abspath(f).startswith(os.path.abspath(lve.path))]
+    not_in_lve_dir = list(sorted(set([f for f in repo.changed_files() if not os.path.abspath(f).startswith(os.path.abspath(lve.path))])))
     if len(not_in_lve_dir) > 0:
         print(error("Error: Your working tree contains changes that do not relate to the LVE above.\nPlease undo those changes, or commit them separately before committing LVE changes.\n"))
         print("The following changed/added files ares not in the LVE directory:")
@@ -56,17 +53,32 @@ def main(args):
         print("\nPlease commit or stash these changes separately before committing the LVE.")
         sys.exit(1)
 
-    # check that there is Readme file in the test directory 
+    # check that there is a README.md file in the test directory 
     readme_file = os.path.join(lve.path, "README.md")
     if not os.path.exists(readme_file):
         print(error(f"Error: The LVE directory {lve.path} does not contain a README.md file."))
         sys.exit(1)
 
+    # get list of changed files
+    changed = repo.changed_files()
+    # by default consider all changed files as 'staged'
+    staged = changed
+
+    # check for staged files
+    d = repo.git_repo.index.diff("HEAD")
+    if len(d)> 0:
+        staged = [f.a_path for f in d]
+
     # list all files that have been changed
-    print("Changes:")
-    for f in changed:
-        print("  - " + f)
-    print()
+    print("Changes to be commited:") 
+    for f in staged:
+        print(termcolor.colored("  - " + f, "green"))
+    if len(changed) != len(staged):
+        print("\nChanges not staged for commit:")
+        for f in changed:
+            if f not in staged:
+                print(termcolor.colored("  - " + f, "red"))
+    print() # spacer
 
     # patch README.md
     readme = os.path.join(lve.path, "README.md")
@@ -111,7 +123,7 @@ def main(args):
     print("> " + " ".join(git_command))
 
     # commit
-    ret = subprocess.check_call(git_command, cwd=repo.path)
+    # ret = subprocess.check_call(git_command, cwd=repo.path)
 
     if ret != 0:
         print(error("Error: Git commit failed, please check the console output above."))
