@@ -1,4 +1,4 @@
-from core.checkers.base import BaseChecker
+from lve.checkers.base import BaseChecker
 
 class ToxicityChecker(BaseChecker):
     """Checker which judges safety based on whether the response is toxic."""
