@@ -24,7 +24,7 @@ def main(args):
     repo = get_active_repo()
     lves = list(repo.changed_lves())
 
-    # check that there is exactly one test.json file
+    # check that there is exactly one changed LVE
     if len(lves) > 1:
         print(error("Error: Cannot commit LVE, the current working tree contains changes to more than a single LVE/test.json file.\n\nCurrent Git Changes:"), end="\n")
         os.system("git status")
@@ -53,7 +53,7 @@ def main(args):
         print("\nPlease commit or stash these changes separately before committing the LVE.")
         sys.exit(1)
 
-    # check that there is Readme file in the test directory 
+    # check that there is a README.md file in the test directory 
     readme_file = os.path.join(lve.path, "README.md")
     if not os.path.exists(readme_file):
         print(error(f"Error: The LVE directory {lve.path} does not contain a README.md file."))
