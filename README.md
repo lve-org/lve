@@ -6,7 +6,7 @@
     <br />
     <a href="/tests">Browse LVEs</a>
     ·
-    <a href="#documenting-a-new-lve">Add LVE</a>
+    <a href="#documenting-a-new-lve">Add LVEs</a>
     ·
     <a href="#recording-an-lve">Verify LVEs</a>
     <br/>
