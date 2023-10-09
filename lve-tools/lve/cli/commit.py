@@ -61,7 +61,7 @@ def main(args):
 
     # list all files that have been changed
     print("Changes:")
-    for f in changed:
+    for f in repo.changed_files():
         print("  - " + f)
     print()
 
