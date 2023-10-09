@@ -40,7 +40,7 @@ def main(args):
 
     if len(non_lve_changes) > 0:
         print("Non-LVE changes:")
-        for f in non_lve_changes:
+        for f in list(sorted(set(non_lve_changes))):
             print("  -", f)
         print() # spacer line
 
