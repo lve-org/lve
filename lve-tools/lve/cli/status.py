@@ -21,24 +21,18 @@ def main(args):
     args = parser.parse_args(args)
 
     repo = get_active_repo()
-    changed = repo.changed_files()
 
     print("LVE repository:", repo.path)
     print("LVE remote:", termcolor.colored(repo.remote, "green"), end="\n\n")
     
+    # determine changed LVEs and non-LVE changes
     changed_lves = {}
     non_lve_changes = []
     added_files = repo.added_files()
+    lve_cache = {}
 
     for f in repo.changed_files():
-        d = os.path.dirname(f)
-        lve = None
-        while lve is None and d != repo.path and len(d) > len(repo.path):
-            try:
-                lve = LVE.from_path(d)
-            except NoSuchLVEError:
-                d = os.path.dirname(d)
-                lve = None
+        lve = repo.find_lve(f, cache=lve_cache)
         if lve is None:
             non_lve_changes.append(f)
         else:
@@ -48,6 +42,7 @@ def main(args):
         print("Non-LVE changes:")
         for f in non_lve_changes:
             print("  -", f)
+        print() # spacer line
 
     if len(changed_lves) > 0:
         print("Changed LVEs:")

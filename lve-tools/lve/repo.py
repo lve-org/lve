@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Optional, Dict
 from dataclasses import dataclass
 import os
 import json
 from .errors import *
 import subprocess
-from git import Repo
+from lve.lve import LVE
 
 def file_system_repr(model_name: str) -> str:
     model_name = model_name.replace("/", "--")
@@ -19,8 +19,16 @@ class LVERepo:
     def __init__(self, path, remote):
         self.path = path
         self.remote = remote
-        self.git_repo = Repo(path)
+        
+        self._git_repo = None
     
+    @property
+    def git_repo(self):
+        if self._git_repo is None:
+            from git import Repo
+            self._git_repo = Repo(self.path)
+        return self._git_repo
+
     def get_create_issue_link(self):
         """
         Returns the link to create a new issue in the LVE repository.
@@ -57,6 +65,50 @@ class LVERepo:
         Resolves the full path to an LVE folder from its category and name.
         """
         return os.path.join(self.path, "tests", category, name, file_system_repr(model))
+
+    def changed_lves(self):
+        """
+        Returns the LVEs that have been changed in the current working tree.
+        """ 
+        lves = set()
+        lve_cache = {}
+        
+        for f in self.changed_files():
+            lve = self.find_lve(f, cache=lve_cache)
+            if lve is not None:
+                if not lve in lves:
+                    lves.add(lve)
+                    yield lve
+
+    def find_lve(self, f, cache: Optional[Dict[str, LVE]]=None) -> Optional[LVE]:
+        """
+        Returns the LVE that contains the given file, or None if no LVE contains
+        the given file.
+
+        If cache is given, it is used to cache paths to LVEs to speed up
+        the search across several find_lve calls.
+        """
+        d = os.path.abspath(os.path.dirname(f))
+        lve = None
+        paths = []
+        
+        while lve is None and d != self.path and len(d) > len(self.path):
+            if cache is not None and d in cache:
+                lve = cache[d]
+                break
+            paths.append(d)
+            
+            try:
+                lve = LVE.from_path(d)
+            except NoSuchLVEError:
+                d = os.path.dirname(d)
+                lve = None
+
+        if cache is not None:
+            for p in paths:
+                cache[p] = lve
+
+        return lve
 
     def get_categories(self):
         """

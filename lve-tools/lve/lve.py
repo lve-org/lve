@@ -6,9 +6,8 @@ from typing import Any, List, Union, Optional
 import inspect
 
 import openai
-from lve.checkers import get_checker
 from lve.errors import *
-from lve.repo import LVERepo, get_active_repo
+
 from pydantic import BaseModel, RootModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
 
@@ -171,6 +170,8 @@ class LVE(BaseModel):
         """
         Reads an existing LVE from the given path.
         """
+        from lve.repo import get_active_repo
+
         path = os.path.abspath(path)
 
         # check if the path exists
@@ -233,6 +234,8 @@ class LVE(BaseModel):
             raise InvalidLVEError(f"Failed to instantiate LVE from {test_file}:\n\n{e}\n")
 
     def get_checker(self):
+        from lve.checkers import get_checker
+
         checker_args = self.checker_args.copy()
         checker_name = checker_args.pop("checker_name")
         checker_cls = get_checker(checker_name)
@@ -244,6 +247,9 @@ class LVE(BaseModel):
 
         return checker_cls(**checker_args)
     
+    def contains(self, file):
+        return os.path.abspath(file).startswith(os.path.abspath(self.path))
+
     def get_run_info(self):
         return {
             "openai": openai.__version__,
