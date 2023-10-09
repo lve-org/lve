@@ -117,13 +117,13 @@ def main(args):
         print("[✔︎] Updated README.md")
 
     # prepare git commit
-    for f in changed:
+    for f in staged:
         subprocess.check_call(["git", "add", f], cwd=repo.path)
     git_command = ["git", "commit", "-m", commit_message]
     print("> " + " ".join(git_command))
 
     # commit
-    # ret = subprocess.check_call(git_command, cwd=repo.path)
+    ret = subprocess.check_call(git_command, cwd=repo.path)
 
     if ret != 0:
         print(error("Error: Git commit failed, please check the console output above."))
