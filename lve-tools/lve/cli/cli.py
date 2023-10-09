@@ -34,9 +34,6 @@ Commands:
 {termcolor.colored('lve prepare', attrs=['bold'])} <NAME> [--model <model>] [--description <description>]
 
     Prepares a new LVE with the given name. Use this command to create a new LVE test case, e.g. lve prepare privacy/leak-chatgpt --model chatgpt --description "ChatGPT leaks private information".
-    
-
-
     This creates the necessary files and directories to record new instances of a new LVE.
 
 {termcolor.colored('lve commit', attrs=['bold'])}
