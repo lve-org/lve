@@ -18,14 +18,25 @@
 
 ### What is LVE Repository?
 
-The goal of the LVE Repository is to create a central place where community can document and track language model vulnerabilities and exposures (LVEs). We consider LVEs in various categories such as `trust`, `privacy`, `reliability`, `responsibility`, `security`. The main purpose of documenting LVEs is to raise awareness and help developers better understand vulnerabilities of the models they use, which will lead to the improvements in safety of future models.
+The goal of the LVE Repository is to create a hub where community can document and track language model vulnerabilities and exposures (LVEs).  The main purpose is to raise awareness and help developers better understand vulnerabilities of the models they use, which will lead to the improvements in the safety of future models. LVE Repository goes beyond anecdotal evidence and moves towards the traceability of LVEs, facilitated by logging concrete parameters that trigger the vulnerability.
 
-LVE Repository goes beyond anecdotal evidence and moves towards the traceability of LVEs.
-The vulnerabilities are logged in the form of concrete runs of test cases with parameters that trigger the vulnerability. 
+Our key principles are:
 
-### Browsing the LVE repository
+- **Open source** - community can freely exchange LVEs, everyone can contribute and benefit 
+- **Traceability** - we move beyond anecdotal evidence and make all LVEs traceable
+- **Comprehensiveness** - we want LVEs to cover all aspects of unsafe behavior of the LLMs
+
+### LVE types and browsing the LVE repository
 
 The LVE repository is organized into different categories, each containing a set of LVEs. All LVEs are stored in the `tests/` directory. LVEs are grouped into different categories, like `trust`, `privacy`, `reliability`, `responsibility`, `security`. 
+
+| LVE Type | Examples |
+|  --- |  ---     |
+| <a href="/tests/privacy/">Privacy</a> | PII leakage, PII inference, Membership inference, Compliance |
+| <a href="/tests/reliability/">Reliability</a> | Output constraints, Consistency |
+| <a href="/tests/responsibility/">Responsibility</a> | Bias, Toxicity, Harm, Misinformation, Copyright, Law violation |
+| <a href="/tests/security/">Security</a> | Prompt leakage, Prompt injection, Unsafe code
+| <a href="/tests/trust/">Trust</a> | Accuracy, Hallucinations, Explainability |
 
 To start browsing the LVE repository, you can either [browse LVEs on GitHub](/tests) or clone the repository and browse locally.
 
@@ -34,7 +45,7 @@ To start browsing the LVE repository, you can either [browse LVEs on GitHub](/te
 
 To get started with LVE testing, you need to install the `lve` CLI tool. To do so, run the following command in the root directory of this repository:
 
-```
+```bash
 pip install -e .
 ``` 
 
@@ -55,7 +66,7 @@ Other ways to contribute include:
 
 To reproduce and help verify an LVE, you can record instances of existing LVEs:
 
-```
+```bash
 # run 'lve record' for an interactive prompting session
 lve record tests/security/chatgpt_prompt_injection/openai--gpt-35-turbo
 ```
@@ -70,7 +81,7 @@ If you have found a model vulenerability or failure mode that is not yet covered
 
 To create and submit a new LVE, follow these steps:
 
-```
+```bash
 # prepare a new LVE directory (choose an appropriate category once prompted)
 lve prepare chatgpt_prompt_injection
 
@@ -82,7 +93,7 @@ Repeat the `lve record` command until you have collected enough instances of the
 
 Finally, commit and push the new LVE+instances to GitHub:
 
-```
+```bash
 # commit the new LVE+instances to Git history
 lve commit
 
@@ -128,56 +139,12 @@ After running the model and checking the resulting output, `lve record` stores i
 
 ### LVE Tools
 
-Next to `prepare`, `record`, `commit` and `pr`, the `lve` CLI tool provides a number of utilities to help with the documentation and tracking of LVEs:
+Next to `prepare`, `record`, `commit` and `pr`, the `lve` CLI tool provides a number of utilities to help with the documentation and tracking of LVEs. The 'lve' command line tool can be used to record and document language model vulnerabilities and
+exposures (LVEs). This tool is designed to be used in a terminal environment, and is intended to
+be used by security researchers and language model developers. To see the list of all available commands together with the usage description, simply type:
 
-```
-The 'lve' command line tool can be used to record and document language model vulnerabilities and
-exposures (LVEs).
-
-This tool is designed to be used in a terminal environment, and is intended to
-be used by security researchers and language model developers.
-
-Commands:
-
-lve record <lve-path> [--temperature <temperature>] [--file <name>.json]
-
-    Records a new instance of the given LVE. The <category> and <lve-id> correspond to
-    the category and LVE number of the LVE being recorded.
-
-lve prepare <NAME> [--model <model>] [--description <description>]
-
-    Prepares a new LVE with the given name. Use this command to create a new LVE test case, e.g. lve
-    prepare privacy/leak-chatgpt --model chatgpt --description "ChatGPT leaks private information".
-
-
-    This creates the necessary files and directories to record new instances of a new LVE.
-
-lve commit
-
-    Commits changes to an LVE. You can only commit changes to a single LVE at a time. This command
-    will check that the changes are valid and that the LVE is ready to be committed.
-
-lve pr
-
-    Creates a new pull request for the current changes in the repository. This command requires the
-    `gh` command line tool to be installed and configured. As an alternative, you can also fork and
-    create a pull request with your changes manually.
-
-lve show tests/<category>/<lve-id>
-
-    Shows basic information on the given LVE, including the number of recorded instances and the
-    last recorded instance.
-
-lve run tests/<category>/<lve-id> [INSTANCES_FILE] [INDEX]
-
-    Re-runs recorded instances of the given LVE. If INSTANCES_FILE is not specified, the first
-    instances file found in the LVE directory will be used. If INDEX is specified, only the instance
-    at the given index will be run. Otherwise, all instances will be run.
-
-lve status
-
-    Wraps `git status` and groups changes into LVEs. This command is useful to check which LVEs have
-    been changed and which files have been added or modified.
+```bash
+lve
 ```
 
 ### Roadmap
