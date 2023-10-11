@@ -1,4 +1,5 @@
 <div align="center">
+  <img width="100pt" src="https://github.com/lve-org/lve/assets/17903049/a412780f-71af-4610-b1a7-713615b23a4a"/>
   <h1 align="center">LVE Repository</h1>
   <p align="center">
     A repository of Language Model Vulnerabilities and Exposures (LVEs).
