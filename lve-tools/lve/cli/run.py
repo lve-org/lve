@@ -60,6 +60,12 @@ async def main(args):
 
     new_instances = await asyncio.gather(*[lve.run_instance(instance, engine=args.engine) for instance in instance_data])
 
+    for idx, instance in enumerate(new_instances):
+        print(f"========= Instance {idx} =========")
+        print("Args: ", instance.args)
+        print("Response: ", instance.response)
+        print("Passed: ", instance.passed)
+    print('')
     # # Count number of unsafe instances
     tot_safe = sum([instance.passed for instance in new_instances])
     print(f"Total safe: {tot_safe}/{len(new_instances)}")

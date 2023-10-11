@@ -261,6 +261,11 @@ class LVE(BaseModel):
             # for <category>/<name> paths
             name = path_after_category[-1]
 
+        if "prompt" not in test:
+            test["prompt_file"] = os.path.join(path, "test.prompt")
+            if not os.path.exists(test["prompt_file"]):
+                raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: prompt not specified and test.prompt does not exist")
+
         try:
             return cls(
                 name=name,
@@ -280,8 +285,8 @@ class LVE(BaseModel):
         checker_cls = get_checker(checker_name)
 
         sig = inspect.signature(checker_cls)
-        for param in sig.parameters:
-            if param not in checker_args:
+        for param, param_value in sig.parameters.items():
+            if param not in checker_args and param_value.default is param_value.empty:
                 raise ValueError(f"Checker {checker_name} requires parameter '{param}' but it was not specified in {self.path}/test.json.")
 
         return checker_cls(**checker_args)
