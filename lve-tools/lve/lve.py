@@ -6,6 +6,7 @@ from typing import Any, List, Union, Optional
 import inspect
 
 import openai
+import lmql
 from lve.errors import *
 
 from pydantic import BaseModel, RootModel, model_validator, ValidationError
@@ -25,13 +26,16 @@ def split_instance_args(args, prompt_parameters):
 def prompt_to_openai(prompt):
     messages = []
     for msg in prompt:
-        messages += [{"content": msg.content, "role": msg.role}]
+        messages += [{"content": msg.content, "role": str(msg.role)}]
     return messages
 
 class Role(str, Enum):
     user = "user"
     assistant = "assistant"
     system = "system"
+
+    def __str__(self):
+        return self.value
 
 @dataclass
 class Message:
@@ -42,9 +46,9 @@ class TestInstance(BaseModel):
 
     args: dict[str, Any]
     response: str
-    run_info: dict[str, str]
     passed: bool = True
     author: Optional[str] = None
+    run_info: dict
 
 def get_prompt(prompt):
     if isinstance(prompt, str):
@@ -118,7 +122,12 @@ class LVE(BaseModel):
             new_prompt.append(new_msg)
         return new_prompt
     
-    async def run(self, author=None, verbose=False, **kwargs):
+    async def run(self, author=None, verbose=False, engine='openai', **kwargs):
+        if engine == 'lmql':
+            return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
+        else:
+            assert engine == 'openai', f"Only 'lmql' and 'openai' are supported as inference engines, not '{engine}'"
+
         run_info = self.get_run_info()
 
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
@@ -152,9 +161,39 @@ class LVE(BaseModel):
             run_info=run_info,
             passed=is_safe,
         )
+
+    async def run_with_lmql(self, author=None, verbose=False, **kwargs):
+        param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
+        prompt = self.fill_prompt(param_values)
+        prompt_openai = prompt_to_openai(prompt)
+
+        # make compatible with previous model identifiers
+        model = self.model
+        if model in ["gpt-4", "gpt-3.5-turbo"]:
+            model = "openai/" + model
+        
+        if verbose:
+            for msg in prompt:
+                print(f"[{msg.role}] {msg.content}")
+
+        with lmql.traced("LVE.run") as t:
+            response = await lmql.generate(prompt_openai, model=model, **model_args, chunk_timeout=60.0)
+            certificate = lmql.certificate(t)
+        response = response[1:] if response.startswith(" ") else response
+
+        checker = self.get_checker()
+        is_safe = checker.is_safe(prompt, response, param_values)
+
+        return TestInstance(
+            author=author,
+            args=param_values,
+            response=response,
+            run_info=certificate.asdict(),
+            passed=is_safe,
+        )
     
-    async def run_instance(self, instance):
-        return await self.run(**instance.args)
+    async def run_instance(self, instance, engine):
+        return await self.run(engine=engine, **instance.args)
     
     def __hash__(self):
         return hash(self.path)

@@ -13,6 +13,7 @@ async def main(args):
     parser.add_argument("LVE_PATH", help="The path of the LVE to reproduce (e.g. tests/privacy/leak-chatgpt/openai--gpt-35-turbo)", default=".", nargs="?")
     parser.add_argument("instances", help="The name of the instances file", default=None, nargs="?")
     parser.add_argument("index", help="The index of the instance to run", default=None, nargs="?")
+    parser.add_argument("--engine", type=str, default="openai", help="The engine to use for inference (openai or lmql). Defaults to openai.", choices=["openai", "lmql"])
     
     args = parser.parse_args(args)
 
@@ -57,7 +58,7 @@ async def main(args):
     else:
         print(f"Running {len(instance_data)} instances from {path}\n")
 
-    new_instances = await asyncio.gather(*[lve.run_instance(instance) for instance in instance_data])
+    new_instances = await asyncio.gather(*[lve.run_instance(instance, engine=args.engine) for instance in instance_data])
 
     # # Count number of unsafe instances
     tot_safe = sum([instance.passed for instance in new_instances])

@@ -17,12 +17,13 @@ async def main(args):
         prog="lve record"
     )
     parser.add_argument("LVE_PATH", help="The path of the LVE to record an instance of (e.g. tests/privacy/leak-chatgpt)")
-    parser.add_argument("--temperature", help="The temperature to use when sampling from the model. Defaults to 0.0 (deterministic sampling).", default=0.0)
+    parser.add_argument("--temperature", help="The temperature to use when sampling from the model. Defaults to 0.0 (deterministic sampling).", default=0.0, type=float)
     parser.add_argument("--file", help="The instance file name in instances/ to save the results to. Defaults to instances.jsonl.", default="instances.jsonl")
     parser.add_argument("--top_p", type=float, required=False)
     parser.add_argument("--max_tokens", type=int, required=False, help="The maximum number of tokens to generate. Defaults to no limit.")
     
     parser.add_argument("--loop", action="store_true", help="Whether to loop the recording process.")
+    parser.add_argument("--engine", type=str, default="openai", help="The engine to use for inference (openai or lmql). Defaults to openai.", choices=["openai", "lmql"])
     
     parser.add_argument("--author", type=str, default="")
 
@@ -103,7 +104,7 @@ async def main(args):
         print(line(), end="\n\n")
         
         async with spinner("Running model..."):
-            test_instance = await lve.run(args.author, **model_args, **prompt_inputs, verbose=True)
+            test_instance = await lve.run(args.author, **model_args, **prompt_inputs, verbose=True, engine=args.engine)
 
         if test_instance.passed:
             print("\n\n" + termcolor.colored(line(), "green"))
