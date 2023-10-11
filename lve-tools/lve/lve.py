@@ -186,7 +186,7 @@ class LVE(BaseModel):
 
         return TestInstance(
             author=author,
-            args=param_values,
+            args={k: v for k, v in kwargs.items() if v is not None},
             response=response,
             run_info=certificate.asdict(),
             passed=is_safe,
