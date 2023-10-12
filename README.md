@@ -17,13 +17,13 @@
   </p>
 </div>
 
-### What is the LVE Repository?
+### What is the LVE Project?
 
-The goal of the LVE Repository is to create a hub for the community, to document and track language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities *and* vulnerabilities of state-of-the-art large language models, as they are deployed more widely. The LVE Repository goes beyond basic anecdotal evidence and ensures transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.
+The goal of the LVE project is to create a hub for the community, to document, track and discuss language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities *and* vulnerabilities of state-of-the-art large language models, as they are deployed more widely. With the LVE Repository, we want to go beyond basic anecdotal evidence and ensure transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.
 
 Our key principles are:
 
-- **Open source** - the community should freely exchange LVEs, everyone can contribute and use the LVE repository.
+- **Open source** - the community should freely exchange LVEs, everyone can contribute and use the repository.
 - **Transparency** - we ensure transparent and traceable reporting, by providing an infrastructure for recording, re-running and documenting LVEs
 - **Comprehensiveness** - we want LVEs to cover all aspect of unsafe behavior in LLMs. We thus provide a framework and contribution guidelines to help the repository grow and adapt over time.
 
