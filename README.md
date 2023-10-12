@@ -47,7 +47,8 @@ To start browsing the LVE repository, you can either [browse LVEs on GitHub](/re
 To get started with LVE testing, you need to install the `lve` CLI tool. To do so, run the following command in the root directory of this repository:
 
 ```bash
-pip install -e .
+cd lve-tools # switch to the lve-tools directory
+pip install -e . # install the lve-tools package
 ``` 
 
 > TODO: Replace with pip install lve-tools once published on PyPI.
