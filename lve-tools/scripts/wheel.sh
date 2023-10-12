@@ -11,12 +11,12 @@ if [ $HAS_UNSTAGED -eq 1 ]; then
 fi
 
 VERSION=$1
-VERSION_BEFORE=$(cat lve-tools/lve/version.py)
-echo "version = \"$VERSION\"" > lve-tools/lve/version.py
-echo "commit = \"$COMMIT\"" >> lve-tools/lve/version.py
-echo "build_on = \"$(date)\"" >> lve-tools/lve/version.py
+VERSION_BEFORE=$(cat lve_tools/lve/version.py)
+echo "version = \"$VERSION\"" > lve_tools/lve/version.py
+echo "commit = \"$COMMIT\"" >> lve_tools/lve/version.py
+echo "build_on = \"$(date)\"" >> lve_tools/lve/version.py
 
-echo "Building with version information: $(cat lve-tools/lve/version.py)"
+echo "Building with version information: $(cat lve_tools/lve/version.py)"
 
 # replace line starting 'version = ' in setup.cfg
 UPDATED_SETUP=$(sed "s/version = .*/version = $VERSION/" setup.cfg)
@@ -26,4 +26,4 @@ echo "$UPDATED_SETUP" > setup.cfg
 python -m build
 
 echo "Reverting version.py to dev"
-git checkout HEAD lve-tools/lve/version.py
+git checkout HEAD lve_tools/lve/version.py
