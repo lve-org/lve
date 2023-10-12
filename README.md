@@ -14,6 +14,7 @@
     <br/>
     <!-- <a href="https://discord.gg/7eJP4fcyNT"><img src="https://img.shields.io/discord/1091288833997410414?style=plastic&logo=discord&color=blueviolet&logoColor=white" height=18/></a> -->
     <a href="https://badge.fury.io/py/lve-tools"><img src="https://badge.fury.io/py/lve-tools.svg?cacheSeconds=3600" alt="PyPI version" height=18></a>
+    <a href="https://discord.com/invite/Wn8KqsFc"><img src="https://img.shields.io/discord/1162052367357857883?style=plastic&logo=discord&color=blueviolet&logoColor=white" height=18/></a>
   </p>
 </div>
 
