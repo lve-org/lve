@@ -10,7 +10,7 @@ import os
 
 NO_CHECKER_CONFIG = """{
         "checker_name": "<please fill in>"
-}"""
+    }"""
 
 TEST_JSON_TEMPLATE = """\
 {{
@@ -169,7 +169,7 @@ def main(args):
             name = args.LVE_NAME
             print_name(name)
 
-            default_category = ""
+            default_category = None
             if template is not None:
                 default_category = template.category
 
