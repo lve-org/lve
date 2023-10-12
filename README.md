@@ -45,14 +45,11 @@ To start browsing the LVE repository, you can either [browse LVEs on GitHub](/re
 
 ### Contributing to the LVE repository
 
-To get started with LVE testing, you need to install the `lve` CLI tool. To do so, run the following command in the root directory of this repository:
+To get started with LVE contributions, you need to install the `lve` CLI tool. To do so, run the following command:
 
 ```bash
-cd lve-tools # switch to the lve-tools directory
-pip install -e . # install the lve-tools package
+pip install lve-tools
 ``` 
-
-> TODO: Replace with pip install lve-tools once published on PyPI.
 
 Once installed, you can run the [`lve`](#lve-tools) command, to see the list of available actions. To help grow the LVE repository, there are two main ways to contribute:
 
@@ -148,6 +145,15 @@ be used by security researchers and language model developers. To see the list o
 
 ```bash
 lve
+```
+
+### Installing the Latest `lve-tools` Version
+
+To install the very latest version of `lve-tools` directly from the source tree, run the following commands:
+
+```bash
+cd lve-tools # switch to the lve-tools directory
+pip install -e . # install editable version of lve-tools
 ```
 
 ### Roadmap
