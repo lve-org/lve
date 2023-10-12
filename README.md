@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="100pt" src="https://github.com/lve-org/lve/assets/17903049/a412780f-71af-4610-b1a7-713615b23a4a"/>
+  <img width="100pt" src="https://github.com/lve-org/lve/assets/17903049/886e318d-374a-4a00-b144-0d609b8ac46b"/>
   <h1 align="center">LVE Repository</h1>
   <p align="center">
     A repository of Language Model Vulnerabilities and Exposures (LVEs).
@@ -17,15 +17,15 @@
   </p>
 </div>
 
-### What is LVE Repository?
+### What is the LVE Repository?
 
-The goal of the LVE Repository is to create a hub where community can document and track language model vulnerabilities and exposures (LVEs).  The main purpose is to raise awareness and help developers better understand vulnerabilities of the models they use, which will lead to the improvements in the safety of future models. LVE Repository goes beyond anecdotal evidence and moves towards the traceability of LVEs, facilitated by logging concrete parameters that trigger the vulnerability.
+The goal of the LVE Repository is to create a hub for the community, to document and track language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities *and* vulnerabilities of state-of-the-art large language models, as they are deployed more widely. The LVE Repository goes beyond basic anecdotal evidence and ensures transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.
 
 Our key principles are:
 
-- **Open source** - community can freely exchange LVEs, everyone can contribute and benefit 
-- **Traceability** - we move beyond anecdotal evidence and make all LVEs traceable
-- **Comprehensiveness** - we want LVEs to cover all aspects of unsafe behavior of the LLMs
+- **Open source** - the community should freely exchange LVEs, everyone can contribute and use the LVE repository.
+- **Transparency** - we ensure transparent and traceable reporting, by providing an infrastructure for recording, re-running and documenting LVEs
+- **Comprehensiveness** - we want LVEs to cover all aspect of unsafe behavior in LLMs. We thus provide a framework and contribution guidelines to help the repository grow and adapt over time.
 
 ### LVE types and browsing the LVE repository
 
