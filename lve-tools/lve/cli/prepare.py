@@ -1,16 +1,22 @@
 import argparse
 import questionary
 import termcolor
+import textwrap
 from lve.repo import get_active_repo, LVERepo, file_system_repr
+import json
+from lve.lve import LVE
+from lve.errors import *
 import os
+
+NO_CHECKER_CONFIG = """{
+        "checker_name": "<please fill in>"
+}"""
 
 TEST_JSON_TEMPLATE = """\
 {{
     "description": "{description}",
     "model": "{model}",
-    "checker_args": {{
-        "checker_name": "<please fill in>"
-    }},
+    "checker_args": {checker_args},
     "prompt_file": "test.prompt",
     "prompt_parameters": {prompt_parameters}{author}
 }}
@@ -85,17 +91,30 @@ def ensure_fresh(repo: LVERepo, category, name, model):
 def help_create_new_category(repo):
     print(f"To create a new LVE category, please first create an issue in the official LVE repository via {repo.get_create_issue_link()}.", end="\n\n")
 
+def get_prompt_as_string(prompt):
+    if isinstance(prompt, list):
+        messages = [
+            {
+                "role": m.role.value,
+                "content": m.content
+            } for m in prompt
+        ]
+        return "\n".join(str(m) for m in messages)
+    else:
+        return prompt
+
 def main(args):
     parser = argparse.ArgumentParser(
         description="Prepares a new LVE with the given name. Use this command to create a new LVE test case",
         prog="lve record"
     )
-    parser.add_argument("LVE_NAME", help="The name of the LVE to create 'leak-chatgpt'")
+    parser.add_argument("LVE_NAME", help="The name of the LVE to create 'leak-chatgpt'", nargs="?")
     
     parser.add_argument("--description", type=str, default=None)
     parser.add_argument("--author", type=str, default=None)
     parser.add_argument("--model", type=str, default="") 
     parser.add_argument("--category", type=str, default="") 
+    parser.add_argument("--template", type=str, required=False, help="The path to an existing LVE to use as a template for the new LVE.")
 
     args = parser.parse_args(args)
 
@@ -103,9 +122,26 @@ def main(args):
     repo = get_active_repo()
     categories = repo.get_categories()
 
+    # check for template
+    template = None
+    if args.template is not None:
+        try:
+            template = LVE.from_path(args.template)
+        except InvalidLVEError:
+            print(f"Error: The template LVE at {args.template} could not be read as a valid LVE.")
+            return 1
+        except NoSuchLVEError:
+            print(f"Error: The template LVE at {args.template} does not exist.")
+            return 1
+
+    if args.LVE_NAME is None:
+        default_name = ""
+        if template is not None:
+            default_name = template.name
+        args.LVE_NAME = questionary.text("LVE Name: ", default=default_name).unsafe_ask()
+
     # handle keyboard interrupt
     try:
-
         # =====================
         # 'name' and 'category'
         # =====================
@@ -133,9 +169,14 @@ def main(args):
             name = args.LVE_NAME
             print_name(name)
 
+            default_category = ""
+            if template is not None:
+                default_category = template.category
+
             category = questionary.select(
                 "Choose an existing LVE category to add this LVE to.",
-                choices=categories + ["(not listed)"]
+                choices=categories + ["(not listed)"],
+                default=default_category
             ).unsafe_ask()
 
             if category == "(not listed)":
@@ -151,7 +192,6 @@ def main(args):
             return 1
         print_category(category)
 
-
         # =====================
         # 'description'
         # =====================
@@ -159,7 +199,11 @@ def main(args):
             description = args.description
             print_field("Description", description)
         else:
-            description = questionary.text("description: ").unsafe_ask()
+            default_description = ""
+            if template is not None:
+                default_description = template.description
+
+            description = questionary.text("description: ", default=default_description).unsafe_ask()
 
         # =====================
         # 'model'
@@ -168,10 +212,15 @@ def main(args):
             model = args.model
             print_field("Model", model)
         else:
+            default_model = ""
+            if template is not None:
+                default_model = template.model
+
             model = questionary.autocomplete(
                 "model: ",
                 choices = SUGGESTED_MODELS,
-                validate=lambda text: len(text) > 0
+                validate=lambda text: len(text) > 0,
+                default=default_model
             ).unsafe_ask()
 
         # check if the LVE already exists
@@ -190,7 +239,10 @@ def main(args):
         # =====================
         # 'prompt'
         # =====================
-        prompt = questionary.text("Prompt template: (leave blank to skip)").unsafe_ask()
+        default_prompt = ""
+        if template is not None:
+            default_prompt = get_prompt_as_string(template.prompt)
+        prompt = questionary.text("Prompt template: (leave blank to skip)", default=default_prompt).unsafe_ask()
         prompt_skipped = False
         if prompt.strip() == "":
             prompt = "<please fill in>"
@@ -200,17 +252,29 @@ def main(args):
         # 'prompt_parameters'
         # =====================
         # TODO: derive prompt parameters from prompt template
-        prompt_parameters = questionary.text("Prompt parameters (e.g. [\"a\", \"b\"] ): (leave blank to skip)").unsafe_ask()
+        default_prompt_parameters = ""
+        if template is not None:
+            default_prompt_parameters = str(template.prompt_parameters).replace("'", "\"")
+        prompt_parameters = questionary.text("Prompt parameters (e.g. [\"a\", \"b\"] ): (leave blank to skip)", default=default_prompt_parameters).unsafe_ask()
         prompt_parameters_skipped = False
         if prompt_parameters.strip() == "":
             prompt_parameters_skipped = True
             prompt_parameters = "[\"<please fill in>\"]"
+
+        # derive checker config
+        checker_config = NO_CHECKER_CONFIG
+        has_template_checker_config = False
+        if template is not None:
+            checker_config = json.dumps(template.checker_args, indent=4)
+            checker_config = textwrap.indent(checker_config, "    ")
+            has_template_checker_config = True
 
         # final confirmation
         json_contents = TEST_JSON_TEMPLATE.format(
             description=description if len(description) > 0 else "<no description>",
             model=model,
             prompt=prompt,
+            checker_args=checker_config,
             prompt_parameters=prompt_parameters,
             author=f',\n    "author": "{author}"' if len(author) > 0 else ""
         )
@@ -252,14 +316,19 @@ def main(args):
             print("[✔︎] Created README.md at " + os.path.join(path, "README.md") + ".")
 
             print("\nNext steps:\n")
-            print(f"[ ] Fill in the checker details in {filepath}")
+            
+            if has_template_checker_config:
+                print(f"[ ] Make sure checker details in {filepath} are correct.")
+            else:
+                print(f"[ ] Fill in the checker details in {filepath}")
+            
             if prompt_skipped:
                 print(f"[ ] Fill in the prompt in {os.path.join(path, 'test.prompt')}")
             
             if prompt_parameters_skipped:
                 print(f"[ ] Fill in the prompt parameters in {filepath}")
             
-            print(f"[ ] Record your first instance using 'lve record tests/{category}/{name}/{file_system_repr(model)}'")
+            print(f"[ ] Record your first instance using\n\nlve record tests/{category}/{name}/{file_system_repr(model)}")
 
             print("\n[lve prepare completed.]")
         else:
