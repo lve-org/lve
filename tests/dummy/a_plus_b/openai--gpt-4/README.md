@@ -1,6 +1,6 @@
 ### a_plus_b
 
-**Description**: gpt-3.5-turbo sometimes computes a + b incorrectly.
+**Description**: gpt-4 sometimes computes a + b incorrectly.
 
 **Model**: `openai/gpt-4`
 
