@@ -4,4 +4,4 @@
 
 All components are accessible via a unified `lve` command line tool.
 
-For more information on the LVE Project, please see [https://github.com/lve-org/lve].
+For more information on the LVE Project, please see [lve-org/lve](https://github.com/lve-org/lve).
