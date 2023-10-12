@@ -249,7 +249,7 @@ class LVE(BaseModel):
         repo = get_active_repo()
         repo_path = os.path.relpath(path, repo.path)
 
-        # with tests/ prefix, category is the first directory
+        # with repository/ prefix, category is the first directory
         category = repo_path.split("/")[1]
         
         # name is the last directory

@@ -83,7 +83,7 @@ def ensure_fresh(repo: LVERepo, category, name, model):
     # first check if an LVE with that name already exists
     if os.path.exists(path):
         print(termcolor.colored(f"\nError: An LVE with the name '{name}' and model '{model}' at '{path}' already exists.", attrs=["bold"], color="red"))
-        print(f"\nIf you just want to record a new instance of this LVE, use \n\nlve record tests/{category}/{name}/{file_system_repr(model)}\n")
+        print(f"\nIf you just want to record a new instance of this LVE, use \n\nlve record repository/{category}/{name}/{file_system_repr(model)}\n")
         return False
 
     return True
@@ -152,9 +152,9 @@ def main(args):
                 print("You cannot specify both a category and a name that contains a category.")
                 return 1
 
-            # check if tests/ was part of the name
-            if args.LVE_NAME.startswith("tests/"):
-                args.LVE_NAME = args.LVE_NAME[len("tests/"):]
+            # check if repository/ was part of the name
+            if args.LVE_NAME.startswith("repository/"):
+                args.LVE_NAME = args.LVE_NAME[len("repository/"):]
             
             category = args.LVE_NAME.split("/")[0]
             name = args.LVE_NAME[len(category)+1:]
@@ -328,7 +328,7 @@ def main(args):
             if prompt_parameters_skipped:
                 print(f"[ ] Fill in the prompt parameters in {filepath}")
             
-            print(f"[ ] Record your first instance using\n\nlve record tests/{category}/{name}/{file_system_repr(model)}")
+            print(f"[ ] Record your first instance using\n\nlve record repository/{category}/{name}/{file_system_repr(model)}")
 
             print("\n[lve prepare completed.]")
         else:

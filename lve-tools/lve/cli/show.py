@@ -79,7 +79,7 @@ def main(args):
         prog="lve show",
         usage="lve show LVE_DIR"
     )
-    parser.add_argument("LVE_PATH", help="The path of the LVE to record an instance of (e.g. tests/privacy/leak-chatgpt)", default=".", nargs="?")
+    parser.add_argument("LVE_PATH", help="The path of the LVE to record an instance of (e.g. repository/privacy/leak-chatgpt)", default=".", nargs="?")
     parser.add_argument("INSTANCE_FILE", help="The instance file to show", default=None, nargs="?")
     args = parser.parse_args(args)
     
