@@ -16,7 +16,7 @@ async def main(args):
         description="Records a new instance of the given LVE.",
         prog="lve record"
     )
-    parser.add_argument("LVE_PATH", help="The path of the LVE to record an instance of (e.g. tests/privacy/leak-chatgpt)")
+    parser.add_argument("LVE_PATH", help="The path of the LVE to record an instance of (e.g. repository/privacy/leak-chatgpt)")
     parser.add_argument("--temperature", help="The temperature to use when sampling from the model. Defaults to 0.0 (deterministic sampling).", default=0.0, type=float)
     parser.add_argument("--file", help="The instance file name in instances/ to save the results to. Defaults to instances.jsonl.", default="instances.jsonl")
     parser.add_argument("--top_p", type=float, required=False)

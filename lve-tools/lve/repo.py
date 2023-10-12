@@ -64,7 +64,7 @@ class LVERepo:
         """
         Resolves the full path to an LVE folder from its category and name.
         """
-        return os.path.join(self.path, "tests", category, name, file_system_repr(model))
+        return os.path.join(self.path, "repository", category, name, file_system_repr(model))
 
     def changed_lves(self):
         """
@@ -114,7 +114,7 @@ class LVERepo:
         """
         Returns a list of all categories in the LVE repository.
         """
-        return [name for name in os.listdir(os.path.join(self.path, "tests")) if os.path.isdir(os.path.join(self.path, "tests", name))]
+        return [name for name in os.listdir(os.path.join(self.path, "repository")) if os.path.isdir(os.path.join(self.path, "repository", name))]
 
 def get_active_repo() -> LVERepo:
     """

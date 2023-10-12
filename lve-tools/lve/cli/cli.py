@@ -44,11 +44,11 @@ Commands:
 
     Creates a new pull request for the current changes in the repository. This command requires the `gh` command line tool to be installed and configured. As an alternative, you can also fork and create a pull request with your changes manually.
 
-{termcolor.colored('lve show', attrs=['bold'])} tests/<category>/<lve-id>
+{termcolor.colored('lve show', attrs=['bold'])} repository/<category>/<lve-id>
 
     Shows basic information on the given LVE, including the number of recorded instances and the last recorded instance.
 
-{termcolor.colored('lve run', attrs=['bold'])} tests/<category>/<lve-id> [INSTANCES_FILE] [INDEX]
+{termcolor.colored('lve run', attrs=['bold'])} repository/<category>/<lve-id> [INSTANCES_FILE] [INDEX]
 
     Re-runs recorded instances of the given LVE. If INSTANCES_FILE is not specified, the first instances file found in the LVE directory will be used. If INDEX is specified, only the instance at the given index will be run. Otherwise, all instances will be run.
 

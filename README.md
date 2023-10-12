@@ -5,7 +5,7 @@
     A repository of Language Model Vulnerabilities and Exposures (LVEs).
     <br />
     <br />
-    <a href="/tests">Browse LVEs</a>
+    <a href="/repository">Browse LVEs</a>
     ·
     <a href="#documenting-a-new-lve">Add LVEs</a>
     ·
@@ -29,17 +29,17 @@ Our key principles are:
 
 ### LVE types and browsing the LVE repository
 
-The LVE repository is organized into different categories, each containing a set of LVEs. All LVEs are stored in the `tests/` directory. LVEs are grouped into different categories, like `trust`, `privacy`, `reliability`, `responsibility`, `security`. 
+The LVE repository is organized into different categories, each containing a set of LVEs. All LVEs are stored in the `repository/` directory. LVEs are grouped into different categories, like `trust`, `privacy`, `reliability`, `responsibility`, `security`. 
 
 | LVE Type | Examples |
 |  --- |  ---     |
-| <a href="/tests/privacy/">Privacy</a> | PII leakage, PII inference, Membership inference, Compliance |
-| <a href="/tests/reliability/">Reliability</a> | Output constraints, Consistency |
-| <a href="/tests/responsibility/">Responsibility</a> | Bias, Toxicity, Harm, Misinformation, Copyright, Law violation |
-| <a href="/tests/security/">Security</a> | Prompt leakage, Prompt injection, Unsafe code
-| <a href="/tests/trust/">Trust</a> | Accuracy, Hallucinations, Explainability |
+| <a href="/repository/privacy/">Privacy</a> | PII leakage, PII inference, Membership inference, Compliance |
+| <a href="/repository/reliability/">Reliability</a> | Output constraints, Consistency |
+| <a href="/repository/responsibility/">Responsibility</a> | Bias, Toxicity, Harm, Misinformation, Copyright, Law violation |
+| <a href="/repository/security/">Security</a> | Prompt leakage, Prompt injection, Unsafe code
+| <a href="/repository/trust/">Trust</a> | Accuracy, Hallucinations, Explainability |
 
-To start browsing the LVE repository, you can either [browse LVEs on GitHub](/tests) or clone the repository and browse locally.
+To start browsing the LVE repository, you can either [browse LVEs on GitHub](/repository) or clone the repository and browse locally.
 
 
 ### Contributing to the LVE repository
@@ -69,7 +69,7 @@ To reproduce and help verify an LVE, you can record instances of existing LVEs:
 
 ```bash
 # run 'lve record' for an interactive prompting session
-lve record tests/security/chatgpt_prompt_injection/openai--gpt-35-turbo
+lve record repository/security/chatgpt_prompt_injection/openai--gpt-35-turbo
 ```
 
 > You can record multiple instances in one session by specifying `--loop` as an argument to `lve record`.
@@ -87,7 +87,7 @@ To create and submit a new LVE, follow these steps:
 lve prepare chatgpt_prompt_injection
 
 # record and document initial instances of the LVE (interactive CLI)
-lve record tests/security/chatgpt_prompt_injection/openai--gpt-35-turbo
+lve record repository/security/chatgpt_prompt_injection/openai--gpt-35-turbo
 ```
 
 Repeat the `lve record` command until you have collected enough instances of the LVE.
@@ -104,9 +104,9 @@ lve pr
 
 ### LVE Specification Format
 
-All LVEs can be found in the `tests/` directory, grouped by category subfolders like `trust` and `privacy`.
+All LVEs can be found in the `repository/` directory, grouped by category subfolders like `trust` and `privacy`.
 
-Since LVEs can apply across models, we include corresponding test configurations for each affected model. For example, for an LVE `tests/security/sys_prompt_leak_cipher/` that was recorded for the model `openai/gpt-3.5-turbo`, instances and test configuration are stored in `tests/security/sys_prompt_leak_cipher/openai--gpt-35-turbo/`.
+Since LVEs can apply across models, we include corresponding test configurations for each affected model. For example, for an LVE `repository/security/sys_prompt_leak_cipher/` that was recorded for the model `openai/gpt-3.5-turbo`, instances and test configuration are stored in `repository/security/sys_prompt_leak_cipher/openai--gpt-35-turbo/`.
 
 In this folder, the `test.json` configuration file defines a prompt template and the checking logic of the LVE:
 

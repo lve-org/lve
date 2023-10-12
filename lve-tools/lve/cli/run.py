@@ -10,7 +10,7 @@ async def main(args):
     lve run allows you to run a single instance of an LVE.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("LVE_PATH", help="The path of the LVE to reproduce (e.g. tests/privacy/leak-chatgpt/openai--gpt-35-turbo)", default=".", nargs="?")
+    parser.add_argument("LVE_PATH", help="The path of the LVE to reproduce (e.g. repository/privacy/leak-chatgpt/openai--gpt-35-turbo)", default=".", nargs="?")
     parser.add_argument("instances", help="The name of the instances file", default=None, nargs="?")
     parser.add_argument("index", help="The index of the instance to run", default=None, nargs="?")
     parser.add_argument("--engine", type=str, default="openai", help="The engine to use for inference (openai or lmql). Defaults to openai.", choices=["openai", "lmql"])
