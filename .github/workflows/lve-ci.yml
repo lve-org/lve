@@ -29,4 +29,4 @@ jobs:
               TWINE_USERNAME: __token__
               TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
               VERSION: ${{ github.ref }}
-            run: cd lve-tools && bash scripts/pypi-release.sh lve_tools-$(echo $VERSION | sed 's/^refs\/tags\/v//')
+            run: cd lve-tools && bash scripts/pypi-release.sh lve_tools-$(echo $VERSION | sed 's/^refs\/tags\/v//') --production
