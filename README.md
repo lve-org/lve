@@ -155,15 +155,3 @@ To install the very latest version of `lve-tools` directly from the source tree,
 cd lve-tools # switch to the lve-tools directory
 pip install -e . # install editable version of lve-tools
 ```
-
-### Roadmap
-
-- [ ] Support non-OpenAI models
-- [ ] Allow custom checkers
-- [ ] Implement more core checkers
-- [ ] Expand set of test cases to cover all safety areas
-- [ ] Add more scripts: model transfer, model evaluation
-- [ ] Improve reproducibility
-- [ ] Create a read-only website 
-- [ ] Add test case upload to the website
-- [ ] Create documentation
