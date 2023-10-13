@@ -20,7 +20,7 @@
 
 ### What is the LVE Project?
 
-The goal of the LVE project is to create a hub for the community, to document, track and discuss language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities *and* vulnerabilities of state-of-the-art large language models, as they are deployed more widely. With the LVE Repository, we want to go beyond basic anecdotal evidence and ensure transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.
+The goal of the LVE project is to create a hub for the community, to document, track and discuss language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities *and* vulnerabilities of state-of-the-art large language models. With the LVE Repository, we want to go beyond basic anecdotal evidence and ensure transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.
 
 Our key principles are:
 
