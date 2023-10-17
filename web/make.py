@@ -53,7 +53,7 @@ def selector(options, active=None):
             active = options[0]
     
     return """\
-        <div class='bar affected'>
+        <div class='affected'>
             {options}
         </div>
     """.format(options="\n".join([
