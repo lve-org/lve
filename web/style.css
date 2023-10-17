@@ -541,14 +541,21 @@ span.badge.active:hover {
 .markdown pre code {
     display: block;
     padding: 10pt;
+    overflow-x: auto;
+    font-size: 0.8em;
+    white-space: pre;
 }
 
 .content.category {
     padding-top: 10pt;
 }
 
-a.small {
+.small {
     font-size: 10pt;
+}
+
+span.small {
+    color: grey;
 }
 
 .lve-details.instances #instances {
@@ -597,4 +604,34 @@ a.small {
 
 .content.docs .markdown {
     font-size: 14pt;
+    line-height: 1.5;
+    max-width: 700pt;
+    margin: auto;
+    text-align: justify;
+    color: rgb(33, 33, 33);
+    padding-bottom: 100pt;
+}
+
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+    font-weight: 500;
+    margin: 20pt 0pt;
+    color: rgb(43, 43, 43);
+}
+
+.markdown table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20pt 0pt;
+    border: 1pt solid rgb(200, 200, 200);
+}
+
+.markdown table th {
+    border: 1pt solid rgb(200, 200, 200);
+    padding: 5pt;
+    background-color: rgb(240, 240, 240);
+}
+
+.markdown table td {
+    border: 1pt solid rgb(200, 200, 200);
+    padding: 5pt;
 }

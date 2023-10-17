@@ -246,8 +246,9 @@ class LVESiteGenerator:
         # markdown extensions
         extensions = [
             "fenced_code",
-            # "codehilite",
-            TableExtension(use_align_attribute=True)
+            TableExtension(use_align_attribute=True),
+            # anchor headers
+            "toc",
         ]
 
         # build markdown files in docs/

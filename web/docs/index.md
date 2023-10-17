@@ -20,12 +20,14 @@ The LVE repository is organized into different categories, each containing a set
 | <a href="/repository/security/">Security</a> | Prompt leakage, Prompt injection, Unsafe code
 | <a href="/repository/trust/">Trust</a> | Accuracy, Hallucinations, Explainability |
 
-To start browsing the LVE repository, you can either [browse LVEs on GitHub](/repository) or clone the repository and browse locally.
+You can start to [browse the LVE repository online](/index.html) or clone the repository and browse locally.
 
 
 ### Contributing to the LVE repository
 
-To get started with LVE contributions, you need to install the `lve` CLI tool. To do so, run the following command:
+To get started with LVE reporting, you need to install the `lve` CLI tool. 
+
+To do so, run the following command:
 
 ```bash
 pip install lve-tools
