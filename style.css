@@ -1,0 +1,573 @@
+
+* {
+    font-family: "Chinese Quotes", "Inter var", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    color: rgb(22, 22, 22);
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.toolbar .content {
+    display: flex;
+    width: calc(1000pt - 40pt);
+    flex-direction: row;
+}
+
+.toolbar a {
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    padding: 0pt 5pt;
+    background-color: transparent;
+    transition: background-color 0.05s linear;
+}
+
+.toolbar .content>a:first-of-type:hover {
+    background-color: rgb(228, 228, 228);
+    border-radius: 5pt;
+}
+
+.toolbar {
+    display: flex;
+    padding: 5pt 10pt;
+
+    background-color: #F6F8FA;
+    height: 30pt;
+    border-bottom: 0.5pt solid rgb(227, 227, 227);
+}
+
+.toolbar ul li.small {
+    margin: 0pt 2.5pt;
+}
+
+.toolbar h1 {
+    font-size: 12pt;
+    font-weight: 500;
+}
+
+.toolbar ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.toolbar ul li {
+    display: inline-block;
+    margin-right: 10pt;
+    height: 30pt;
+    line-height: 30pt;
+    font-size: 10pt;
+    font-weight: 500;
+}
+
+.toolbar ul li a {
+    text-decoration: none;
+    color: black;
+}
+
+.toolbar ul li a:hover {
+    opacity: 0.6;
+}
+
+.toolbar .logo {
+    width: 15pt;
+    margin-right: 5pt;
+}
+
+.toolbar ul li img {
+    height: 12pt;
+    display: inline-block;
+    margin: 10pt 0pt;
+}
+
+.hero {
+    margin: auto;
+    margin-top: 60pt;
+    text-align: center;
+}
+
+.hero .block {
+    width: 420pt;
+    max-width: 90vw;
+    text-align: center;
+    margin: auto;
+    margin-top: 30pt;
+}
+
+.hero .logo {
+    width: 120pt;
+}
+
+.hero p {
+    text-align: center;
+    width: 360pt;
+    max-width: 100%;
+    font-size: 16pt;
+    margin: auto;
+}
+
+.hero h1 {
+    font-size: 40pt;
+    font-weight: 500;
+}
+
+.content {
+    width: 1000pt;
+    max-width: 100%;
+    margin: auto;
+}
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+.categories .tile {
+    flex: 1 1 0px;
+    min-width: 150pt;
+    width: auto;
+    margin: 2pt;
+    height: 50pt;
+    line-height: 50pt;
+    border-radius: 5pt;
+    overflow: hidden;
+    padding: 5pt;
+
+    border: 0pt solid rgb(120, 120, 120);
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;;
+}
+
+.categories .tile.placeholder {
+    opacity: 0.0;
+    cursor: default;
+}
+
+/* add white opacity layer on top */
+.categories .tile::after {
+    background-color: white;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 5pt;
+    opacity: 0.07;
+}
+
+.categories .tile:hover::after {
+    opacity: 0.0;
+}
+
+
+.categories .tile h3 {
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-weight: 600;
+}
+
+* {
+    --red: #F1284F;
+    --ocean: #4A5463;
+    --blue: #2C5FEA;
+    --purple: #AF3188;
+    --orange: #DA5918;
+}
+
+/* classes for each color as bg */
+.red {
+    /* background-color: var(--red) !important; */
+    background-image: linear-gradient(34deg, var(--red) 0%, white 400%);
+}
+
+.ocean {
+    /* background-color: var(--ocean) !important; */
+    background-image: linear-gradient(12deg, var(--ocean) 0%, white 400%);
+}
+
+.blue {
+    /* background-color: var(--blue) !important; */
+    background-image: linear-gradient(-80deg, var(--blue) 0%, white 400%);
+}
+
+.purple {
+    /* background-color: var(--purple) !important; */
+    background-image: linear-gradient(90deg, var(--purple) 0%, white 400%);
+}
+
+.orange {
+    /* background-color: var(--orange) !important; */
+    background-image: linear-gradient(12deg, var(--orange) 0%, white 400%);
+}
+
+.btn {
+    background-color: #e1e1e1;
+    border-width: 0pt;
+    padding: 8pt 12pt;
+    font-size: 12pt;
+    font-weight: 500;
+    margin: 20pt 0pt;
+    border-radius: 5pt;
+    display: inline-block;
+    text-decoration: none;
+    margin-bottom: 10pt;
+}
+
+.btn:hover {
+    background-color: #E8EBED;
+    cursor: pointer;
+}
+
+.btn:active {
+    background-color: #D1D6DB;
+}
+
+.btn.primary {
+    background-color: #1e883e;
+    color: white;
+}
+
+.btn.primary:hover {
+    background-color: #007314;
+}
+
+.btn.primary:active {
+    background-color: #005a0f;
+}
+
+.logo-composite {
+    position: relative;
+    width: 120pt;
+    height: 160pt;
+    margin: auto;
+}
+
+.logo-composite img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.logo-composite img.back {
+    z-index: -2;
+    transform: scale(2.0);
+}
+
+.side-by-side {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.lve-list .lve {
+    border-radius: 5pt;
+    font-family: monospace;
+    text-align: left;
+    padding: 8pt;
+    line-height: 12pt;
+    height: 30pt;
+    border: 1pt solid rgb(213, 213, 213);
+    box-shadow: 0pt 0pt 2pt 1pt rgba(213, 213, 213, 0.479);
+    position: relative;
+    display: block;
+    margin-bottom: 8pt;
+    text-decoration: none;
+}
+
+.lve-list .lve h3 {
+    font-family: monospace;
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+    /* auto truncate */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.lve-list {
+    padding: 0pt 15pt;
+}
+
+.lve label {
+    font-size: 10pt;
+    font-weight: 500;
+    text-align: left;
+    position: absolute;
+    bottom: 5pt;
+    color: grey;
+    font-family: monospace;
+}
+
+.lve label.right {
+    right: 5pt;
+    text-align: right;
+}
+
+.lve:hover {
+    cursor: pointer;
+}
+
+.lve:hover h3 {
+    color: blue;
+}
+
+.hero h2 {
+    font-weight: normal;
+    font-size: 14pt;
+}
+
+.hero {
+    padding-bottom: 20pt;
+}
+
+.second-toolbar {
+    background-color: #F6F8FA;
+    margin: 0pt;
+    border-bottom: 0.5pt solid rgb(227, 227, 227);
+}
+
+.second-toolbar h3 {
+    margin: 0;
+    padding: 20pt;
+    padding-left: 0pt;
+    font-family: monospace;
+    font-weight: normal;
+    font-size: 14pt;
+    color: grey;
+}
+
+.second-toolbar h3>a {
+    font-family: monospace;
+    text-decoration: none;
+    color: grey;
+}
+
+.second-toolbar h3 .name {
+    font-weight: bold;
+    color: black;
+}
+
+.second-toolbar h3 a:first-child:hover {
+    text-decoration: underline;
+}
+
+ul.tabs {
+    padding: 0;
+    margin: 0;
+    padding-left: 15pt;
+}
+
+ul.tabs li {
+    display: inline-block;
+    cursor: pointer;
+    list-style-type: none;
+}
+ul.tabs li a {
+    display: block;
+    padding: 10pt;
+}
+
+ul.tabs li:hover {
+    border-bottom: 2pt solid rgb(200, 200, 200);
+}
+
+ul.tabs li a {
+    text-decoration: none;
+}
+
+ul.tabs li.active {
+    font-weight: bold;
+    border-bottom: 2pt solid #2C5FEA;
+}
+
+.second-toolbar .bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    /* wrap */
+    flex-wrap: wrap;
+    margin-left: 20pt;
+    margin-bottom: 10pt;
+}
+
+code.command {
+    background-color: rgb(226, 226, 226);
+    font-family: monospace;
+    padding: 5pt;
+    margin: 5pt;
+    margin-left: 0pt;
+    margin-right: 20pt;
+    font-size: 10pt;
+    border-radius: 5pt;
+    line-height: 20pt;
+    position: relative;
+    padding-right: 40pt;
+    overflow: hidden;
+    line-break: anywhere;
+}
+
+code.command>button {
+    border: none;
+    height: 100%;
+    width: 30pt;
+    position: absolute;
+    right: 0pt;
+    top: 0pt;
+    border-radius: 0pt 5pt 5pt 0pt;
+}
+
+button.copy {
+    background-image: url("copy.svg");
+    background-size: 15pt;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+button.copy:hover {
+    background-color: rgb(200, 200, 200);
+}
+
+button.copy:active {
+    background-color: rgb(180, 180, 180);
+}
+
+code.command label {
+    position: absolute;
+    top: calc(100% + 5pt);
+    left: 10pt;
+    padding: 5pt;
+    background-color: rgb(226, 226, 226);
+    opacity: 0.8;
+    font-size: 10pt;
+    border-radius: 5pt;
+}
+
+code.command:hover {
+    overflow: visible;
+}
+
+span.badge {
+    font-family: monospace;
+    padding: 4pt 10pt;
+    border-radius: 5pt;
+    background-color: rgb(240, 240, 240);
+}
+
+span.badge.active {
+    color: white;
+    background-color: #2C5FEA;
+}
+
+.bar.affected {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    color: grey;
+    margin-bottom: 10pt;
+    font-size: 10pt;
+}
+
+.bar.affected .badge {
+    margin-right: 10pt;
+}
+
+a.badge-link {
+    text-decoration: none !important;
+}
+
+span.badge:hover {
+    cursor: pointer;
+    background-color: rgb(220, 220, 220);
+}
+
+span.badge.active:hover {
+    background-color: #2C5FEA;
+}
+
+.markdown {
+    padding: 0pt 20pt;
+}
+
+.markdown code {
+    background-color: rgb(240, 240, 240);
+    padding: 1pt;
+    border-radius: 5pt;
+    white-space: pre-wrap;
+    font-family: monospace;
+    line-height: 1.5;
+    margin-top: 5pt;
+}
+
+.markdown pre code {
+    display: block;
+    padding: 10pt;
+}
+
+.content.category {
+    padding-top: 10pt;
+}
+
+a.small {
+    font-size: 10pt;
+}
+
+.lve-details.instances #instances {
+    display: flex;
+}
+
+.lve-details.description #instances {
+    display: none;
+}
+
+.lve-details.description #description {
+    display: block;
+}
+
+.lve-details.instances #description {
+    display: none;
+}
+
+.lve-details #instances {
+    padding: 10pt 20pt;
+}
+
+.content.docs {
+    display: flex;
+    flex-direction: row;
+    width: 800pt;
+}
+
+.content.docs>ul {
+    flex: 1 1 0px;
+    min-width: 200pt;
+    max-width: 300pt;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    padding-right: 20pt;
+    padding-top: 10pt;
+}
+
+.content.docs>ul li {
+    margin: 0;
+    padding: 10pt;
+    margin-bottom: 10pt;
+    font-weight: 500;
+    font-size: 12pt;
+}
+
+.content.docs .markdown {
+    font-size: 14pt;
+}
