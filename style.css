@@ -533,6 +533,7 @@ span.badge.active:hover {
     padding: 1pt;
     border-radius: 5pt;
     white-space: pre-wrap;
+    line-break: anywhere;
     font-family: monospace;
     line-height: 1.5;
     margin-top: 5pt;
@@ -581,6 +582,8 @@ span.small {
 .content.docs {
     display: flex;
     flex-direction: row;
+    max-width: 100vw !important;
+    width: auto !important;
 }
 
 .content.docs>ul {
@@ -605,7 +608,8 @@ span.small {
 .content.docs .markdown {
     font-size: 14pt;
     line-height: 1.5;
-    max-width: 700pt;
+    max-width: calc(100vw - 50pt);
+    width: 700pt !important;
     margin: auto;
     text-align: justify;
     color: rgb(33, 33, 33);
@@ -616,6 +620,12 @@ span.small {
     font-weight: 500;
     margin: 20pt 0pt;
     color: rgb(43, 43, 43);
+    text-align: left;
+}
+
+.markdown h3 {
+    border-top: 1pt solid rgba(128, 128, 128, 0.409);
+    padding-top: 20pt;
 }
 
 .markdown table {
