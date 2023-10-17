@@ -195,6 +195,12 @@ class LVE(BaseModel):
     async def run_instance(self, instance, engine):
         return await self.run(engine=engine, **instance.args)
     
+    def last_updated(self):
+        # check last Git commit touching self.path directory
+        from lve.repo import get_active_repo
+        repo = get_active_repo()
+        return repo.last_updated(self.path)
+
     def __hash__(self):
         return hash(self.path)
 
@@ -256,7 +262,7 @@ class LVE(BaseModel):
         path_after_category = repo_path.split("/")[2:]
         if len(path_after_category) > 1:
             # for <category>/<name>/<model> paths
-            name = path_after_category[0]
+            name = path_after_category[-2]
         else:
             # for <category>/<name> paths
             name = path_after_category[-1]

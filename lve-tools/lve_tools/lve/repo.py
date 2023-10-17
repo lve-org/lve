@@ -2,6 +2,7 @@ from typing import List, Optional, Dict
 from dataclasses import dataclass
 import os
 import json
+import time
 from .errors import *
 import subprocess
 from lve.lve import LVE
@@ -115,6 +116,13 @@ class LVERepo:
         Returns a list of all categories in the LVE repository.
         """
         return [name for name in os.listdir(os.path.join(self.path, "repository")) if os.path.isdir(os.path.join(self.path, "repository", name))]
+
+    def last_updated(self, path):
+        l = self.git_repo.git.log("-1", "--format=%ad", "--date=format:%Y-%m-%d %H:%M:%S", path).strip()
+        try:
+            return time.strptime(l, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            return time.localtime()
 
 def get_active_repo() -> LVERepo:
     """

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{ head() }}
+</head>
+<body>
+    {{ toolbar() }}
+    <div class="content">
+        <div class="hero">
+            <div class="block" style="margin: auto; margin-bottom: 30pt;">
+                <div class="logo-composite">
+                    <img class="logo" src="lve.svg"/>
+                    <img class="logo back" src="lve-shadow.svg"/>
+                </div>
+                <h1>LVE Repository</h1>
+                <p>
+                    We document and track vulnerabilities and exposures of large language models (LVEs).
+                </p>
+                <p>
+                    <center>
+                        <a href="https://github.com/lve-org/lve" class="btn primary">
+                            🕵️ Contribute
+                        </a><br/>
+                        <a class="small" href="/docs">
+                            Learn More →
+                        </a>
+                    </center>
+                </p>
+            </div>
+            <div class="side-by-side">
+                <div class="block">
+                    <h2>Explore the Repository</h2>
+                    <div class="categories">
+                        {{ category_tiles() }}
+                    </div>
+                </div>
+                <div class="block">
+                    <h2>Recently Updated</h2>
+                    <div class="lve-list">
+                        {{ recently_updated() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>

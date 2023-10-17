@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{ head() }}
+</head>
+<body>
+    {{ toolbar() }}
+    <div class="second-toolbar">
+        <div class="content">
+            <div class="bar">
+            <h3>
+                <a href='/{{ category }}'>{{ category }}</a>/<a class="name">{{ name }}</a>
+            </h3>
+            <code class="command">
+                lve record repository/{{ path }}
+                <button class="copy" onclick="copy(this)"></button>
+                <label>
+                    Run this command to record an instance of this LVE.
+                </label>
+            </code>
+            </div>
+            {{ model_selector }}
+            <ul class="tabs">
+                <li class="active" id="tab-description">
+                    <a href="#show-description" onclick="openDescription(this)">Description</a>
+                </li>
+                <li id="tab-instances">
+                    <a href="#show-instances" onclick="openInstances(this)">Instances</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="content lve-details description">
+        <div id="description" class="markdown">
+            {{ readme }}
+        </div>
+        <div id="instances">Loading...</div>
+    </div>
+    
+</body>
+</html>
