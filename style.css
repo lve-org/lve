@@ -22,6 +22,7 @@ body {
     padding: 0pt 5pt;
     background-color: transparent;
     transition: background-color 0.05s linear;
+    white-space: nowrap;
 }
 
 .toolbar .content>a:first-of-type:hover {
@@ -111,6 +112,23 @@ body {
 .hero h1 {
     font-size: 40pt;
     font-weight: 500;
+}
+
+
+
+@media (max-width: 600pt) {
+    .hero {
+        margin-top: 10pt;
+    }
+
+    .hero .block {
+        width: 100%;
+        margin-top: 10pt !important;
+    }
+
+    .hero h1 {
+        margin-top: 0pt;
+    }
 }
 
 .content {
@@ -327,13 +345,18 @@ body {
 }
 
 .hero {
-    padding-bottom: 20pt;
+    padding-bottom: 120pt;
 }
 
 .second-toolbar {
     background-color: #F6F8FA;
     margin: 0pt;
     border-bottom: 0.5pt solid rgb(227, 227, 227);
+}
+
+.second-toolbar .bar>h3 {
+    margin: 10pt 0pt;
+    padding: 0;
 }
 
 .second-toolbar h3 {
@@ -344,6 +367,11 @@ body {
     font-weight: normal;
     font-size: 14pt;
     color: grey;
+    line-break: word;
+    /* truncate */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin: 0;
 }
 
 .second-toolbar h3>a {
@@ -395,17 +423,15 @@ ul.tabs li.active {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    /* wrap */
     flex-wrap: wrap;
     margin-left: 20pt;
-    margin-bottom: 10pt;
+    padding: 5pt 0pt;
 }
 
 code.command {
     background-color: rgb(226, 226, 226);
     font-family: monospace;
     padding: 5pt;
-    margin: 5pt;
     margin-left: 0pt;
     margin-right: 20pt;
     font-size: 10pt;
@@ -470,16 +496,18 @@ span.badge.active {
     background-color: #2C5FEA;
 }
 
-.bar.affected {
+.affected {
+    display: flex;
     flex-direction: row;
+    padding-left: 20pt;
     align-items: center;
     justify-content: flex-start;
     color: grey;
-    margin-bottom: 10pt;
     font-size: 10pt;
+    height: 30pt;
 }
 
-.bar.affected .badge {
+.affected .badge {
     margin-right: 10pt;
 }
 
@@ -546,7 +574,6 @@ a.small {
 .content.docs {
     display: flex;
     flex-direction: row;
-    width: 800pt;
 }
 
 .content.docs>ul {
