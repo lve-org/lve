@@ -279,13 +279,15 @@ class LVESiteGenerator:
         ]
 
         # build markdown files in docs/
-        for root, dirs, files in os.walk("../../docs/"):
+        DOCS_DIR = "../../docs"
+
+        for root, dirs, files in os.walk(DOCS_DIR):
             for file in files:
                 if file.endswith(".md"):
                     template = SiteTemplate("docs.html")
                     md = open(os.path.join(root, file)).read()
                     template.emit(
-                        file=os.path.join(self.target, "docs", os.path.relpath(root, "docs/"), file.replace(".md", ".html")),
+                        file=os.path.join(self.target, "docs", os.path.relpath(root, DOCS_DIR), file.replace(".md", ".html")),
                         markdown=markdown.markdown(md, extensions=extensions),
                     )
 
