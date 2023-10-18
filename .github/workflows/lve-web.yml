@@ -10,13 +10,17 @@ jobs:
     publish:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout
-            - name: Install dependencies
-              # python
-              run: |
-                python3 -m pip install --upgrade pip
-                pip3 install Markdown
-                cd web && python3 make.py
+          - name: Setup Fresh Virtual Environment
+            run: |
+              pip install --upgrade pip
+              python3.10 -m venv env
+              export PATH=$PATH:/home/docker/.local/bin
+              source env/bin/activate
+              echo "VIRTUAL ENV:" $VIRTUAL_ENV
+          - name: Install Packaging Dependencies
+            run: pip install Markdown
+          - name: Build web/
+            run: cd web && python3 make.py
         
             # - name: Deploy
             #   uses: s0/git-publish-subdir-action@develop
