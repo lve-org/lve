@@ -8,7 +8,8 @@ from lve.lve import LVE
 from lve.repo import get_active_repo
 import subprocess
 from .termutils import error, warning
-from lve.cli.readme_generator import patch_readme
+from lve.cli.readme import patch_readme
+from lve.cli.readme import get_readme_update
 import questionary
 
 def main(args):
@@ -81,19 +82,8 @@ def main(args):
     print() # spacer
 
     # patch README.md
-    readme = os.path.join(lve.path, "README.md")
-    update_readme = False
-    with open(readme, "r") as f:
-        readme_content = f.read()
-        if len(readme_content) == 0:
-            print(warning("warning: README.md is empty"))
-            sys.exit(1)
-        readme_before = readme_content
-        readme_content = patch_readme(readme_content, lve)
-
-        if readme_content != readme_before:
-            print(f"  + [automated] lve commit will fill in missing information in {os.path.relpath(lve.path, repo.path)}/README.md\n")
-            update_readme = True
+    readme_path = os.path.join(lve.path, "README.md")
+    update_readme, readme_content = get_readme_update(repo, readme_path, lve)
 
     is_new_lve = any(f.endswith("/test.json") for f in repo.added_files())
     commit_message = None

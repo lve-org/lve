@@ -16,6 +16,7 @@ from .status import main as status_main
 from .prepare import main as prepare_main
 from .pr import main as pr_main
 from .run import main as run_main
+from .readme import main as readme_main
 
 DOCUMENTATION = f"""\
 The 'lve' command line tool can be used to record and document language model vulnerabilities and exposures (LVEs). 
@@ -56,6 +57,10 @@ Commands:
 
     Wraps `git status` and groups changes into LVEs. This command is useful to check which LVEs have been changed and which files have been added or modified.
 
+{termcolor.colored('lve readme', attrs=['bold'])} 
+
+    Generates from scratch or updates readme of the given LVE.
+
 """
 
 def documentation():
@@ -83,7 +88,8 @@ def main():
         "commit": commit_main,
         "status": status_main,
         "pr": pr_main,
-        "run": run_main
+        "run": run_main,
+        "readme": readme_main,
     }
 
     if cmd not in cmds:
