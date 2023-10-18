@@ -4,6 +4,11 @@
     color: rgb(22, 22, 22);
 }
 
+/* colors */
+* {
+    --text-secondary: grey;
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -322,7 +327,7 @@ body {
     text-align: left;
     position: absolute;
     bottom: 5pt;
-    color: grey;
+    color: var(--text-secondary);
     font-family: monospace;
 }
 
@@ -366,8 +371,8 @@ body {
     font-family: monospace;
     font-weight: normal;
     font-size: 14pt;
-    color: grey;
-    line-break: word;
+    color: var(--text-secondary);
+    line-break: anywhere;
     /* truncate */
     text-overflow: ellipsis;
     overflow: hidden;
@@ -377,7 +382,7 @@ body {
 .second-toolbar h3>a {
     font-family: monospace;
     text-decoration: none;
-    color: grey;
+    color: var(--text-secondary);
 }
 
 .second-toolbar h3 .name {
@@ -393,6 +398,40 @@ ul.tabs {
     padding: 0;
     margin: 0;
     padding-left: 15pt;
+    display: block;
+    display: flex;
+}
+
+ul.tabs li.right.btn {
+    padding: 0;
+    margin: 0;
+    font-size: 10pt;
+}
+
+ul.tabs ul.actions {
+    display: inline-block;
+    margin-right: 25pt;
+}
+
+ul.tabs ul.actions {
+    margin-left: auto;
+    margin-right: 20pt;
+    padding-top: 8pt;
+}
+
+ul.tabs ul.actions .btn {
+    font-size: 8pt;
+    margin: 0;
+    padding: 6pt 5pt;
+    background: transparent;
+}
+
+ul.tabs ul.actions .btn:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+ul.tabs ul.actions li:hover {
+    border: none;
 }
 
 ul.tabs li {
@@ -416,6 +455,12 @@ ul.tabs li a {
 ul.tabs li.active {
     font-weight: bold;
     border-bottom: 2pt solid #2C5FEA;
+}
+
+@media (max-width: 300pt) {
+    ul.tabs ul.actions {
+        display: none;
+    }
 }
 
 .second-toolbar .bar {
@@ -471,8 +516,8 @@ button.copy:active {
 
 code.command label {
     position: absolute;
-    top: calc(100% + 5pt);
-    left: 10pt;
+    top: calc(100% + 10pt);
+    left: 0pt;
     padding: 5pt;
     background-color: rgb(226, 226, 226);
     opacity: 0.8;
@@ -483,6 +528,7 @@ code.command label {
 code.command:hover {
     overflow: visible;
 }
+
 
 span.badge {
     font-family: monospace;
@@ -502,7 +548,7 @@ span.badge.active {
     padding-left: 20pt;
     align-items: center;
     justify-content: flex-start;
-    color: grey;
+    color: var(--text-secondary);
     font-size: 10pt;
     height: 30pt;
 }
@@ -544,7 +590,7 @@ span.badge.active:hover {
     padding: 10pt;
     overflow-x: auto;
     font-size: 0.8em;
-    white-space: pre;
+    white-space: pre-wrap
 }
 
 .content.category {
@@ -556,7 +602,7 @@ span.badge.active:hover {
 }
 
 span.small {
-    color: grey;
+    color: var(--text-secondary);
 }
 
 .lve-details.instances #instances {
@@ -568,7 +614,7 @@ span.small {
 }
 
 .lve-details.description #description {
-    display: block;
+    display: flex;
 }
 
 .lve-details.instances #description {
@@ -577,6 +623,52 @@ span.small {
 
 .lve-details #instances {
     padding: 10pt 20pt;
+}
+
+
+.lve-details #description {
+    display: flex;
+    flex-direction: row;
+}
+
+.lve-details .sidebar {
+    border-left: 1pt solid rgba(202, 202, 202, 0.395);
+    margin: 10pt;
+    padding: 0pt 20pt;
+    min-width: 200pt;
+    max-width: 600pt;
+}
+
+@media (max-width: 600pt) {
+    .lve-details #description {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .lve-details .sidebar {
+        border-left: none;
+        max-width: 100%;
+        padding: 0pt 10pt;
+        border-top: 1pt solid rgba(202, 202, 202, 0.395);
+    }
+}
+
+.lve-details #description>.markdown {
+    flex: 1;
+}
+
+.lve-details .sidebar h3 {
+    padding: 0;
+    margin: 10pt 0pt;
+    color: black !important;
+}
+
+.lve-details .sidebar label {
+    margin-right: 5pt;
+    color: grey;
+    margin-top: 10pt;
+    display: inline-block;
+    font-size: 10pt;
 }
 
 .content.docs {
@@ -623,7 +715,7 @@ span.small {
     text-align: left;
 }
 
-.markdown h3 {
+.content.docs .markdown h3 {
     border-top: 1pt solid rgba(128, 128, 128, 0.409);
     padding-top: 20pt;
 }
@@ -644,4 +736,29 @@ span.small {
 .markdown table td {
     border: 1pt solid rgb(200, 200, 200);
     padding: 5pt;
+}
+
+.second-toolbar h3.right {
+    margin-right: 20pt;
+}
+
+table.instances-viewer {
+    border-collapse: collapse;
+    margin: 20pt 0pt;
+    border: 1pt solid rgb(200, 200, 200);
+    overflow-x: auto;
+    display: block;
+}
+
+table.instances-viewer th {
+    border: 1pt solid rgb(200, 200, 200);
+    padding: 5pt;
+    background-color: rgb(240, 240, 240);
+    text-align: left;
+}
+
+table.instances-viewer td {
+    border: 1pt solid rgb(200, 200, 200);
+    padding: 5pt;
+    min-width: 150pt;
 }
