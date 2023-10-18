@@ -1,7 +1,17 @@
-from lve.lve import split_instance_args, TestInstance
+import argparse
+from lve.repo import get_active_repo
+from lve.errors import NoSuchLVEError, InvalidLVEError
+import termcolor
 import os
 import json
+import sys
 import textwrap
+from lve.lve import LVE, split_instance_args, TestInstance
+from lve.repo import get_active_repo
+import subprocess
+from .termutils import error, warning
+from lve.cli.prepare import README_TEMPLATE
+import questionary
 
 TEST_README = """
 ### Test description (**automatically generated, do not edit manually**).
@@ -109,3 +119,52 @@ def patch_readme_placeholders(readme, placeholder_template="<{parameter} (filled
         readme = readme.replace(placeholder_value, str(v))
     
     return readme
+
+def get_readme_update(repo, readme_path, lve):
+    update_readme = False
+    with open(readme_path, "r") as f:
+        readme_content = f.read()
+        if len(readme_content) == 0:
+            print(warning("warning: README.md is empty"))
+            sys.exit(1)
+        readme_before = readme_content
+        readme_content = patch_readme(readme_content, lve)
+
+        if readme_content != readme_before:
+            print(f"  + [automated] lve commit will fill in missing information in {os.path.relpath(lve.path, repo.path)}/README.md\n")
+            update_readme = True
+    return update_readme, readme_content
+
+def main(args):
+    parser = argparse.ArgumentParser(
+        description="Updates README of an LVE",
+        prog="lve readme",
+        usage="lve readme LVE_DIR"
+    )
+    parser.add_argument("LVE_PATH", help="The path of the LVE whose readme should be changed (e.g. repository/privacy/leak-chatgpt)", default=".", nargs="?")
+    parser.add_argument("--from_scratch", action="store_true", help="Generate README from scratch")
+    args = parser.parse_args(args)
+
+    repo = get_active_repo()
+    lve = LVE.from_path(args.LVE_PATH)
+    readme_path = os.path.join(lve.path, "README.md")
+
+    if args.from_scratch:
+        readme_content = README_TEMPLATE.format(
+            name=lve.name,
+            description=lve.description,
+            model=lve.model,
+        )
+        with open(readme_path, "w") as f:
+            f.write(readme_content)
+
+    update_readme, readme_content = get_readme_update(repo, readme_path, lve)
+
+    # update README.md if necessary
+    if update_readme:
+        with open(readme_path, "w") as f:
+            f.write(readme_content)
+        print("[✔︎] Updated README.md")
+
+
+

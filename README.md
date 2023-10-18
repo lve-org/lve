@@ -1,5 +1,5 @@
-<div align="center">
-  <img width="100pt" src="https://github.com/lve-org/lve/assets/17903049/886e318d-374a-4a00-b144-0d609b8ac46b"/>
+<div align="center">  
+  <img width="100pt" src="https://github.com/lve-org/lve/assets/17903049/ac0d716c-eca1-41cd-8cb5-2e927c8ceb09"/>
   <h1 align="center">LVE Repository</h1>
   <p align="center">
     A repository of Language Model Vulnerabilities and Exposures (LVEs).
@@ -13,14 +13,15 @@
     <br/>
     <br/>
     <!-- <a href="https://discord.gg/7eJP4fcyNT"><img src="https://img.shields.io/discord/1091288833997410414?style=plastic&logo=discord&color=blueviolet&logoColor=white" height=18/></a> -->
-    <a href="https://badge.fury.io/py/lve-tools"><img src="https://badge.fury.io/py/lve-tools.svg?cacheSeconds=3600" alt="PyPI version" height=18></a>
-    <a href="https://discord.com/invite/Wn8KqsFc"><img src="https://img.shields.io/discord/1162052367357857883?style=plastic&logo=discord&color=blueviolet&logoColor=white" height=18/></a>
+    <a href="https://badge.fury.io/py/lve-tools"><img src="https://badge.fury.io/py/lve-tools.svg?cacheSeconds=3599" alt="PyPI version" height=18></a>
+    <a href="https://discord.gg/Qgy3rqRx"><img src="https://img.shields.io/discord/1162052367357857883?style=plastic&logo=discord&color=blueviolet&logoColor=white" height=18/></a>
+    
   </p>
 </div>
 
 ### What is the LVE Project?
 
-The goal of the LVE project is to create a hub for the community, to document, track and discuss language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities *and* vulnerabilities of state-of-the-art large language models, as they are deployed more widely. With the LVE Repository, we want to go beyond basic anecdotal evidence and ensure transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.
+The goal of the LVE project is to create a hub for the community, to document, track and discuss language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities *and* vulnerabilities of state-of-the-art large language models. With the LVE Repository, we want to go beyond basic anecdotal evidence and ensure transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.
 
 Our key principles are:
 
