@@ -1,5 +1,5 @@
 
-### ChatGPT does not always reliable produce timestamps in a simple given format.
+### ChatGPT does not always reliably produce timestamps in a simple given format.
 
 **Description**: `The model does not reliably return timestamps in the correct format.`
 
