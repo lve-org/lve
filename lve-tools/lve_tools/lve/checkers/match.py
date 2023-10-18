@@ -6,5 +6,6 @@ class ExactMatchChecker(BaseChecker):
     def __init__(self, pattern:str):
         self.pattern = pattern
 
-    def is_safe(self, response:str) -> bool:
-        return self.pattern != response
+    def is_safe(self, prompt, response, param_values=None) -> bool:
+        pattern = self.pattern.format(**param_values)
+        return pattern not in response
