@@ -239,7 +239,7 @@ class LVESiteGenerator:
     def build(self):
         # copy static resources
         for cf in self.copy_files:
-            shutil.copy(cf, "build/")
+            shutil.copy(cf, self.target)
 
         # create model-specific lve sites
         lve_data = self.build_lve_sites()
@@ -302,6 +302,9 @@ class LVESiteGenerator:
         )
 
 if __name__ == '__main__':
+    # make sure build/ exists
+    os.makedirs("build/", exist_ok=True)
+    
     generator = LVESiteGenerator(target="new-build")
     generator.build()
 
