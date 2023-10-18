@@ -128,7 +128,7 @@ class LVESiteGenerator:
         # get all test.json files traversing ../repository recursively
         test_files = []
 
-        for root, dirs, files in os.walk("../repository"):
+        for root, dirs, files in os.walk("../../repository"):
             for file in files:
                 if file.endswith("test.json"):
                     test_files.append(os.path.join(root, file))
@@ -154,7 +154,7 @@ class LVESiteGenerator:
     def build_lve_site(self, lve):
         template = SiteTemplate("lve.html")
         
-        base_path = os.path.abspath("../repository")
+        base_path = os.path.abspath("../../repository")
         path = os.path.relpath(lve.path, base_path)
 
         # remove last segment
@@ -279,7 +279,7 @@ class LVESiteGenerator:
         ]
 
         # build markdown files in docs/
-        for root, dirs, files in os.walk("docs/"):
+        for root, dirs, files in os.walk("../../docs/"):
             for file in files:
                 if file.endswith(".md"):
                     template = SiteTemplate("docs.html")
