@@ -1,0 +1,27 @@
+name: Build and publish the LVE website
+
+on:
+  push:
+    branches:
+      - website
+
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@website
+            - name: Install dependencies
+              # python
+              run: |
+                python3 -m pip install --upgrade pip
+                pip3 install Markdown
+                cd web && python3 make.py
+        
+            # - name: Deploy
+            #   uses: s0/git-publish-subdir-action@develop
+            #   env:
+            #     REPO: self
+            #     BRANCH: gh-pages
+            #     FOLDER: web/build
+            #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
