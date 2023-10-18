@@ -21,7 +21,7 @@ jobs:
           - name: Install Packaging Dependencies
             run: pip install Markdown gitpython
           - name: Build web/
-            run: cd web && python3 make.py
+            run: cd web && PYTHONPATH=../lve-tools/lve_tools python3 make.py
         
             # - name: Deploy
             #   uses: s0/git-publish-subdir-action@develop
