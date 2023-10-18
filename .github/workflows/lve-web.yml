@@ -19,7 +19,7 @@ jobs:
               source env/bin/activate
               echo "VIRTUAL ENV:" $VIRTUAL_ENV
           - name: Install Packaging Dependencies
-            run: pip install Markdown
+            run: pip install Markdown gitpython
           - name: Build web/
             run: cd web && python3 make.py
         
