@@ -303,8 +303,8 @@ class LVESiteGenerator:
 
 if __name__ == '__main__':
     # make sure build/ exists
-    os.makedirs("build/", exist_ok=True)
-    
+    os.makedirs("new-build/", exist_ok=True)
+
     generator = LVESiteGenerator(target="new-build")
     generator.build()
 
