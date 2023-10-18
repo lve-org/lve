@@ -7,6 +7,7 @@ from lve.lve import LVE
 from functools import partial
 import markdown
 from markdown.extensions.tables import TableExtension
+from readme_parser import LVEReadmeParser
 
 components = {}
 
@@ -75,7 +76,7 @@ def lve_list(lves):
     <a class="lve" href="/{l['path']}">
         <h3>{l['category']}/{l['name']}</h3>
         <label class="left">{l['model']}</label>
-        <label class="right">TODO Instances</label> 
+        <label class="right">{l['num_instances']} Instances</label> 
     </a>
     """
     return "\n".join(map(template, lves))
@@ -175,6 +176,7 @@ class LVESiteGenerator:
         # load readme
         if os.path.exists(os.path.join(lve.path, "README.md")):
             readme = open(os.path.join(lve.path, "README.md")).read()
+            readme = self.process_readme(lve, readme)
             readme = markdown.markdown(readme, extensions=["fenced_code"])
         else:
             readme = lve.description
@@ -183,16 +185,23 @@ class LVESiteGenerator:
         category = path.split("/")[0]
         name_with_subfolders = "/".join(path.split("/")[-2:])
 
+        num_instances = lve.num_instances()
+
         template.emit(
             file=os.path.join(self.target, path, sitename + ".html"),
             name=name_with_subfolders,
             category=category,
+            num_instances=num_instances,
             description=lve.description,
+            prompt=lve.prompt,
+            checker_args=lve.checker_args,
+            author=lve.author or "Anonymous",
             updated=time.strftime("%d.%m.%Y %H:%M:%S", updated),
             model=lve.model,
             model_selector=selector(model_selector, active=lve.model),
             readme=readme,
-            path=os.path.relpath(lve.path, base_path)
+            path=os.path.relpath(lve.path, base_path),
+            instance_files=[f"https://raw.githubusercontent.com/lve-org/lve/main/repository/{os.path.relpath(lve.path, base_path)}/instances/{f}" for f in lve.instance_files]
         )
 
         return {
@@ -202,8 +211,26 @@ class LVESiteGenerator:
             "updated": updated,
             "lve": lve,
             "last_updated": updated,
-            "model": lve.model
+            "model": lve.model,
+            "num_instances": num_instances,
         }
+    
+    def process_readme(self, lve, readme):
+        # replace dummy heading 
+        readme = readme.replace("Test description (**automatically generated, do not edit manually**).", lve.description)
+        readme = LVEReadmeParser(readme).emit(
+            exclude=[
+                "description", 
+                "prompt", 
+                "model",
+                "prompt parameters",
+                "example of a safe instance",
+                "example of an unsafe instance",
+                "checker name",
+                "checker description"
+            ])
+        
+        return readme
 
     def clean(self):
         shutil.rmtree("build/", ignore_errors=True)
@@ -275,6 +302,8 @@ class LVESiteGenerator:
         )
 
 if __name__ == '__main__':
-    generator = LVESiteGenerator()
-    generator.clean()
+    generator = LVESiteGenerator(target="new-build")
     generator.build()
+
+    # rsync new-build/ build/ (delete files that do not exist in new-build/)
+    shutil.copytree("new-build/", "build/", dirs_exist_ok=True)

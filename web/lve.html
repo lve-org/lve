@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{ head() }}
+    <script>
+    let INSTANCE_FILES = {{ instance_files }}
+    </script>
 </head>
 <body>
     {{ toolbar() }}
@@ -26,15 +29,37 @@
                 <li class="active" id="tab-description">
                     <a href="#show-description" onclick="openDescription(this)">Description</a>
                 </li>
-                <li id="tab-instances">
-                    <a href="#show-instances" onclick="openInstances(this)">Instances</a>
+                <li>
+                    <a id="tab-instances" href="#show-instances" onclick="openInstances(this)">Instances ({{ num_instances }})</a>
                 </li>
+                <ul class="actions">
+                <li>
+                    <a class="btn" href="https://github.com/lve-org/lve/tree/main/repository/{{ path }}">Edit On GitHub</a>
+                </li>
+                </ul>
             </ul>
         </div>
     </div>
     <div class="content lve-details description">
-        <div id="description" class="markdown">
-            {{ readme }}
+        <div id="description">
+            <div class="markdown">
+                {{ readme }}
+            </div>
+            <div class="sidebar markdown">
+                <h3>Prompt</h3>
+                <pre><code>{{ prompt }}</code></pre>
+                <h3>LVE Details</h3>
+                <label>Checker:</label><code>{{ checker_args.get("checker_name") }}</code><br/>
+                <label>Checker Configuration:</label>
+                <pre><code>{{ "<br/>".join([f"{k}: {str([str(v)])[2:-2]}" for k, v in checker_args.items() if k != "checker_name"]) }}</code></pre>
+                <span class="small">
+                    Last updated {{ updated }}
+                </span>
+                <br/>
+                <span class="small">
+                    Contributed by <i>{{ author }}</i>.
+                </span>
+            </div>
         </div>
         <div id="instances">Loading...</div>
     </div>

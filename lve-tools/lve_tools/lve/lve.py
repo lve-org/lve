@@ -195,6 +195,15 @@ class LVE(BaseModel):
     async def run_instance(self, instance, engine):
         return await self.run(engine=engine, **instance.args)
     
+    def num_instances(self):
+        n = 0
+        for f in self.instance_files:
+            # open each instance file and count number of lines
+            with open(os.path.join(self.path, "instances", f), "r") as fin:
+                n += sum(1 for line in fin)
+
+        return n
+
     def last_updated(self):
         # check last Git commit touching self.path directory
         from lve.repo import get_active_repo

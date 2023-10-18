@@ -14,11 +14,11 @@ The LVE repository is organized into different categories, each containing a set
 
 | LVE Type | Examples |
 |  --- |  ---     |
-| <a href="/repository/privacy/">Privacy</a> | PII leakage, PII inference, Membership inference, Compliance |
-| <a href="/repository/reliability/">Reliability</a> | Output constraints, Consistency |
-| <a href="/repository/responsibility/">Responsibility</a> | Bias, Toxicity, Harm, Misinformation, Copyright, Law violation |
-| <a href="/repository/security/">Security</a> | Prompt leakage, Prompt injection, Unsafe code
-| <a href="/repository/trust/">Trust</a> | Accuracy, Hallucinations, Explainability |
+| <a href="/privacy/">Privacy</a> | PII leakage, PII inference, Membership inference, Compliance |
+| <a href="/reliability/">Reliability</a> | Output constraints, Consistency |
+| <a href="/responsibility/">Responsibility</a> | Bias, Toxicity, Harm, Misinformation, Copyright, Law violation |
+| <a href="/security/">Security</a> | Prompt leakage, Prompt injection, Unsafe code
+| <a href="/trust/">Trust</a> | Accuracy, Hallucinations, Explainability |
 
 You can start to [browse the LVE repository online](/index.html) or clone the repository and browse locally.
 
