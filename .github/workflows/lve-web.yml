@@ -3,7 +3,7 @@ name: Build and publish the LVE website
 on:
   push:
     branches:
-      - website
+      - main
 
 
 jobs:
@@ -24,13 +24,13 @@ jobs:
             run: |
               pip install Markdown gitpython
               pip install -e lve-tools/
-          - name: Build web/
-            run: cd web && PYTHONPATH=../lve-tools/lve_tools python3 make.py
+          - name: Build lve-tools/web/
+            run: cd lve-tools/web && PYTHONPATH=../lve-tools/lve_tools python3 make.py
         
           - name: Deploy
             uses: s0/git-publish-subdir-action@develop
             env:
               REPO: self
               BRANCH: web
-              FOLDER: web/build
+              FOLDER: lve-tools/web/build
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
