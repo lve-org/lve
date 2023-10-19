@@ -14,7 +14,7 @@ Currently most of the vulnerabilities in language models are disclosed on social
 
 ### How do I submit an LVE?
 
-Please follow instructions in <a href="readme.md">readme</a> where we describe how to use an LVE command line tool to create and submit new LVEs. Generally, contribute to the project using <a href="https://docs.github.com/en/get-started/quickstart/contributing-to-projects">fork and pull request workflow</a> (either through our CLI tool or manually).
+Please follow the instructions as [outlined here](../index.md) where we describe how to use an LVE command line tool to create and submit new LVEs. Generally, contribute to the project using <a href="https://docs.github.com/en/get-started/quickstart/contributing-to-projects">fork and pull request workflow</a> (either through our CLI tool or manually).
 
 ### How do I make contributions other than adding LVEs?
 

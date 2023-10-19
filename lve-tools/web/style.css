@@ -660,6 +660,10 @@ span.small {
         align-items: stretch !important;
     }
 
+    .lve-details #description .markdown:first-of-type {
+        padding: 0pt 10pt !important;
+    }
+
     .lve-details .sidebar {
         border-left: none;
         max-width: 100%;
@@ -809,7 +813,7 @@ nav.left {
     .mobile-nav {
         display: block;
         position: absolute;
-        top: 41pt;
+        top: 40pt;
         left: 0pt;
         width: 100vw;
         background-color: var(--chrome);
@@ -822,12 +826,15 @@ nav.left {
         font-size: 10pt;
     }
 
+    .markdown {
+        padding-left: 0pt !important;
+        padding-right: 0pt !important;
+    }
+
     .mobile-nav a {
         color: var(--text-secondary) !important;
         line-height: 20pt;
         cursor: pointer;
-        position: relative;
-        top: -2pt;
     }
     .mobile-nav a:hover {
         color: var(--text-grey) !important;
