@@ -698,6 +698,10 @@ span.small {
     margin: auto;
 }
 
+.content.docs h1 {
+    line-height: 1.2;
+}
+
 .content.docs>ul {
     flex: 1 1 0px;
     min-width: 200pt;
