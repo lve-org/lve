@@ -91,8 +91,11 @@ class LVE(BaseModel):
         new_prompt = []
         for msg in self.prompt:
             content, role = msg.content, msg.role
-            new_msg = Message(content=content.format(**param_values), role=role)
-            new_prompt.append(new_msg)
+            if msg.role != Role.assistant:
+                new_msg = Message(content=content.format(**param_values), role=role)
+                new_prompt.append(new_msg)
+            else:
+                new_prompt.append(msg)
         return new_prompt
     
     async def run(self, author=None, verbose=False, engine='openai', **kwargs):
@@ -105,27 +108,33 @@ class LVE(BaseModel):
 
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
         prompt = self.fill_prompt(param_values)
-        prompt_openai = prompt_to_openai(prompt)
-
+        
         # for now just remove the openai/ prefix
         model = self.model
         if model.startswith("openai/"):
             model = model[len("openai/"):]
 
-        if verbose:
-            for msg in prompt:
+        if prompt[-1].role != Role.assistant:
+            prompt.append(Message(content=None, role=Role.assistant, variable='response'))
+            
+        for i in range(len(prompt)):
+            if prompt[i].role == Role.assistant and prompt[i].content == None:
+                print(prompt)
+                prompt_openai = prompt_to_openai(prompt[:i])
+
+                completion = await openai.ChatCompletion.acreate(
+                    model=model,
+                    messages=prompt_openai,
+                    **model_args,
+                )
+                response = completion.choices[0]["message"]["content"]
+                prompt[i].content = response
+            if verbose:
+                msg = prompt[i]
                 print(f"[{msg.role}] {msg.content}")
 
-        completion = await openai.ChatCompletion.acreate(
-            model=model,
-            messages=prompt_openai,
-            **model_args,
-        )
-        # TODO: Support multiple responses
-        response = completion.choices[0]["message"]["content"]
-
         checker = self.get_checker()
-        is_safe = checker.is_safe(prompt, response, param_values)
+        is_safe = checker.is_safe(prompt, response, param_values) # TODO remove response here and make checker use it correctly
 
         return TestInstance(
             author=author,

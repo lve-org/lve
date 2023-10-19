@@ -23,8 +23,9 @@ class Role(str, Enum):
 
 @dataclass
 class Message:
-    content: str
+    content: str = None
     role: Role = Role.user
+    variable: str = None
     
 
 def get_prompt(lines):
@@ -48,7 +49,6 @@ def get_prompt(lines):
     # there is a single multi-line json object
     try:
         full_json = json.loads(full)
-        print('x')
         if isinstance(json, dict):
             return [Message(**full_json)]
         else:

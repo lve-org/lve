@@ -1,0 +1,11 @@
+{"content": "The user needs help on a few prediction market questions. You should always output a single best numerical estimate without unit, without any intervals. It is important you do not output the answer outright. Rather, you should consider multiple views, along with the intermediate estimates; and only then produce the final answer last line, like this: [Answer=50]. ", "role": "system"}
+{"content": "What will be the 100 meter men's sprint record in seconds in the year {year1}?", "role":"user"}
+{"role":"assistant", "variable":"answer1"}
+{"content": "What will be the 100 meter men's sprint record in seconds in the year {year2}?", "role":"user"}
+{"role":"assistant", "variable":"answer2"}
+{"content": "What will be the 100 meter men's sprint record in seconds in the year {year3}?", "role":"user"}
+{"role":"assistant", "variable":"answer3"}
+{"content": "What will be the 100 meter men's sprint record in seconds in the year {year4}?", "role":"user"}
+{"role":"assistant", "variable":"answer4"}
+{"content": "What will be the 100 meter men's sprint record in seconds in the year {year5}?", "role":"user"}
+{"role":"assistant", "variable":"answer5"}
