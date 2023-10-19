@@ -6,6 +6,7 @@ from git import Repo
 from lve.lve import LVE
 from functools import partial
 import markdown
+import itertools
 from markdown.extensions.tables import TableExtension
 from readme_parser import LVEReadmeParser
 
@@ -14,6 +15,32 @@ components = {}
 def component(fct):
     components[fct.__name__] = fct
     return fct
+
+@component
+def doc_nav(active, sections):
+    html = ""
+    html += "<div class='nav-dim' onclick='toggleNav()'></div>"
+    html += "<div class='mobile-nav'><a onclick='toggleNav()'>☰ Menu</a></div>"
+    html += "<nav class='left'><ul>"
+
+
+    for section, chapters in sorted(sections.items(), key=lambda s: s[0]):
+        if section != "":
+            html += "<li class='header'>{}</li>".format(section.replace("-", " ").title())
+
+        for page in sorted(chapters, key=lambda p: int(p.get("order", 9999))):
+            path = page["path"]
+            name = page.get("title", path.split("/")[-1].replace(".md", "").title())
+            active_class = "active" if active.replace(".html", ".md") == path else ""
+            html += f"""
+            <li class="{active_class}">
+                <a href="/{path.replace('.md', '.html')}">{name}</a>
+            </li>
+            """
+    
+    html += "</ul></nav>"
+
+    return html
 
 @component
 def toolbar():
@@ -68,6 +95,7 @@ def head():
         <link rel="stylesheet" href="/style.css">
         <script src="/copy.js"></script>
         <script src="/instances.js"></script>
+        <script src="/nav.js"></script>
     """
 
 @component
@@ -91,11 +119,19 @@ class SiteTemplate:
         return str(self.placeholders)
     
     def emit(self, file, **kwargs):
+        page = os.path.join("/".join(file.split("/")[1:]))
+        # resolve '.' and '..' from path
+        page = os.path.normpath(page)
+        
         kwargs = { 
             **kwargs, 
             **components,
-            "build_on": time.strftime("%d.%m.%Y %H:%M:%S")
+            "build_on": time.strftime("%d.%m.%Y %H:%M:%S"),
+            "page": page
         }
+
+        # make sure the directory exists
+        os.makedirs(os.path.dirname(file), exist_ok=True)
 
         with open(file, "w") as f:
             contents = self.contents
@@ -109,6 +145,21 @@ class SiteTemplate:
                 contents = contents.replace("{{%s}}" % p, str(value))
             f.write(contents)
 
+def strip_frontmatter(md):
+    if not md.startswith("---"):
+        return md
+    return "".join(md.split("---", 2)[2:])
+
+def frontmatter(file):
+    with open(file) as f:
+        contents = f.read()
+        if not contents.startswith("---"):
+            return {}
+        fm = contents.split("---")[1]
+    
+    # parse as key: value 
+    fm = dict([l.split(":") for l in fm.split("\n") if ":" in l])
+    return fm
 class LVESiteGenerator:
     def __init__(self, target="build/"):
         # files that will be copied to the build directory
@@ -117,6 +168,7 @@ class LVESiteGenerator:
             "lve.svg",
             "copy.js",
             "instances.js",
+            "nav.js",
             "lve-shadow.svg",
             "copy.svg",
             "github.png",
@@ -275,21 +327,37 @@ class LVESiteGenerator:
             "fenced_code",
             TableExtension(use_align_attribute=True),
             # anchor headers
-            "toc",
+            "toc"
         ]
 
         # build markdown files in docs/
         DOCS_DIR = "../../docs"
-
+        DOC_PAGES = []
         for root, dirs, files in os.walk(DOCS_DIR):
             for file in files:
                 if file.endswith(".md"):
-                    template = SiteTemplate("docs.html")
-                    md = open(os.path.join(root, file)).read()
-                    template.emit(
-                        file=os.path.join(self.target, "docs", os.path.relpath(root, DOCS_DIR), file.replace(".md", ".html")),
-                        markdown=markdown.markdown(md, extensions=extensions),
-                    )
+                    DOC_PAGES.append({
+                        "path": "docs/" + os.path.relpath(os.path.join(root, file), DOCS_DIR),
+                        **frontmatter(os.path.join(root, file))
+                    })
+        
+        # organize DOC_PAGES into sections by subfolder
+        DOC_SECTIONS = {}
+        for page in sorted(DOC_PAGES, key=lambda p: p["path"]):
+            path = page["path"]
+            section = "/".join(path.split("/")[1:-1])
+            DOC_SECTIONS.setdefault(section, []).append(page)
+
+        for page in DOC_PAGES:
+            template = SiteTemplate("docs.html")
+            path = page["path"].replace("docs/", DOCS_DIR + "/")
+            md = open(path).read()
+            md = strip_frontmatter(md)
+            template.emit(
+                file=os.path.join(self.target, "docs", os.path.relpath(path, DOCS_DIR).replace(".md", ".html")),
+                markdown=markdown.markdown(md, extensions=extensions),
+                chapters=DOC_SECTIONS
+            )
 
 
     def build_home(self, updated, categories):
