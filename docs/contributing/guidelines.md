@@ -1,9 +1,12 @@
+---
+title: Guidelines
+---
 # Contribution guidelines
 
-Here we provide more guidelines on how to get started and contribute to the LVE Repository.
+<div class='subtitle'>Guidelines on how to get started and contribute to the LVE Repository.</div>
 
 ### Getting started
-To start exploring vulnerabilities in OpenAI models, you first need to set up OpenAI API (https://platform.openai.com/docs/introduction). If you are a student at ETH Zurich, please get in touch with us and we can provide you with an access key that you can use to explore and submit vulnerabilities. Please make sure to never commit your secret key to the repository.
+To start exploring vulnerabilities in OpenAI models, you first need to [set up OpenAI API](https://platform.openai.com/docs/introduction). If you are a student at ETH Zurich, please get in touch with us and we can provide you with an access key that you can use to explore and submit vulnerabilities. Please make sure to never commit your secret key to the repository.
 
 ### How can I find LVEs?
 
@@ -19,5 +22,5 @@ In our Github issues we also maintain a list of new things we want to add to the
 
 
 ### Communication
-We use an LVE Discord channel for communication: https://discord.gg/Qgy3rqRx
+We use an LVE Discord channel for communication: [https://discord.gg/Qgy3rqRx](https://discord.gg/Qgy3rqRx)
 Ideally, all communication should happen there in order to foster collaboration among people working on similar LVEs.

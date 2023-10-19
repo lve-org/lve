@@ -1,6 +1,8 @@
 # Resources for finding LVEs
 
-Here we provide some resources to help you get started with LVEs. The list is by no means exhaustive, and feel free to contribute with any useful resources you find!
+<div class="subtitle">Some resources to help you get started with LVEs.</div>
+
+The list is by no means exhaustive, so please feel free to contribute any useful resources you find to this list.
 
 ### Research papers
 

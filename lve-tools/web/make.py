@@ -229,6 +229,7 @@ class LVESiteGenerator:
         if os.path.exists(os.path.join(lve.path, "README.md")):
             readme = open(os.path.join(lve.path, "README.md")).read()
             readme = self.process_readme(lve, readme)
+            # escape HTML in readme
             readme = markdown.markdown(readme, extensions=["fenced_code"])
         else:
             readme = lve.description
@@ -245,7 +246,8 @@ class LVESiteGenerator:
             category=category,
             num_instances=num_instances,
             description=lve.description,
-            prompt=lve.prompt,
+            # escape HTML in prompt
+            prompt=render_prompt(lve.prompt),
             checker_args=lve.checker_args,
             author=lve.author or "Anonymous",
             updated=time.strftime("%d.%m.%Y %H:%M:%S", updated),
@@ -353,9 +355,16 @@ class LVESiteGenerator:
             path = page["path"].replace("docs/", DOCS_DIR + "/")
             md = open(path).read()
             md = strip_frontmatter(md)
+            md = markdown.markdown(md, extensions=extensions)
+
+            # replace links 'a href="..."' to .md files with .html
+            for link in re.findall(r"<a href=\"(.*?)\">", md):
+                if link.endswith(".md"):
+                    md = md.replace(link, link.replace(".md", ".html"))
+
             template.emit(
                 file=os.path.join(self.target, "docs", os.path.relpath(path, DOCS_DIR).replace(".md", ".html")),
-                markdown=markdown.markdown(md, extensions=extensions),
+                markdown=md,
                 chapters=DOC_SECTIONS
             )
 
@@ -370,6 +379,15 @@ class LVESiteGenerator:
             recently_updated=partial(lve_list, updated),
             category_tiles=partial(make_category_tiles, categories),
         )
+
+def render_prompt(prompt):
+    if type(prompt) is list:
+        r = ""
+        for i in prompt:
+            r += str(i) + "\n\n"
+        return r.replace("<", "&lt;").replace(">", "&gt;").strip()
+    
+    return str(prompt).replace("<", "&lt;").replace(">", "&gt;"),
 
 if __name__ == '__main__':
     # make sure build/ exists
