@@ -7,6 +7,12 @@
 /* colors */
 * {
     --text-secondary: grey;
+    --text-grey: rgb(88, 88, 88);
+    --text-body: rgb(60, 60, 67);
+    --text-active: rgb(61, 60, 151);
+    --border-color: rgba(202, 202, 202, 0.395);
+    --chrome: #F6F8FA;
+    --chrome-border: rgb(227, 227, 227);
 }
 
 body {
@@ -39,9 +45,9 @@ body {
     display: flex;
     padding: 5pt 10pt;
 
-    background-color: #F6F8FA;
+    background-color: var(--chrome);
     height: 30pt;
-    border-bottom: 0.5pt solid rgb(227, 227, 227);
+    border-bottom: 0.5pt solid var(--chrome-border);
 }
 
 .toolbar ul li.small {
@@ -356,7 +362,7 @@ body {
 .second-toolbar {
     background-color: #F6F8FA;
     margin: 0pt;
-    border-bottom: 0.5pt solid rgb(227, 227, 227);
+    border-bottom: 0.5pt solid var(--chrome-border);
 }
 
 .second-toolbar .bar>h3 {
@@ -632,7 +638,7 @@ span.small {
 }
 
 .lve-details .sidebar {
-    border-left: 1pt solid rgba(202, 202, 202, 0.395);
+    border-left: 1pt solid var(--border-color);
     margin: 10pt;
     padding: 0pt 20pt;
     min-width: 200pt;
@@ -649,7 +655,7 @@ span.small {
         border-left: none;
         max-width: 100%;
         padding: 0pt 10pt;
-        border-top: 1pt solid rgba(202, 202, 202, 0.395);
+        border-top: 1pt solid var(--border-color);
     }
 }
 
@@ -674,8 +680,9 @@ span.small {
 .content.docs {
     display: flex;
     flex-direction: row;
-    max-width: 100vw !important;
-    width: auto !important;
+    max-width: calc(100vw - 50pt);
+    width: calc(1000pt - 40pt) !important;
+    margin: auto;
 }
 
 .content.docs>ul {
@@ -698,13 +705,11 @@ span.small {
 }
 
 .content.docs .markdown {
-    font-size: 14pt;
-    line-height: 1.5;
-    max-width: calc(100vw - 50pt);
-    width: 700pt !important;
-    margin: auto;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 28px;
     text-align: justify;
-    color: rgb(33, 33, 33);
+    color: var(--text-body);
     padding-bottom: 100pt;
 }
 
@@ -761,4 +766,122 @@ table.instances-viewer td {
     border: 1pt solid rgb(200, 200, 200);
     padding: 5pt;
     min-width: 150pt;
+}
+
+nav.left {
+    min-width: 180pt;
+    border-right: 1pt solid var(--border-color);
+}
+
+.mobile-nav {
+    display: none;
+}
+
+.nav-dim {
+    opacity: 0.0;
+    z-index: -1;
+}
+
+@media (max-width: 600pt) {
+    nav.left {
+        position: fixed;
+        top: 0pt;
+        transition: left 0.2s ease-in-out;
+        left: -100%;
+        height: 100vh;
+        background-color: var(--chrome);
+        z-index: 100;
+        box-shadow: 0pt 0pt 10pt 0pt rgba(0, 0, 0, 0.1);
+    }
+
+    .content.docs {
+        padding-top: 40pt;
+    }
+
+    .mobile-nav {
+        display: block;
+        position: absolute;
+        top: 41pt;
+        left: 0pt;
+        width: 100vw;
+        background-color: var(--chrome);
+        height: 20pt;
+        padding: 5pt;
+        line-height: 15pt;
+        border-bottom: 0.5pt solid var(--chrome-border);
+        padding-left: 17pt;
+
+        font-size: 10pt;
+    }
+
+    .mobile-nav a {
+        color: var(--text-secondary) !important;
+        line-height: 20pt;
+        cursor: pointer;
+        position: relative;
+        top: -2pt;
+    }
+    .mobile-nav a:hover {
+        color: var(--text-grey) !important;
+    }
+
+    .mobile-nav.sticky {
+        position: fixed;
+        top: 0pt;
+    }
+
+    html.nav-open nav.left {
+        left: 0pt;
+    }
+
+    .nav-dim {
+        background-color: black;
+        position: fixed;
+        content: "";
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.0;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    html.nav-open .nav-dim {
+        opacity: 0.5;
+    }
+}
+
+nav ul {
+    margin: 0;
+    padding: 20pt;
+}
+
+nav ul li.header {
+    font-weight: bold;
+    margin: 0pt 0pt;
+    border-top: 1pt solid var(--border-color);
+    padding-top: 15pt;
+    margin-top: 15pt;
+    font-size: 10pt;
+    display: block;
+    margin-bottom: 8pt;
+}
+
+nav ul li {
+    list-style-type: none;
+    font-size: 11pt;
+    font-weight: 450;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-grey);
+    line-height: 25pt;
+    height: 27pt;
+    display: block;
+}
+
+nav ul li.active a {
+    color: var(--text-active);
 }

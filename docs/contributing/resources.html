@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/style.css">
         <script src="/copy.js"></script>
         <script src="/instances.js"></script>
+        <script src="/nav.js"></script>
     
 </head>
 <body>
@@ -34,8 +35,20 @@
         </ul>
     </div>
 </div>
-    <div class="content docs">
-        
+    <div class="content docs with-sidebar">
+        <div class='nav-dim' onclick='toggleNav()'></div><div class='mobile-nav'><a onclick='toggleNav()'>☰ Menu</a></div><nav class='left'><ul>
+            <li class="">
+                <a href="/docs/index.html"> What is the LVE Project?</a>
+            </li>
+            <li class='header'>Contributing</li>
+            <li class="">
+                <a href="/docs/contributing/contribution.html">Contribution</a>
+            </li>
+            
+            <li class="active">
+                <a href="/docs/contributing/resources.html">Resources</a>
+            </li>
+            </ul></nav>
         <div class="markdown">
          <h1 id="resources-for-finding-lves">Resources for finding LVEs</h1>
 <p>Here we provide some resources to help you get started with LVEs. The list is by no means exhaustive, and feel free to contribute with any useful resources you find!</p>

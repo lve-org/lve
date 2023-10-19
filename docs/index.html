@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/style.css">
         <script src="/copy.js"></script>
         <script src="/instances.js"></script>
+        <script src="/nav.js"></script>
     
 </head>
 <body>
@@ -34,8 +35,20 @@
         </ul>
     </div>
 </div>
-    <div class="content docs">
-        
+    <div class="content docs with-sidebar">
+        <div class='nav-dim' onclick='toggleNav()'></div><div class='mobile-nav'><a onclick='toggleNav()'>☰ Menu</a></div><nav class='left'><ul>
+            <li class="active">
+                <a href="/docs/index.html"> What is the LVE Project?</a>
+            </li>
+            <li class='header'>Contributing</li>
+            <li class="">
+                <a href="/docs/contributing/contribution.html">Contribution</a>
+            </li>
+            
+            <li class="">
+                <a href="/docs/contributing/resources.html">Resources</a>
+            </li>
+            </ul></nav>
         <div class="markdown">
          <h1 id="what-is-the-lve-project">What is the LVE Project?</h1>
 <p>The goal of the LVE project is to create a hub for the community, to document, track and discuss language model vulnerabilities and exposures (LVEs). We do this to raise awareness and help everyone better understand the capabilities <em>and</em> vulnerabilities of state-of-the-art large language models. With the LVE Repository, we want to go beyond basic anecdotal evidence and ensure transparent and traceable reporting by capturing the exact prompts, inference parameters and model versions that trigger a vulnerability.</p>
