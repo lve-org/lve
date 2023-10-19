@@ -8,9 +8,11 @@ import inspect
 import openai
 import lmql
 from lve.errors import *
+from lve.prompt import Role, Message, get_prompt, prompt_to_openai
 
 from pydantic import BaseModel, RootModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
+
 
 def split_instance_args(args, prompt_parameters):
     if prompt_parameters is None:
@@ -23,25 +25,6 @@ def split_instance_args(args, prompt_parameters):
             model_args[key] = args[key]
     return param_values, model_args
 
-def prompt_to_openai(prompt):
-    messages = []
-    for msg in prompt:
-        messages += [{"content": msg.content, "role": str(msg.role)}]
-    return messages
-
-class Role(str, Enum):
-    user = "user"
-    assistant = "assistant"
-    system = "system"
-
-    def __str__(self):
-        return self.value
-
-@dataclass
-class Message:
-    content: str
-    role: Role
-
 class TestInstance(BaseModel):
 
     args: dict[str, Any]
@@ -49,12 +32,6 @@ class TestInstance(BaseModel):
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
-
-def get_prompt(prompt):
-    if isinstance(prompt, str):
-        return [Message(content=prompt, role=Role.user)]
-    else:
-        assert False
 
 class LVE(BaseModel):
     """
@@ -84,12 +61,8 @@ class LVE(BaseModel):
             if os.path.exists(os.path.join(self.path, self.prompt_file)):
                 self.prompt_file = os.path.join(self.path, self.prompt_file)
         
-            with open(self.prompt_file, 'r') as fin:
-                contents = fin.read()
-                if contents == "<please fill in>":
-                    self.prompt = None
-                else:
-                    self.prompt = get_prompt(contents)
+            with open(self.prompt_file, 'r') as f:
+                self.prompt = get_prompt(f.readlines())
         return self
 
     @model_validator(mode='after')

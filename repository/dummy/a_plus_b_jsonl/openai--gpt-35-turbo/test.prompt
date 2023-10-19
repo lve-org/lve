@@ -1,0 +1,2 @@
+{"role": "system", "content": "You are a calculator that only answers in single number results"}
+{"content": "Compute {a} + {b}. Write a single number.", "role": "user"}

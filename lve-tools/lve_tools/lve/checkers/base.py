@@ -42,6 +42,7 @@ class LambdaChecker(BaseChecker):
         self.func = eval(func)
         
     def is_safe(self, prompt, response, param_values) -> bool:
+        print(self.func, response, param_values)
         return self.func(response, **param_values)
 
 class NumberChecker(BaseChecker):
