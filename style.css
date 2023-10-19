@@ -580,9 +580,18 @@ span.badge.active:hover {
     padding: 0pt 20pt;
 }
 
+.markdown blockquote {
+    background-color: var(--chrome);
+    padding: 1pt 10pt;
+    border-radius: 5pt;
+    display: flex;
+    width: auto;
+    margin-left: 0pt;
+}
+
 .markdown code {
     background-color: rgb(240, 240, 240);
-    padding: 1pt;
+    padding: 2pt 5pt;
     border-radius: 5pt;
     white-space: pre-wrap;
     line-break: anywhere;
@@ -595,8 +604,8 @@ span.badge.active:hover {
     display: block;
     padding: 10pt;
     overflow-x: auto;
-    font-size: 0.8em;
-    white-space: pre-wrap
+    font-size: 1.0em;
+    white-space: pre-wrap;
 }
 
 .content.category {
@@ -681,7 +690,7 @@ span.small {
     display: flex;
     flex-direction: row;
     max-width: calc(100vw - 50pt);
-    width: calc(1000pt - 40pt) !important;
+    width: calc(1000pt - 10pt) !important;
     margin: auto;
 }
 
@@ -708,7 +717,6 @@ span.small {
     font-size: 16px;
     font-weight: normal;
     line-height: 28px;
-    text-align: justify;
     color: var(--text-body);
     padding-bottom: 100pt;
 }
@@ -884,4 +892,13 @@ nav ul li a {
 
 nav ul li.active a {
     color: var(--text-active);
+}
+
+.markdown div.subtitle {
+    font-size: 14pt;
+    display: block;
+    margin-top: -10pt;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-bottom: 20pt;
 }
