@@ -13,6 +13,7 @@
     --border-color: rgba(202, 202, 202, 0.395);
     --chrome: #F6F8FA;
     --chrome-border: rgb(227, 227, 227);
+    --code-bg: rgb(240, 240, 240);
 }
 
 body {
@@ -590,7 +591,7 @@ span.badge.active:hover {
 }
 
 .markdown code {
-    background-color: rgb(240, 240, 240);
+    background-color: var(--code-bg);
     padding: 2pt 5pt;
     border-radius: 5pt;
     white-space: pre-wrap;
@@ -638,8 +639,8 @@ span.small {
 
 .lve-details #instances {
     padding: 10pt 20pt;
+    position: relative;
 }
-
 
 .lve-details #description {
     display: flex;
@@ -670,6 +671,21 @@ span.small {
         padding: 0pt 10pt;
         border-top: 1pt solid var(--border-color);
     }
+
+    .lve-details #instances {
+        padding: 0pt;
+    }
+    
+    .lve-details #instances .instance {
+        border-radius: 0;
+        border-left-width: 0;
+        border-right-width: 0;
+        padding: 10pt !important;
+    }
+
+    .lve-details #instances .instance:first-of-type {
+        margin-top: 10pt;
+    }
 }
 
 .lve-details #description>.markdown {
@@ -682,7 +698,7 @@ span.small {
     color: black !important;
 }
 
-.lve-details .sidebar label {
+.lve-details .sidebar label, .infopanel label {
     margin-right: 5pt;
     color: grey;
     margin-top: 10pt;
@@ -763,25 +779,9 @@ span.small {
     margin-right: 20pt;
 }
 
-table.instances-viewer {
-    border-collapse: collapse;
-    margin: 20pt 0pt;
-    border: 1pt solid rgb(200, 200, 200);
-    overflow-x: auto;
-    display: block;
-}
 
-table.instances-viewer th {
-    border: 1pt solid rgb(200, 200, 200);
-    padding: 5pt;
-    background-color: rgb(240, 240, 240);
-    text-align: left;
-}
-
-table.instances-viewer td {
-    border: 1pt solid rgb(200, 200, 200);
-    padding: 5pt;
-    min-width: 150pt;
+.instances-viewer {
+    width: 100%;
 }
 
 nav.left {
@@ -912,4 +912,228 @@ nav ul li.active a {
     font-weight: 400;
     color: var(--text-secondary);
     margin-bottom: 20pt;
+}
+
+.markdown table {
+    line-break: loose;
+}
+
+.lve-details pre.promptdown {
+    padding: 10pt;
+    border: 1pt solid var(--chrome-border);
+    background-color: var(--chrome);
+}
+
+.lve-details pre.promptdown .promptdown-bubble {
+    position: relative;
+    padding-top: 20pt;
+    max-width: 100%;
+    padding-right: 10pt !important;
+    margin-bottom: 10pt !important;
+    display: block;
+    font-size: 12pt !important;
+    text-align: left;
+}
+
+.lve-details pre.promptdown .promptdown-bubble.user:before {
+    content: 'user';
+    color: white;
+    position: absolute;
+    top: 2pt;
+    right: 5pt;
+    font-family: monospace;
+}
+
+.lve-details pre.promptdown .promptdown-bubble.assistant:before {
+    content: 'assistant';
+    color: grey;
+    position: absolute;
+    top: 2pt;
+    right: 5pt;
+    font-family: monospace;
+}
+
+.lve-details pre.promptdown .promptdown-bubble-container.user {
+    text-align: left;
+}
+
+.lve-details pre.promptdown .promptdown-bubble.system:before {
+    content: 'system';
+    color: grey;
+    position: absolute;
+    top: 2pt;
+    right: 5pt;
+    font-family: monospace;
+}
+
+.lve-details pre.promptdown .promptdown-bubble.system {
+    background-color: rgb(234, 233, 233);
+}
+
+.lve-details pre.promptdown p {
+    margin: 0;
+}
+
+.lve-details pre.promptdown .promptdown-var {
+    padding-right: 0pt;
+}
+
+.lve-details pre.promptdown .promptdown-bubble-container:last-of-type {
+    margin-bottom: -8pt !important;
+}
+
+.prompt {
+    position: relative;
+}
+
+.prompt pre.promptdown {
+    padding-top: 27pt;
+}
+
+.prompt .tabs {
+    position: absolute;
+    top: 1pt;
+    right: 10pt;
+    z-index: 99;
+    font-size: 10pt;
+}
+
+.prompt .tabs li,
+.prompt .tabs li:hover {
+    padding: 5pt;
+    padding-bottom: 2pt;
+    color: var(--text-grey);
+    border-bottom-width: 1pt;
+}
+
+.prompt .tabs li.active {
+    border-bottom-width: 1pt;
+    color: var(--text-body);
+}
+
+.instance {
+    border-radius: 5pt;
+    border: 1pt solid var(--chrome-border);
+    padding: 10pt;
+    margin-bottom: 50pt;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.instance pre.promptdown {
+    margin-top: 0pt;
+}
+
+.instance .side-by-side {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0pt 0pt;
+}
+
+.instance .side-by-side .prompt {
+    flex: 1;
+    position: relative;
+}
+
+.instance .metadata {
+    margin: 0pt 10pt;
+    min-width: 120pt;
+    flex: 1;
+}
+
+.instance h4 {
+    margin-top: 5pt;
+    margin-bottom: 5pt;
+}
+
+.instance pre.expand {
+    margin: 0pt 0pt;
+    border: 1pt solid var(--chrome-border);
+}
+
+code.passed, code.failed {
+    font-size: 10pt;
+}
+
+code.passed {
+    background-color: #007314;
+    color: white;
+}
+
+code.failed {
+    background-color: #F1284F;
+    color: white;
+}
+
+pre.expand {
+    background-color: var(--code-bg) !important;
+    border-radius: 5pt;
+    padding-top: 5pt;
+}
+
+pre.expand h4 {
+    padding-left: 10pt;
+    cursor: pointer;
+    color: var(--text-body);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+pre.expand h4:before {
+    content: '▶︎';
+    font-size: 10pt;
+    font-weight: 500;
+    margin-right: 5pt;
+}
+
+pre.expand.expanded h4:before {
+    content: '▼';
+}
+
+pre.expand {
+    height: 30pt;
+    overflow: hidden;
+}
+
+pre.expand code {
+    color: transparent !important;
+    background-color: transparent;
+}
+
+pre.expand.expanded {
+    height: auto;
+}
+
+pre.expand.expanded code {
+    color: var(--text-body) !important;
+}
+
+.instances-viewer.with-select {
+    padding-top: 25pt !important;
+}
+
+#instances select {
+    position: absolute;
+    top: 7.5pt;
+    left: 20pt;
+    font-size: 15pt;
+}
+
+#instances {
+    position: relative;
+    min-height: 220pt;
+}
+
+#instances .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-secondary);
+    font-size: 10pt;
+    text-align: left;
+    line-break: loose;
 }

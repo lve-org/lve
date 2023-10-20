@@ -47,7 +47,14 @@
             </div>
             <div class="sidebar markdown">
                 <h3>Prompt</h3>
-                <pre><code>{{ prompt }}</code></pre>
+                <div class="prompt">
+                    <ul class="tabs">
+                        <li class="active">Chat</li>
+                        <!-- <li>JSON</li> -->
+                        <!-- <li>LMQL</li> -->
+                    </ul>
+                    <pre class="promptdown">{{ prompt }}</pre>
+                </div>
                 <h3>LVE Details</h3>
                 <label>Checker:</label><code>{{ checker_args.get("checker_name") }}</code><br/>
                 <label>Checker Configuration:</label>
@@ -62,6 +69,11 @@
             </div>
         </div>
         <div id="instances">Loading...</div>
+        <script>
+            // for instance rendering
+            PROMPT_TEMPLATE = `{{ prompt }}`;
+            PROMPT_PARAMETERS = {{ prompt_parameters }};
+        </script>
     </div>
     
 </body>
