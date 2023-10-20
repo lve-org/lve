@@ -34,41 +34,53 @@ function json_list(obj) {
     return s
 }
 
-function instance_row(instance) {
+function instance_row(index, instance) {
     let passed = Object.keys(instance).includes("passed") ? instance["passed"] : instance["is_safe"]
-    let prompt = PROMPT_TEMPLATE;
+    
+    let prompt = PROMPT_TEMPLATE.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     PROMPT_PARAMETERS.forEach(p => {
         prompt = prompt.replace(`[{${p}}|`, `[{${p}}|${instance["args"][p]}`)
     })
+
+    let response = `[bubble:assistant|${instance["response"].trim()}]`
+    response = response.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
     let timestamp = null;
     try {
         timestamp = instance["run_info"]["timestamp"];
     } catch (e) {
         timestamp = null;
     }
+
+    let author = instance["author"] || "Anonymous";
+    let json = JSON.stringify(instance, null, 2).replace(/</g, "&lt;").replace(/>/g, "&gt;");
     
     return `<div class='instance markdown infopanel'>
     <div class='side-by-side'>
-        <div class='prompt'>
-            <ul class="tabs">
-                <li class="active">Chat</li>
-                <!-- <li>JSON</li> -->
-                <!-- <li>LMQL</li> -->
-            </ul>
-            <pre class='promptdown'>${prompt}[bubble:assistant|${instance["response"].trim()}]</pre>
-        </div>
         <div class='metadata'>
+            <h1>Instance #${index}</h1>
             <label>Passed</label>
             <code class='${passed ? 'passed' : 'failed'}'>${passed}</code>
             <br/>
             <label>Recorded</label>
             ${timestamp ? `<code>${timestamp}</code>` : "<code>Unknown</code>"}
             <br/>
-            <label>Parameters</label>
+            <label>Author</label>
+            <i class='small'>${author}</i>
+            <br/>
+            <label>Parameters:</label>
             <pre><code>${json_list(instance["args"])}</code></pre>
+            <pre class='expand'><a onclick='this.parentNode.classList.toggle("expanded")'><h4>Full JSON</h4></a><code>${json}</pre></code>
+        </div>
+        <div class='prompt'>
+            <ul class="tabs">
+                <li class="active">Chat</li>
+                <!-- <li>JSON</li> -->
+                <!-- <li>LMQL</li> -->
+            </ul>
+            <pre class='promptdown'>${prompt}${response}</pre>
         </div>
     </div>
-    <pre class='expand'><a onclick='this.parentNode.classList.toggle("expanded")'><h4>Runtime Information</h4></a><code>${JSON.stringify(instance["run_info"], null, 2)}</pre></code>
     </div>`
 }
 
@@ -97,11 +109,11 @@ function loadInstances(index=0) {
     }).then(function (text) {
         let html = `<div class='instances-viewer${select != '' ? ' with-select' : ''}'>`;
         let lines = text.split("\n");
-        lines.forEach(l => {
+        lines.forEach((l,i) => {
             if (l == "") {
                 return;
             }
-            html += instance_row(JSON.parse(l));
+            html += instance_row(i, JSON.parse(l));
         })
         container.innerHTML = select + html;
 
