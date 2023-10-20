@@ -12,6 +12,22 @@ from lve.errors import *
 from pydantic import BaseModel, RootModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
 
+
+openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
+if openai_is_azure:
+    openai.api_key = os.getenv("AZURE_OPENAI_KEY")
+    openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT") # your endpoint should look like the following https://YOUR_RESOURCE_NAME.openai.azure.com/
+    if os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"):
+        with open(os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"), "r") as f:
+            _openai_azure_model_to_engine_map = json.loads(f.read())
+        openai_azure_model_to_engine = lambda x: _openai_azure_model_to_engine_map[x]
+    else:
+        openai_azure_model_to_engine = lambda x: x
+    openai.api_type = 'azure'
+    openai.api_version = '2023-05-15' # this may change in the future
+
+
+
 def split_instance_args(args, prompt_parameters):
     if prompt_parameters is None:
         return {}, args
@@ -143,6 +159,8 @@ class LVE(BaseModel):
             for msg in prompt:
                 print(f"[{msg.role}] {msg.content}")
 
+        if openai_is_azure:
+            model_args['engine'] = openai_azure_model_to_engine(model)
         completion = await openai.ChatCompletion.acreate(
             model=model,
             messages=prompt_openai,
