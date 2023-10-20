@@ -681,6 +681,7 @@ span.small {
         border-left-width: 0;
         border-right-width: 0;
         padding: 10pt !important;
+        background-color: white;
     }
 
     .lve-details #instances .instance:first-of-type {
@@ -993,7 +994,7 @@ nav ul li.active a {
 .prompt .tabs {
     position: absolute;
     top: 1pt;
-    right: 10pt;
+    right: 14pt;
     z-index: 99;
     font-size: 10pt;
 }
@@ -1014,11 +1015,19 @@ nav ul li.active a {
 .instance {
     border-radius: 5pt;
     border: 1pt solid var(--chrome-border);
-    padding: 10pt;
     margin-bottom: 50pt;
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    padding: 0pt 0pt;
+}
+
+.instance h1 {
+    font-size: 14pt;
+    margin: 0pt;
+    margin-top: 10pt;
+    margin-bottom: 0pt;
+    padding: 0pt;
 }
 
 .instance pre.promptdown {
@@ -1028,19 +1037,33 @@ nav ul li.active a {
 .instance .side-by-side {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     padding: 0pt 0pt;
 }
 
 .instance .side-by-side .prompt {
     flex: 1;
-    position: relative;
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    flex-direction: column;
+    background-color: var(--chrome);
+    border-left: 1pt solid var(--chrome-border);
+    border-radius: 5pt;
+}
+
+.instance .side-by-side .prompt>pre.promptdown {
+    border-bottom-right-radius: 0pt;
+    border-top-right-radius: 0pt;
+    border: none;
+    flex: 1;
 }
 
 .instance .metadata {
     margin: 0pt 10pt;
     min-width: 120pt;
     flex: 1;
+    height: 100%;
+    padding-bottom: 10pt;
 }
 
 .instance h4 {
@@ -1050,7 +1073,6 @@ nav ul li.active a {
 
 .instance pre.expand {
     margin: 0pt 0pt;
-    border: 1pt solid var(--chrome-border);
 }
 
 code.passed, code.failed {
@@ -1112,7 +1134,7 @@ pre.expand.expanded code {
 }
 
 .instances-viewer.with-select {
-    padding-top: 25pt !important;
+    padding-top: 30pt !important;
 }
 
 #instances select {
@@ -1120,6 +1142,7 @@ pre.expand.expanded code {
     top: 7.5pt;
     left: 20pt;
     font-size: 15pt;
+    height: 25pt;
 }
 
 #instances {
@@ -1136,4 +1159,29 @@ pre.expand.expanded code {
     font-size: 10pt;
     text-align: left;
     line-break: loose;
+}
+
+
+@media (max-width: 600pt) {
+    .instance .side-by-side {
+        flex-direction: column;
+    }
+    .instance .metadata {
+        margin: 0pt 0pt !important;
+    }
+    #instances select {
+        left: 5pt;
+    }
+    #instances {
+        background-color: var(--chrome);
+    }
+
+    .instance .side-by-side .prompt {
+        background-color: var(--chrome);
+        border-left: none;
+        border-top: 1pt solid var(--chrome-border);
+        margin: 0pt -10pt;
+        border-radius: 0pt;
+        margin-bottom: -10pt;
+    }
 }

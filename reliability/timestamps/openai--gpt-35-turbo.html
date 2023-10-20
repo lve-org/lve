@@ -78,6 +78,7 @@
         <div id="description">
             <div class="markdown">
                 <h3>ChatGPT does not always reliably produce timestamps in a simple given format.</h3>
+<p>When prompted to only produce timestamps or <code>ERROR</code> for a given input, ChatGPT sometimes produces other outputs.</p>
             </div>
             <div class="sidebar markdown">
                 <h3>Prompt</h3>
@@ -95,7 +96,7 @@
                 <label>Checker Configuration:</label>
                 <pre><code>func: lambda r, value: r == 'ERROR' or re.match(r'(\\d{4,10})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})', r.strip()) is not None</code></pre>
                 <span class="small">
-                    Last updated 20.10.2023 13:11:50
+                    Last updated 20.10.2023 13:44:22
                 </span>
                 <br/>
                 <span class="small">
