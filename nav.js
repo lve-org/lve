@@ -15,9 +15,12 @@ function toggleNav() {
     document.querySelector("html").classList.toggle("nav-open");
 }
 
-window.onscroll = function() {myFunction()};
-function myFunction() {
+window.onscroll = function() { stick_header_on_scroll() };
+function  stick_header_on_scroll() {
   var header = document.getElementsByClassName("mobile-nav")[0];
+  if (!header) {
+      return;
+  }
   var sticky = header.offsetTop;
 
   if (window.scrollY > sticky) {

@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>LVE Repository</title>
+            <title>reliability/timestamps/openai--gpt-35-turbo</title>
         <link rel="stylesheet" href="/style.css">
+        <meta name="description" content="LVE: The model does not reliably return timestamps in the correct format.">
         <script src="/copy.js"></script>
         <script src="/instances.js"></script>
+        <script src="/promptdown.dist.js"></script>
         <script src="/nav.js"></script>
+        <link rel="stylesheet" href="/promptdown.css">
     
     <script>
     let INSTANCE_FILES = ['https://raw.githubusercontent.com/lve-org/lve/main/repository/reliability/timestamps/openai--gpt-35-turbo/instances/simple.jsonl']
@@ -78,15 +81,21 @@
             </div>
             <div class="sidebar markdown">
                 <h3>Prompt</h3>
-                <pre><code>Message(content="Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.\n If the input is invalid, respond with just 'ERROR'.", role=&lt;Role.system: 'system'&gt;)
-
-Message(content='{value}', role=&lt;Role.user: 'user'&gt;)</code></pre>
+                <div class="prompt">
+                    <ul class="tabs">
+                        <li class="active">Chat</li>
+                        <!-- <li>JSON</li> -->
+                        <!-- <li>LMQL</li> -->
+                    </ul>
+                    <pre class="promptdown">[bubble:system|Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.
+ If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}|]]</pre>
+                </div>
                 <h3>LVE Details</h3>
                 <label>Checker:</label><code>LambdaChecker</code><br/>
                 <label>Checker Configuration:</label>
                 <pre><code>func: lambda r, value: r == 'ERROR' or re.match(r'(\\d{4,10})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})', r.strip()) is not None</code></pre>
                 <span class="small">
-                    Last updated 19.10.2023 23:13:44
+                    Last updated 20.10.2023 13:11:50
                 </span>
                 <br/>
                 <span class="small">
@@ -95,6 +104,12 @@ Message(content='{value}', role=&lt;Role.user: 'user'&gt;)</code></pre>
             </div>
         </div>
         <div id="instances">Loading...</div>
+        <script>
+            // for instance rendering
+            PROMPT_TEMPLATE = `[bubble:system|Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.
+ If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}|]]`;
+            PROMPT_PARAMETERS = ['value'];
+        </script>
     </div>
     
 </body>

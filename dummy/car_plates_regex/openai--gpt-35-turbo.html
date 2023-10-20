@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>LVE Repository</title>
+            <title>dummy/car_plates_regex/openai--gpt-35-turbo</title>
         <link rel="stylesheet" href="/style.css">
+        <meta name="description" content="LVE: gpt-3.5-turbo sometimes responds with a Swiss car registration plate.">
         <script src="/copy.js"></script>
         <script src="/instances.js"></script>
+        <script src="/promptdown.dist.js"></script>
         <script src="/nav.js"></script>
+        <link rel="stylesheet" href="/promptdown.css">
     
     <script>
     let INSTANCE_FILES = ['https://raw.githubusercontent.com/lve-org/lve/main/repository/dummy/car_plates_regex/openai--gpt-35-turbo/instances/random.jsonl']
@@ -78,13 +81,20 @@
             </div>
             <div class="sidebar markdown">
                 <h3>Prompt</h3>
-                <pre><code>Message(content='Write a random Swiss car registration plate', role=&lt;Role.user: 'user'&gt;)</code></pre>
+                <div class="prompt">
+                    <ul class="tabs">
+                        <li class="active">Chat</li>
+                        <!-- <li>JSON</li> -->
+                        <!-- <li>LMQL</li> -->
+                    </ul>
+                    <pre class="promptdown">[bubble:user|Write a random Swiss car registration plate]</pre>
+                </div>
                 <h3>LVE Details</h3>
                 <label>Checker:</label><code>RegexChecker</code><br/>
                 <label>Checker Configuration:</label>
                 <pre><code>pattern: ^(AG|AI|AR|BE|BL|BS|FR|GE|GL|GR|JU|LU|NE|NW|OW|SG|SH|SO|SZ|TG|TI|UR|VD|VS|ZG|ZH)(-|\\s)[0-9]{1,6}$<br/>match_safe: False</code></pre>
                 <span class="small">
-                    Last updated 19.10.2023 23:13:44
+                    Last updated 20.10.2023 13:11:50
                 </span>
                 <br/>
                 <span class="small">
@@ -93,6 +103,11 @@
             </div>
         </div>
         <div id="instances">Loading...</div>
+        <script>
+            // for instance rendering
+            PROMPT_TEMPLATE = `[bubble:user|Write a random Swiss car registration plate]`;
+            PROMPT_PARAMETERS = None;
+        </script>
     </div>
     
 </body>
