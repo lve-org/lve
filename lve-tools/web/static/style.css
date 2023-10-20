@@ -470,6 +470,11 @@ ul.tabs li.active {
     }
 }
 
+.second-toolbar .bar h3{
+    padding-right: 15pt;
+    line-break: loose;
+}
+
 .second-toolbar .bar {
     display: flex;
     flex-direction: row;
