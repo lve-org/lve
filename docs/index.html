@@ -176,6 +176,26 @@ be used by security researchers and language model developers. To see the list o
 <pre><code class="language-bash">cd lve-tools # switch to the lve-tools directory
 pip install -e . # install editable version of lve-tools
 </code></pre>
+<h3 id="openai-api-key">OpenAI API Key</h3>
+<p>To use <code>lve-tools</code> with OpenAI backends you need to specify and OpenAI API key. This is done via the default manner of setting an environment variable:</p>
+<pre><code class="language-bash">export OPENAI_API_KEY='sk-...'
+</code></pre>
+<h4 id="azure-openai-api-keys">Azure OpenAI API Keys</h4>
+<p>In order to use the Azure OpenAI API rather than the default OpenAI API you need to set the corresponding environment variables.</p>
+<pre><code class="language-bash">export AZURE_OPENAI_KEY='...'
+export AZURE_OPENAI_ENDPOINT='...'
+</code></pre>
+<p>If the Azure API is used this is logged in the corresponding instances via the <code>openai-api_type</code> and <code>openai-api_version</code> fields.
+LVEs log the model names used by the OpenAI API to ensure reproducibility. While (some of) the same models are available in the Azure API, they may be deployed under a different name.
+Thus, a user can point to a file with name translations, via a environment variable:</p>
+<pre><code class="language-bash">export AZURE_OPENAI_MODEL_TO_ENGINE_PATH='/path/to/file'
+</code></pre>
+<p>The file contains a json dictionary with OpenAI API model name to the Azure API model name, e.g.,</p>
+<pre><code>{
+        &quot;gpt-3.5-turbo&quot;: &quot;gpt-35-turbo&quot;
+}
+</code></pre>
+<p>uses a Azure model called <code>gpt-35-turbo</code> whenever the OpenAI model <code>gpt-3.5-turbo</code> would be used. If no such file is supplied or a model is not included, the same name as the OpenAI name is used.</p>
         </div>
     </div>
     </div>
