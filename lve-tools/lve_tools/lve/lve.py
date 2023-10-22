@@ -16,13 +16,13 @@ from pydantic.dataclasses import dataclass
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
     openai.api_key = os.getenv("AZURE_OPENAI_KEY")
-    openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT") # your endpoint should look like the following https://YOUR_RESOURCE_NAME.openai.azure.com/
+    openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
     if os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"):
         with open(os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"), "r") as f:
             _openai_azure_model_to_engine_map = json.loads(f.read())
-        openai_azure_model_to_engine = lambda x: _openai_azure_model_to_engine_map[x]
     else:
-        openai_azure_model_to_engine = lambda x: x
+        _openai_azure_model_to_engine_map = dict()
+    openai_azure_model_to_engine = lambda x: _openai_azure_model_to_engine_map.get(x, x)
     openai.api_type = 'azure'
     openai.api_version = '2023-05-15' # this may change in the future
 
@@ -328,8 +328,12 @@ class LVE(BaseModel):
         return os.path.abspath(file).startswith(os.path.abspath(self.path))
 
     def get_run_info(self):
-        return {
+        run_info = {
             "openai": openai.__version__,
+            "openai-api_type": openai.api_type,
             "timestamp": time.ctime(),
         }
+        if openai.api_version is not None:
+            run_info["openai-api_version"] = openai.api_version
+        return run_info
 
