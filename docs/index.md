@@ -145,3 +145,33 @@ To install the very latest version of `lve-tools` directly from the source tree,
 cd lve-tools # switch to the lve-tools directory
 pip install -e . # install editable version of lve-tools
 ```
+
+### OpenAI API Key
+
+To use `lve-tools` with OpenAI backends you need to specify and OpenAI API key. This is done via the default manner of setting an environment variable:
+```bash
+export OPENAI_API_KEY='sk-...'
+```
+
+#### Azure OpenAI API Keys
+In order to use the Azure OpenAI API rather than the default OpenAI API you need to set the corresponding environment variables.
+
+```bash
+export AZURE_OPENAI_KEY='...'
+export AZURE_OPENAI_ENDPOINT='...'
+```
+If the Azure API is used this is logged in the corresponding instances via the `openai-api_type` and `openai-api_version` fields.
+LVEs log the model names used by the OpenAI API to ensure reproducibility. While (some of) the same models are available in the Azure API, they may be deployed under a different name.
+Thus, a user can point to a file with name translations, via a environment variable:
+
+```bash
+export AZURE_OPENAI_MODEL_TO_ENGINE_PATH='/path/to/file'
+```
+
+The file contains a json dictionary with OpenAI API model name to the Azure API model name, e.g.,
+```
+{
+        "gpt-3.5-turbo": "gpt-35-turbo"
+}
+```
+uses a Azure model called `gpt-35-turbo` whenever the OpenAI model `gpt-3.5-turbo` would be used. If no such file is supplied or a model is not included, the same name as the OpenAI name is used.
