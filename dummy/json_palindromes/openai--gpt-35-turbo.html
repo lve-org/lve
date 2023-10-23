@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>reliability/timestamps/openai--gpt-35-turbo</title>
+            <title>dummy/json_palindromes/openai--gpt-35-turbo</title>
         <link rel="stylesheet" href="/style.css">
-        <meta name="description" content="LVE: The model does not reliably return timestamps in the correct format.">
+        <meta name="description" content="LVE: dummy test where gpt-3.5-turbo does not produce json with palindromes starting with different letters">
         <script src="/copy.js"></script>
         <script src="/instances.js"></script>
         <script src="/promptdown.dist.js"></script>
@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="/promptdown.css">
     
     <script>
-    let INSTANCE_FILES = ['https://raw.githubusercontent.com/lve-org/lve/main/repository/reliability/timestamps/openai--gpt-35-turbo/instances/simple.jsonl']
+    let INSTANCE_FILES = ['https://raw.githubusercontent.com/lve-org/lve/main/repository/dummy/json_palindromes/openai--gpt-35-turbo/instances/instances.jsonl']
     </script>
 </head>
 <body>
@@ -45,10 +45,10 @@
         <div class="content">
             <div class="bar">
             <h3>
-                <a href='/reliability'>reliability</a>/<a class="name">reliability/timestamps</a>
+                <a href='/dummy'>dummy</a>/<a class="name">dummy/json_palindromes</a>
             </h3>
             <code class="command">
-                lve record repository/reliability/timestamps/openai--gpt-35-turbo
+                lve record repository/dummy/json_palindromes/openai--gpt-35-turbo
                 <button class="copy" onclick="copy(this)"></button>
                 <label>
                     Run this command to record an instance of this LVE.
@@ -56,7 +56,7 @@
             </code>
             </div>
                     <div class='affected'>
-            <a class='badge-link' href='gpt-3.5-turbo.html'><span class='badge active'>gpt-3.5-turbo</span></a>
+            <a class='badge-link' href='openai/gpt-3.5-turbo.html'><span class='badge active'>openai/gpt-3.5-turbo</span></a>
         </div>
     
             <ul class="tabs">
@@ -64,11 +64,11 @@
                     <a href="#show-description" onclick="openDescription(this)">Description</a>
                 </li>
                 <li>
-                    <a id="tab-instances" href="#show-instances" onclick="openInstances(this)">Instances (4)</a>
+                    <a id="tab-instances" href="#show-instances" onclick="openInstances(this)">Instances (2)</a>
                 </li>
                 <ul class="actions">
                 <li>
-                    <a class="btn" href="https://github.com/lve-org/lve/tree/main/repository/reliability/timestamps/openai--gpt-35-turbo">Edit On GitHub</a>
+                    <a class="btn" href="https://github.com/lve-org/lve/tree/main/repository/dummy/json_palindromes/openai--gpt-35-turbo">Edit On GitHub</a>
                 </li>
                 </ul>
             </ul>
@@ -77,8 +77,7 @@
     <div class="content lve-details description">
         <div id="description">
             <div class="markdown">
-                <h3>ChatGPT does not always reliably produce timestamps in a simple given format.</h3>
-<p>When prompted to only produce timestamps or <code>ERROR</code> for a given input, ChatGPT sometimes produces other outputs.</p>
+                <h3>json_palindromes</h3>
             </div>
             <div class="sidebar markdown">
                 <h3>Prompt</h3>
@@ -88,28 +87,28 @@
                         <!-- <li>JSON</li> -->
                         <!-- <li>LMQL</li> -->
                     </ul>
-                    <pre class="promptdown">[bubble:system|Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.
- If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}|]]</pre>
+                    <pre class="promptdown">[bubble:user|Write an example of a JSON with fields word1, word2, word3.
+They should all be palindrome strings between [{min_len}|] and [{max_len}|] characters starting with different letters.]</pre>
                 </div>
                 <h3>LVE Details</h3>
-                <label>Checker:</label><code>LambdaChecker</code><br/>
+                <label>Checker:</label><code>JSON_PalindromeChecker</code><br/>
                 <label>Checker Configuration:</label>
-                <pre><code>func: lambda r, value: r == 'ERROR' or re.match(r'(\\d{4,10})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})', r.strip()) is not None</code></pre>
+                <pre><code></code></pre>
                 <span class="small">
                     Last updated 23.10.2023 20:41:20
                 </span>
                 <br/>
                 <span class="small">
-                    Contributed by <i>Anonymous</i>.
+                    Contributed by <i>mbalunovic</i>.
                 </span>
             </div>
         </div>
         <div id="instances">Loading...</div>
         <script>
             // for instance rendering
-            PROMPT_TEMPLATE = `[bubble:system|Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.
- If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}|]]`;
-            PROMPT_PARAMETERS = ['value'];
+            PROMPT_TEMPLATE = `[bubble:user|Write an example of a JSON with fields word1, word2, word3.
+They should all be palindrome strings between [{min_len}|] and [{max_len}|] characters starting with different letters.]`;
+            PROMPT_PARAMETERS = ['min_len', 'max_len'];
         </script>
     </div>
     
