@@ -313,9 +313,14 @@ class LVE(BaseModel):
     def get_checker(self):
         from lve.checkers import get_checker
 
+        custom_checker_path = None
+        checker_path = os.path.join(self.path, "checker")
+        if os.path.exists(checker_path):
+            custom_checker_path = checker_path
+
         checker_args = self.checker_args.copy()
         checker_name = checker_args.pop("checker_name")
-        checker_cls = get_checker(checker_name)
+        checker_cls = get_checker(checker_name, custom_checker_path)
 
         sig = inspect.signature(checker_cls)
         for param, param_value in sig.parameters.items():
