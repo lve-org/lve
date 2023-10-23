@@ -52,3 +52,10 @@ The list is by no means exhaustive, so please feel free to contribute any useful
 | Name | URL |
 | --- | --- |
 | LLM Security | [https://llmsecurity.net/](https://llmsecurity.net/) |
+
+### Multi-Modal
+Currently LVEs for multi-modal models are not supported.
+
+| Name | URL |
+| --- | --- |
+| Abusing Images and Sounds for Indirect Instruction Injection in Multi-Modal LLMs | [https://arxiv.org/abs/2307.10490](https://arxiv.org/abs/2307.10490) |
