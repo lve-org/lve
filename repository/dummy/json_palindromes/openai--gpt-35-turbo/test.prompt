@@ -1,0 +1,2 @@
+Write an example of a JSON with fields word1, word2, word3.
+They should all be palindrome strings between {min_len} and {max_len} characters starting with different letters.

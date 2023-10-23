@@ -1,0 +1,10 @@
+{
+    "description": "dummy test where gpt-3.5-turbo does not produce json with palindromes starting with different letters",
+    "model": "openai/gpt-3.5-turbo",
+    "checker_args": {
+        "checker_name": "JSON_PalindromeChecker"
+    },
+    "prompt_file": "test.prompt",
+    "prompt_parameters": ["min_len", "max_len"],
+    "author": "mbalunovic"
+}
