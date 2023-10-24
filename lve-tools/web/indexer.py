@@ -101,7 +101,7 @@ class LVEIndex:
         combined = """SELECT author, count as instance_count, NULL as lve_count FROM ({}) UNION ALL SELECT author, NULL as instance_count, count as lve_count FROM ({})""".format(instance_scores, lve_scores)
 
         # sum i.count and l.count, assume 0 if not in one
-        summed = """SELECT author, CASE WHEN instance_count IS NULL THEN 0 ELSE instance_count END + CASE WHEN lve_count IS NULL THEN 0 ELSE lve_count END as count FROM ({}) ORDER BY count DESC""".format(combined)
+        summed = """SELECT author, SUM(CASE WHEN instance_count IS NULL THEN 0 ELSE instance_count END + CASE WHEN lve_count IS NULL THEN 0 ELSE lve_count END) as count FROM ({}) GROUP BY author ORDER BY count DESC""".format(combined)
         
         ranking = []
 
