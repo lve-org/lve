@@ -58,7 +58,7 @@
                 <h3>LVE Details</h3>
                 <label>Checker:</label><code>{{ checker_args.get("checker_name") }}</code><br/>
                 <label>Checker Configuration:</label>
-                <pre><code>{{ "<br/>".join([f"{k}: {str([str(v)])[2:-2]}" for k, v in checker_args.items() if k != "checker_name"]) }}</code></pre>
+                <pre><code>{{ ("<br/>".join([f"{k}: {str([str(v)])[2:-2]}" for k, v in checker_args.items() if k != "checker_name"])) if len(checker_args) > 1 else "-" }}</code></pre>
                 <span class="small">
                     Last updated {{ updated }}
                 </span>
