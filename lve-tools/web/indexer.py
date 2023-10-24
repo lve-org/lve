@@ -1,7 +1,7 @@
 """
 Index the LVE repository into a sqlite database.
 """
-import pysqlite3
+import sqlite3
 import os
 import time
 import json
@@ -14,7 +14,7 @@ class LVEIndex:
         if os.path.exists(file):
             os.remove(file)
 
-        self.curs = pysqlite3.connect(file).cursor()        
+        self.curs = sqlite3.connect(file).cursor()        
         self.prepare()
 
     def prepare(self):
@@ -91,11 +91,15 @@ class LVEIndex:
         for i in self.curs.execute("""SELECT * FROM instances"""):
             print(i)
 
-    def combined_score(self, timespan="-14 day"):
+    def combined_score(self, timespan="-30 day"):
         instance_scores = f"""SELECT author, COUNT(*) as count FROM instances WHERE created > datetime('now', '{timespan}') GROUP BY author ORDER BY COUNT(*) DESC"""
         lve_scores = f"""SELECT author, COUNT(*) as count FROM lves WHERE updated > datetime('now', '{timespan}') GROUP BY author ORDER BY COUNT(*) DESC"""
         # join instance and lve author stats (sum, assume 0 if not in one)
-        combined = """SELECT (CASE WHEN i.author IS NULL THEN l.author ELSE i.author END) AS author, i.count as instance_count, l.count as lve_count FROM ({}) AS i FULL OUTER JOIN ({}) AS l ON i.author = l.author ORDER BY i.count + l.count DESC""".format(instance_scores, lve_scores)
+        
+        # combined = """SELECT (CASE WHEN i.author IS NULL THEN l.author ELSE i.author END) AS author, i.count as instance_count, l.count as lve_count FROM ({}) AS i FULL OUTER JOIN ({}) AS l ON i.author = l.author ORDER BY i.count + l.count DESC""".format(instance_scores, lve_scores)
+        # rewrite combined as union all for sqlite
+        combined = """SELECT author, count as instance_count, NULL as lve_count FROM ({}) UNION ALL SELECT author, NULL as instance_count, count as lve_count FROM ({})""".format(instance_scores, lve_scores)
+
         # sum i.count and l.count, assume 0 if not in one
         summed = """SELECT author, CASE WHEN instance_count IS NULL THEN 0 ELSE instance_count END + CASE WHEN lve_count IS NULL THEN 0 ELSE lve_count END as count FROM ({}) ORDER BY count DESC""".format(combined)
         
@@ -112,4 +116,4 @@ if __name__ == '__main__':
     index = LVEIndex()
     index.build()
 
-    index.combined_score()
+    print(index.combined_score())
