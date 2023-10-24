@@ -429,6 +429,10 @@ function digest(el, c) {
                 ip.parentNode.classList.add("color-none");
             }
 
+            if (args.empty) {
+                ip.parentNode.classList.add("empty");
+            }
+
             // update name
             ip.innerText = args.name;
 
@@ -441,7 +445,7 @@ function digest(el, c) {
                     ip.parentNode.classList.add("color-none");
                 } else {
                     // choose a color
-                    let color = COLORS[strHashCode(name) % COLORS.length];
+                    let color = COLORS[strHashCode(args.name) % COLORS.length];
                     ip.parentNode.classList.add("color-" + color);
                 }
             }

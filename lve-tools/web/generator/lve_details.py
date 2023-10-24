@@ -10,7 +10,7 @@ from .readme_parser import LVEReadmeParser
 def render_prompt(prompt, parameters):
     def render_content(content):
         for p in parameters or []:
-            content = content.replace(f"{{{p}}}", f"[{{{p}}}|]")
+            content = content.replace(f"{{{p}}}", f"[{{{p}}}(empty=true)|]")
         return content
     
     if type(prompt) is list:
