@@ -1,3 +1,8 @@
+"""
+Run this file to start a live server and a watcher that rebuilds the LVE site on changes.
+
+Serves a live version of the LVE site on http://localhost:8080.
+"""
 import subprocess
 
 def ensure_npx_available():

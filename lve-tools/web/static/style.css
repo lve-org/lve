@@ -1190,3 +1190,19 @@ pre.expand.expanded code {
         margin-bottom: -10pt;
     }
 }
+
+.block.users {
+    margin-top: 80pt !important;
+}
+
+.lve-list.users h3 {
+    line-height: 30pt;
+}
+
+
+.lve-list.users .right {
+    top: 7.5pt;
+    right: 10pt;
+    font-size: 14pt;
+    line-height: 30pt;
+}

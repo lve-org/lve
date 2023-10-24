@@ -25,7 +25,18 @@ def make_category_tiles(categories):
         emoji=emojis.get(c, "")
     ) for i, c in enumerate(categories)])
 
-def build_home(generator, updated, categories):
+def leaderboard(indexer):
+    html = ""
+    for user, score in indexer.combined_score(timespan="-30 days")[:10]:
+        html += f"""
+        <a class="lve">
+            <h3>{user}</h3>
+            <label class="right">{score}</label> 
+        </a>
+        """
+    return html
+
+def build_home(generator, updated, categories, indexer=None):
     index = SiteTemplate("index.html")
     
     categories = list(sorted(categories))
@@ -34,4 +45,5 @@ def build_home(generator, updated, categories):
         file=os.path.join(generator.target, "index.html"),
         recently_updated=partial(lve_list, updated),
         category_tiles=partial(make_category_tiles, categories),
+        leaderboard=partial(leaderboard, indexer)
     )

@@ -16,7 +16,7 @@ class LVESiteGenerator:
         shutil.rmtree("build/", ignore_errors=True)
         os.makedirs("build/")
 
-    def build(self):
+    def build(self, index=None):
         push_context(GenerationContext("LVE Repository", "We document and track vulnerabilities and exposures of large language models (LVEs)."))
 
         # copy static resources
@@ -46,5 +46,6 @@ class LVESiteGenerator:
         build_home(
             self,
             updated=lve_data["last_updated"],
-            categories=lve_data["categories"]
+            categories=lve_data["categories"],
+            indexer=index
         )
