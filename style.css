@@ -980,7 +980,7 @@ nav ul li.active a {
     margin: 0;
 }
 
-.lve-details pre.promptdown .promptdown-var {
+.lve-details pre.promptdown .promptdown-var.empty {
     padding-right: 0pt;
 }
 
@@ -1053,12 +1053,14 @@ nav ul li.active a {
     flex-direction: column;
     background-color: var(--chrome);
     border-left: 1pt solid var(--chrome-border);
-    border-radius: 5pt;
+    border-bottom-left-radius: 0pt;
+    border-top-left-radius: 0pt;
+    
+    border-bottom-right-radius: 5pt;
+    border-top-right-radius: 5pt;
 }
 
 .instance .side-by-side .prompt>pre.promptdown {
-    border-bottom-right-radius: 0pt;
-    border-top-right-radius: 0pt;
     border: none;
     flex: 1;
 }

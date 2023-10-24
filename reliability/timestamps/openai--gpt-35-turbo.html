@@ -89,7 +89,7 @@
                         <!-- <li>LMQL</li> -->
                     </ul>
                     <pre class="promptdown">[bubble:system|Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.
- If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}|]]</pre>
+ If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}(empty=true)|]]</pre>
                 </div>
                 <h3>LVE Details</h3>
                 <label>Checker:</label><code>LambdaChecker</code><br/>
@@ -108,7 +108,7 @@
         <script>
             // for instance rendering
             PROMPT_TEMPLATE = `[bubble:system|Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.
- If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}|]]`;
+ If the input is invalid, respond with just 'ERROR'.][bubble:user|[{value}(empty=true)|]]`;
             PROMPT_PARAMETERS = ['value'];
         </script>
     </div>

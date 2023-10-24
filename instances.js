@@ -39,7 +39,7 @@ function instance_row(index, instance) {
     
     let prompt = PROMPT_TEMPLATE.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     PROMPT_PARAMETERS.forEach(p => {
-        prompt = prompt.replace(`[{${p}}|`, `[{${p}}|${instance["args"][p]}`)
+        prompt = prompt.replace(`[{${p}}(empty=true)|`, `[{${p}}|${instance["args"][p]}`)
     })
 
     let response = `[bubble:assistant|${instance["response"].trim()}]`
