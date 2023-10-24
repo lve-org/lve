@@ -24,8 +24,7 @@ jobs:
               echo "VIRTUAL ENV:" $VIRTUAL_ENV
           - name: Install Packaging Dependencies
             run: |
-              pip install Markdown gitpython
-              pip install -e lve-tools/
+              pip install -e 'lve-tools[web]'
           - name: Build lve-tools/web/
             run: cd lve-tools/web && PYTHONPATH=../lve-tools/lve_tools python3 make.py
         

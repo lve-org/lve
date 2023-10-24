@@ -1,7 +1,7 @@
 """
 Index the LVE repository into a sqlite database.
 """
-import sqlite3
+import pysqlite3
 import os
 import time
 import json
@@ -14,7 +14,7 @@ class LVEIndex:
         if os.path.exists(file):
             os.remove(file)
 
-        self.curs = sqlite3.connect(file).cursor()        
+        self.curs = pysqlite3.connect(file).cursor()        
         self.prepare()
 
     def prepare(self):
