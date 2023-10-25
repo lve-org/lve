@@ -9,7 +9,7 @@ import openai
 import lmql
 from lve.errors import *
 
-from pydantic import BaseModel, RootModel, model_validator, ValidationError
+from pydantic import BaseModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
 
 
