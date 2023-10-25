@@ -59,3 +59,4 @@ Currently LVEs for multi-modal models are not supported.
 | Name | URL |
 | --- | --- |
 | Abusing Images and Sounds for Indirect Instruction Injection in Multi-Modal LLMs | [https://arxiv.org/abs/2307.10490](https://arxiv.org/abs/2307.10490) |
+| Optical Illusions | https://x.com/fabianstelzer/status/1717131235644875024?s=46&t=OVkczsEQn03hzrb1v431AA |
