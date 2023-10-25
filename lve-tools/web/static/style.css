@@ -1208,3 +1208,14 @@ pre.expand.expanded code {
     font-size: 14pt;
     line-height: 30pt;
 }
+
+.markdown.lve-description {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 28px;
+    color: var(--text-body);
+}
+
+.markdown.lve-description h3 {
+    margin-bottom: 5pt;
+}

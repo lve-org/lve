@@ -22,7 +22,7 @@ TEST_JSON_TEMPLATE = """\
 }}
 """
 
-README_TEMPLATE = """### {name}
+README_TEMPLATE = """### {description}
 
 **Description**: {description}
 
