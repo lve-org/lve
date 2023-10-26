@@ -8,10 +8,10 @@ import inspect
 import openai
 import lmql
 from lve.errors import *
+from lve.prompt import Role, Message, get_prompt, prompt_to_openai
 
 from pydantic import BaseModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
-
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -27,7 +27,6 @@ if openai_is_azure:
     openai.api_version = '2023-05-15' # this may change in the future
 
 
-
 def split_instance_args(args, prompt_parameters):
     if prompt_parameters is None:
         return {}, args
@@ -39,25 +38,6 @@ def split_instance_args(args, prompt_parameters):
             model_args[key] = args[key]
     return param_values, model_args
 
-def prompt_to_openai(prompt):
-    messages = []
-    for msg in prompt:
-        messages += [{"content": msg.content, "role": str(msg.role)}]
-    return messages
-
-class Role(str, Enum):
-    user = "user"
-    assistant = "assistant"
-    system = "system"
-
-    def __str__(self):
-        return self.value
-
-@dataclass
-class Message:
-    content: str
-    role: Role
-
 class TestInstance(BaseModel):
 
     args: dict[str, Any]
@@ -65,12 +45,6 @@ class TestInstance(BaseModel):
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
-
-def get_prompt(prompt):
-    if isinstance(prompt, str):
-        return [Message(content=prompt, role=Role.user)]
-    else:
-        assert False
 
 class LVE(BaseModel):
     """
@@ -100,12 +74,8 @@ class LVE(BaseModel):
             if os.path.exists(os.path.join(self.path, self.prompt_file)):
                 self.prompt_file = os.path.join(self.path, self.prompt_file)
         
-            with open(self.prompt_file, 'r') as fin:
-                contents = fin.read()
-                if contents == "<please fill in>":
-                    self.prompt = None
-                else:
-                    self.prompt = get_prompt(contents)
+            with open(self.prompt_file, 'r') as f:
+                self.prompt = get_prompt(f.readlines())
         return self
 
     @model_validator(mode='after')
@@ -134,8 +104,11 @@ class LVE(BaseModel):
         new_prompt = []
         for msg in self.prompt:
             content, role = msg.content, msg.role
-            new_msg = Message(content=content.format(**param_values), role=role)
-            new_prompt.append(new_msg)
+            if msg.role != Role.assistant:
+                new_msg = Message(content=content.format(**param_values), role=role)
+                new_prompt.append(new_msg)
+            else:
+                new_prompt.append(msg)
         return new_prompt
     
     async def run(self, author=None, verbose=False, engine='openai', **kwargs):
@@ -148,29 +121,36 @@ class LVE(BaseModel):
 
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
         prompt = self.fill_prompt(param_values)
-        prompt_openai = prompt_to_openai(prompt)
-
+        
         # for now just remove the openai/ prefix
         model = self.model
         if model.startswith("openai/"):
             model = model[len("openai/"):]
-
-        if verbose:
-            for msg in prompt:
-                print(f"[{msg.role}] {msg.content}")
-
+            
         if openai_is_azure:
             model_args['engine'] = openai_azure_model_to_engine(model)
-        completion = await openai.ChatCompletion.acreate(
-            model=model,
-            messages=prompt_openai,
-            **model_args,
-        )
-        # TODO: Support multiple responses
-        response = completion.choices[0]["message"]["content"]
+
+        if prompt[-1].role != Role.assistant:
+            prompt.append(Message(content=None, role=Role.assistant, variable='response'))
+            
+        for i in range(len(prompt)):
+            if prompt[i].role == Role.assistant and prompt[i].content == None:
+                print(prompt)
+                prompt_openai = prompt_to_openai(prompt[:i])
+
+                completion = await openai.ChatCompletion.acreate(
+                    model=model,
+                    messages=prompt_openai,
+                    **model_args,
+                )
+                response = completion.choices[0]["message"]["content"]
+                prompt[i].content = response
+            if verbose:
+                msg = prompt[i]
+                print(f"[{msg.role}] {msg.content}")
 
         checker = self.get_checker()
-        is_safe = checker.is_safe(prompt, response, param_values)
+        is_safe = checker.is_safe(prompt, response, param_values) # TODO remove response here and make checker use it correctly
 
         return TestInstance(
             author=author,
