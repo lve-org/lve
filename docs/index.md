@@ -121,6 +121,8 @@ Next to the `test.json` file, the `instances/` directory contains the recorded i
 
 Each instance is generated using [`lve record`](#recording-an-lve). To create an LVE instance, `lve record` instantiates the prompt template using concrete placeholder values as provided by the user. It then runs the prompt against the model using a provided inference configuration (e.g. `temperature`) and finally applies the LVE's checking logic to determine whether the model's response passes or fails the LVE.
 
+The prompt here can be a list of messages in JSON format (with `content` and `role`) or point to a `promptfile` congaing the prompt. For more details and prompts with multiple variables see [Prompt Formats](./prompt/format).
+
 After running the model and checking the resulting output, `lve record` stores information on the recorded instance in the `instances/` directory, which includes JSON lines of the following format:
 
 ```json
