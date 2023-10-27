@@ -9,6 +9,7 @@ import openai
 import lmql
 from lve.errors import *
 from lve.prompt import Role, Message, get_prompt, prompt_to_openai
+import copy
 
 from pydantic import BaseModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
@@ -121,6 +122,7 @@ class LVE(BaseModel):
 
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
         prompt = self.fill_prompt(param_values)
+        prompt_in = copy.deepcopy(prompt)
         
         # for now just remove the openai/ prefix
         model = self.model
@@ -135,7 +137,6 @@ class LVE(BaseModel):
             
         for i in range(len(prompt)):
             if prompt[i].role == Role.assistant and prompt[i].content == None:
-                print(prompt)
                 prompt_openai = prompt_to_openai(prompt[:i])
 
                 completion = await openai.ChatCompletion.acreate(
@@ -150,7 +151,7 @@ class LVE(BaseModel):
                 print(f"[{msg.role}] {msg.content}")
 
         checker = self.get_checker()
-        is_safe = checker.is_safe(prompt, response, param_values) # TODO remove response here and make checker use it correctly
+        is_safe = checker.is_safe(prompt_in, response, param_values) # TODO remove response here and make checker use it correctly
 
         return TestInstance(
             author=author,
