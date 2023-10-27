@@ -28,7 +28,7 @@ if __name__ == '__main__':
     ensure_onchange_available()
     ensure_live_server_available()
 
-    print("> onchange ../lve_tools/**/* ../../repository/**/* ./*.html ../../docs/**/* ./static/**/* ./*.py generator/**/*.py -- python make.py")
+    print("> onchange ../lve_tools/**/* ../../repository/**/* ./*.html ../../docs/**/* ./static/**/* ./*.py generator/**/*.py -- python make.py", flush=True)
     # with shell
     watcher = subprocess.Popen('onchange ../lve_tools/**/* ../../repository/**/* ./*.html ../../docs/**/* ./static/**/* ./*.py generator/**/*.py -- python make.py', shell=True)
     server = subprocess.Popen(['npx', 'live-server'], cwd='build')
