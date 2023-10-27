@@ -22,9 +22,13 @@ class MonotoncityChecker(BaseChecker):
         self.strict = strict
 
     def is_safe(self, prompt, variables, param_values) -> bool:
-        variables = map_dict(variables,
-                             fn_key=lambda k: re.search(self.answer_variable_identifier_regex, k).group(1),
-                             fn_value=lambda v: float(re.search(self.answer_value_regex, v).group(1)))
+        try:
+            variables = map_dict(variables,
+                                 fn_key=lambda k: re.search(self.answer_variable_identifier_regex, k).group(1),
+                                 fn_value=lambda v: float(re.search(self.answer_value_regex, v).group(1)))
+        except:
+            print("Malformed Response")
+            return False
 
         params = map_dict(param_values,
                           fn_key=lambda k: re.search(self.param_variable_identifier_regex, k).group(1),
