@@ -1,6 +1,6 @@
-# Prompt Format
+# Prompt
 
-## Prompt File
+## Prompt File Format
 A prompt file can contain either plain text, a single message as a single JSON object or a sequence of messages with one JSON object per line (JSONL).
 
 
