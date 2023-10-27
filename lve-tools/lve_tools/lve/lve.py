@@ -42,7 +42,7 @@ def split_instance_args(args, prompt_parameters):
 class TestInstance(BaseModel):
 
     args: dict[str, Any]
-    response: str
+    response: Union[str, dict[str, str]]
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
@@ -112,29 +112,43 @@ class LVE(BaseModel):
                 new_prompt.append(msg)
         return new_prompt
     
-    async def run(self, author=None, verbose=False, engine='openai', **kwargs):
-        if engine == 'lmql':
-            return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
-        else:
-            assert engine == 'openai', f"Only 'lmql' and 'openai' are supported as inference engines, not '{engine}'"
 
-        run_info = self.get_run_info()
+    async def execute_openai(self, prompt_in, verbose=False, **model_args):
+        """
+        Executes a prompt in Openai.
 
-        param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
-        prompt = self.fill_prompt(param_values)
-        prompt_in = copy.deepcopy(prompt)
-        
+        Args:
+            prompt_in: The prompt to execute. Will not be changes.
+            verbose: Print the prompt and response.
+            model_args: Arguments to pass to the Openai API.
+            
+        Returns:
+            A new prompt where all assistant messages have been filled in.
+            A assistant message will always be added at the end.
+        """
+        prompt = copy.deepcopy(prompt_in)
+
+        # get model path
         # for now just remove the openai/ prefix
         model = self.model
         if model.startswith("openai/"):
             model = model[len("openai/"):]
-            
+
+
+        # if we use azure openai use the correct engine for the model
         if openai_is_azure:
             model_args['engine'] = openai_azure_model_to_engine(model)
-
+            
+        # if the last message is not an assistant message, add one
         if prompt[-1].role != Role.assistant:
             prompt.append(Message(content=None, role=Role.assistant, variable='response'))
             
+        cnt_variables = sum(p.role == Role.assistant for p in prompt)
+        cnt_variable_names = sum(p.role == Role.assistant and p.variable is not None for p in prompt)
+        if cnt_variables > 1 and cnt_variable_names != cnt_variables:
+            assert False, "If more than one assistant message is present, all of them must have a variable name."
+
+        # go through all messages and fill in assistant messages, sending everything before as context
         for i in range(len(prompt)):
             if prompt[i].role == Role.assistant and prompt[i].content == None:
                 prompt_openai = prompt_to_openai(prompt[:i])
@@ -146,12 +160,27 @@ class LVE(BaseModel):
                 )
                 response = completion.choices[0]["message"]["content"]
                 prompt[i].content = response
+
             if verbose:
                 msg = prompt[i]
                 print(f"[{msg.role}] {msg.content}")
 
+        return prompt
+
+    
+    async def run(self, author=None, verbose=False, engine='openai', **kwargs):
+        if engine == 'lmql':
+            return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
+        else:
+            assert engine == 'openai', f"Only 'lmql' and 'openai' are supported as inference engines, not '{engine}'"
+
+        run_info = self.get_run_info()
+
+        param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
+        prompt = self.fill_prompt(param_values)
+        prompt_out = await self.execute_openai(prompt, **model_args)
         checker = self.get_checker()
-        is_safe = checker.is_safe(prompt_in, response, param_values) # TODO remove response here and make checker use it correctly
+        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
 
         return TestInstance(
             author=author,
@@ -181,7 +210,8 @@ class LVE(BaseModel):
         response = response[1:] if response.startswith(" ") else response
 
         checker = self.get_checker()
-        is_safe = checker.is_safe(prompt, response, param_values)
+        prompt_out = copy.deepcopy(prompt) + [Message(content=response, role=Role.assistant, variable='response')]
+        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
 
         return TestInstance(
             author=author,
