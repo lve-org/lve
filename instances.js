@@ -34,16 +34,32 @@ function json_list(obj) {
     return s
 }
 
+function sanitize(s, replace_square_brackets=false) {
+    s = s.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    if (replace_square_brackets)
+        s = s.replace("[", "\\\&#91;").replace("]", "\\\&#93;");
+    return s
+}
+
+
 function instance_row(index, instance) {
     let passed = Object.keys(instance).includes("passed") ? instance["passed"] : instance["is_safe"]
     
-    let prompt = PROMPT_TEMPLATE.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    let prompt = sanitize(PROMPT_TEMPLATE);
     PROMPT_PARAMETERS.forEach(p => {
         prompt = prompt.replace(`[{${p}}(empty=true)|`, `[{${p}}|${instance["args"][p]}`)
     })
 
-    let response = `[bubble:assistant|${instance["response"].trim()}]`
-    response = response.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    
+    let response = "";
+    if (typeof(instance["response"]) == "string") {
+        response = `[bubble:assistant|${sanitize(instance["response"].trim())}]`
+    }
+    else if (typeof(instance["response"]) == "object") {
+        for (const [key, value] of Object.entries(instance["response"])) {
+            prompt = prompt.replace(`[{${key}}(empty=true)|`, `[{${key}}|${sanitize(value, true)}`)
+        }
+    }
 
     let timestamp = null;
     try {
