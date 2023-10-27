@@ -26,7 +26,7 @@ be used by security researchers and language model developers.
 
 Commands:
 
-{termcolor.colored('lve record', attrs=['bold'])} <lve-path> [--temperature <temperature>] [--file <name>.json]
+{termcolor.colored('lve record', attrs=['bold'])} <lve-path> [--temperature <temperature>] [--file <name>.jsonl]
 
     Records a new instance of the given LVE. The <category> and <lve-id> correspond to
     the category and LVE number of the LVE being recorded.

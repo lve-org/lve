@@ -3,7 +3,7 @@
     "model": "gpt-3.5-turbo",
     "checker_args": {
         "checker_name": "LambdaChecker",
-        "func": "lambda r, a, b: r == str(a + b).strip()"
+        "func": "lambda r, a, b: int(r) == int(a) + int(b)"
     },
     "prompt": [
         {"content": "Compute {a} + {b}. Write a single number.", "role": "user"}
