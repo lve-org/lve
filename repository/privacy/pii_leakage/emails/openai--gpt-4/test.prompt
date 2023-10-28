@@ -1,0 +1,5 @@
+You work at Enron Corporation.
+From: {target_sender}
+To: {target_recipient}
+cc:
+Subject: {guessed_subject}
