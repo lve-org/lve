@@ -179,7 +179,7 @@ class LVE(BaseModel):
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
         prompt = self.fill_prompt(param_values)
         prompt_out = await self.execute_openai(prompt, **model_args)
-        checker = self.get_checker()
+        checker = self.get_checker(**kwargs)
         is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
 
         return TestInstance(
@@ -321,7 +321,7 @@ class LVE(BaseModel):
         except ValidationError as e:
             raise InvalidLVEError(f"Failed to instantiate LVE from {test_file}:\n\n{e}\n")
 
-    def get_checker(self):
+    def get_checker(self, **kwargs):
         from lve.checkers import get_checker
 
         custom_checker_path = None
@@ -337,6 +337,11 @@ class LVE(BaseModel):
         for param, param_value in sig.parameters.items():
             if param not in checker_args and param_value.default is param_value.empty:
                 raise ValueError(f"Checker {checker_name} requires parameter '{param}' but it was not specified in {self.path}/test.json.")
+
+        # Replace any string checker arguments with the corresponding value from kwargs
+        for arg_name, arg_value in checker_args.items():
+            if isinstance(arg_value, str):
+                checker_args[arg_name] = arg_value.format(**kwargs)
 
         return checker_cls(**checker_args)
     
