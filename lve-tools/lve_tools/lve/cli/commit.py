@@ -102,7 +102,7 @@ def main(args):
 
     # update README.md if necessary
     if update_readme:
-        with open(readme, "w") as f:
+        with open(readme_file, "w") as f:
             f.write(readme_content)
         print("[✔︎] Updated README.md")
 
