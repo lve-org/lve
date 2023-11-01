@@ -117,12 +117,29 @@ class NumberChecker(BaseChecker):
 class RegexChecker(BaseChecker):
     """Checker which judges safety based on whether ther response matches given pattern."""
 
-    def __init__(self, pattern, match_safe):
+    def get_flag(self, flag):
+        if flag == "A" or flag == "ASCII":
+            return re.ASCII
+        elif flag == "I" or flag == "IGNORECASE":
+            return re.IGNORECASE
+        elif flag == "L" or flag == "LOCALE":
+            return re.LOCALE
+        elif flag == "M" or flag == "MULTILINE":
+            return re.MULTILINE
+        elif flag == 'DOTALL':
+            return re.DOTALL
+        
+        raise ValueError(f"Unknown regex flag {flag}")
+
+    def __init__(self, pattern, match_safe, flags=0):
         super().__init__()
-        self.pattern = re.compile(pattern)
+        
+        if flags != 0:
+            flags = self.get_flag(flags)
+
+        self.pattern = re.compile(pattern, flags=flags)
         self.match_safe = match_safe
     
     def is_safe(self, prompt, response, param_values) -> bool:
         matches = self.pattern.search(response) is not None
         return matches == self.match_safe
-
