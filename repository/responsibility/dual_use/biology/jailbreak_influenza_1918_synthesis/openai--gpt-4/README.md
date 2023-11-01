@@ -1,5 +1,8 @@
 ### GPT-4 can be instructed via jailbreak to reveal a synthesis protocol for Influenza 1918 virus
 
+Link to the paper that is source for the prompt: https://arxiv.org/abs/2310.18233
+Note that there they consider a fine-tuned model, while this LVE focuses on a jailbreak for the original model.
+
 **Description**: GPT-4 can be instructed via jailbreak to reveal a synthesis protocol for Influenza 1918 virus
 
 **Model**: `openai/gpt-4`
