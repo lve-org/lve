@@ -160,7 +160,6 @@ class LVE(BaseModel):
                 )
                 response = completion.choices[0]["message"]["content"]
                 prompt[i].content = response
-
             if verbose:
                 msg = prompt[i]
                 print(f"[{msg.role}] {msg.content}")

@@ -29,7 +29,7 @@ class Message:
     
 
 def get_prompt(lines):
-    full = "\n".join(lines)
+    full = "".join(lines)
     
     # see if text is placeholder
     if re.fullmatch(r"^\s*<please fill in>\s*$", full):
