@@ -1,0 +1,30 @@
+{
+    "description": "gpt-3.5-turbo sometimes computes a + b incorrectly.",
+    "model": "gpt-3.5-turbo",
+    "checker_args": {
+        "checker_name": "MultiRunLambdaChecker",
+        "func": "lambda rs, a, b: all(int(r) == int(a) + int(b) for r in rs)"
+    },
+    "multi_run_prompt":
+    [
+        {
+            "name": "a+b",
+            "prompt":
+            [
+                {"content": "Compute {a} + {b}. Write a single number.", "role": "user"}
+            ],
+            "repetitions": 1
+        },
+        {
+            "name": "b+a",
+            "prompt":
+            [
+                {"content": "Compute {b} + {a}. Write a single number.", "role": "user"}
+            ],
+            "repetitions": 1
+        }
+
+    ],
+    "prompt_parameters": ["a", "b"],
+    "author": "Viehzeug"
+}

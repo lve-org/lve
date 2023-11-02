@@ -42,10 +42,48 @@ def split_instance_args(args, prompt_parameters):
 class TestInstance(BaseModel):
 
     args: dict[str, Any]
-    response: Union[str, dict[str, str]]
+    response: Union[str, dict[str, str], list[str], list[dict[str, str]]]
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
+
+TPrompt = Union[str, list[Message]]
+class MultiPrompt(BaseModel):
+    name: str
+    prompt: TPrompt = None
+    prompt_file: str = None
+    repetition: int = 1
+    path: str = None
+
+    def model_post_init(self, __context: Any) -> None:
+        super().model_post_init(__context)
+        if self.prompt_file is not None:
+            # interpreter prompt_file relative to test path if it exists
+            if os.path.exists(os.path.join(self.path, self.prompt_file)):
+                self.prompt_file = os.path.join(self.path, self.prompt_file)
+        
+            with open(self.prompt_file, 'r') as f:
+                self.prompt = get_prompt(f.readlines())
+        return self
+
+    @model_validator(mode='after')
+    def validate_prompt(self):
+        cnt_non_none = (self.prompt is not None)
+        cnt_non_none += (self.prompt_file is not None)
+        if cnt_non_none != 1:
+            raise ValueError("You must specify exactly one of prompt, prompt_file for each multi_run_prompt instance in test.json.")
+
+        if self.prompt_file is not None:
+            raise NotImplementedError("prompt_file is not supported for multi_run_prompt instances yet.")
+            
+        # at this point, self.prompt_file has been already loaded
+        if self.prompt is None:
+            raise ValueError(f"Must specify a prompt in {self.path}/test.json. Either fill in the test.prompt file, specify a prompt directly in test.json or specify a multi_run_prompt.")
+
+        return self
+
+
+TMultiPrompt = Union[MultiPrompt, list[MultiPrompt]]
 
 class LVE(BaseModel):
     """
@@ -61,13 +99,14 @@ class LVE(BaseModel):
     checker_args: dict[str, Any]
     author: Optional[str] = None
 
-    prompt_file: Optional[str] = None
-    prompt: Union[str, list[Message]] = None
+    prompt_file: str = None
+    multi_run_prompt: TMultiPrompt = None
+    prompt: TPrompt = None
     prompt_parameters: Union[list[str], None] = None
 
     # names of existing instance files (instances/*.json)
     instance_files: List[str]
-
+    
     def model_post_init(self, __context: Any) -> None:
         super().model_post_init(__context)
         if self.prompt_file is not None:
@@ -78,18 +117,39 @@ class LVE(BaseModel):
             with open(self.prompt_file, 'r') as f:
                 self.prompt = get_prompt(f.readlines())
         return self
+    
+    @model_validator(mode='before')
+    def verify_fields_before(test):
+        # check if the test.json file is valid
+        if "model" not in test:
+            raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: missing 'model' field")
+        
+        if "description" not in test:
+            raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: missing 'description' field")
+        return test
+ 
 
     @model_validator(mode='after')
     def verify_test_config(self):
+        cnt_non_none = (self.prompt is not None)
+        cnt_non_none += (self.prompt_file is not None)
+        cnt_non_none += (self.multi_run_prompt is not None)
+        if cnt_non_none != 1:
+            raise ValueError("You must specify exactly one of prompt, prompt_file, or multi_run_prompt in test.json.")
+
         if self.prompt_file is not None:
             assert self.prompt_file.endswith(".prompt"), "Prompt file should end with .prompt"
             if not os.path.exists(self.prompt_file):
                 raise ValueError("Prompt file does not exist!")
-        
+            
         # at this point, self.prompt_file has been already loaded
-        if self.prompt is None:
-            raise ValueError(f"Must specify a prompt in {self.path}/test.json. Either fill in the test.prompt file or specify a prompt directly in test.json.")
-
+        if self.prompt is None and self.multi_run_prompt is None:
+            raise ValueError(f"Must specify a prompt in {self.path}/test.json. Either fill in the test.prompt file, specify a prompt directly in test.json or specify a multi_run_prompt.")
+        
+        if self.multi_run_prompt is not None:
+            if isinstance(self.multi_run_prompt, MultiPrompt):
+                self.multi_run_prompt = [self.multi_run_prompt]
+        
         if 'checker_name' not in self.checker_args:
             raise ValueError(f"You must specify a checker_name under chercker_args in in {self.path}/test.json.")
 
@@ -101,9 +161,11 @@ class LVE(BaseModel):
 
         return self
 
-    def fill_prompt(self, param_values):
+    def fill_prompt(self, param_values, prompt=None):
         new_prompt = []
-        for msg in self.prompt:
+        if prompt == None:
+            prompt = self.prompt
+        for msg in prompt:
             content, role = msg.content, msg.role
             if msg.role != Role.assistant:
                 new_msg = Message(content=content.format(**param_values), role=role)
@@ -177,8 +239,19 @@ class LVE(BaseModel):
         run_info = self.get_run_info()
 
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
-        prompt = self.fill_prompt(param_values)
-        prompt_out = await self.execute_openai(prompt, **model_args)
+
+        if self.prompt is not None:
+            prompt = self.fill_prompt(param_values)
+            prompt_out = await self.execute_openai(prompt, **model_args)
+        else:
+            prompt = []
+            prompt_out = []
+            for mrp in self.multi_run_prompt:
+                p = self.fill_prompt(param_values, prompt=mrp.prompt)
+                po = await self.execute_openai(p, **model_args)
+                prompt.append(p)
+                prompt_out.append(po)
+
         checker = self.get_checker(**kwargs)
         is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
 
@@ -274,14 +347,7 @@ class LVE(BaseModel):
                 test = json.loads(contents)
         except Exception as e:
             raise InvalidLVEError(f"Could not read LVE test.json file at {test_file}:\n\n{e}\n\n{contents}")
-        
-        # check if the test.json file is valid
-        if "model" not in test:
-            raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: missing 'model' field")
-        
-        if "description" not in test:
-            raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: missing 'description' field")
-        
+       
         # check if LVE has instances/ directory
         instances_dir = os.path.join(path, "instances")
         if os.path.exists(os.path.join(instances_dir)):
@@ -305,10 +371,10 @@ class LVE(BaseModel):
             # for <category>/<name> paths
             name = path_after_category[-1]
 
-        if "prompt" not in test:
-            test["prompt_file"] = os.path.join(path, "test.prompt")
-            if not os.path.exists(test["prompt_file"]):
-                raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: prompt not specified and test.prompt does not exist")
+        # if "prompt" not in test:
+        #     test["prompt_file"] = os.path.join(path, "test.prompt")
+        #     if not os.path.exists(test["prompt_file"]):
+        #         raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: prompt not specified and test.prompt does not exist")
 
         try:
             return cls(
@@ -318,6 +384,10 @@ class LVE(BaseModel):
                 instance_files=instance_files,
                 **test
             )
+        except InvalidLVEError as e:
+            raise e # directly reraise InvalidLVEErrors
+        except ValueError as e:
+            raise InvalidLVEError(f"Failed to instantiate LVE from {test_file}:\n\n{e}\n")
         except ValidationError as e:
             raise InvalidLVEError(f"Failed to instantiate LVE from {test_file}:\n\n{e}\n")
 
