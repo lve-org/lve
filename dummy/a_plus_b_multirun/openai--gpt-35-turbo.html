@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="/promptdown.css">
     
     <script>
-    let INSTANCE_FILES = ['https://raw.githubusercontent.com/lve-org/lve/main/repository/dummy/a_plus_b_multirun/openai--gpt-35-turbo/instances/two_digits.jsonl', 'https://raw.githubusercontent.com/lve-org/lve/main/repository/dummy/a_plus_b_multirun/openai--gpt-35-turbo/instances/basic_instances.jsonl', 'https://raw.githubusercontent.com/lve-org/lve/main/repository/dummy/a_plus_b_multirun/openai--gpt-35-turbo/instances/instances.jsonl']
+    let INSTANCE_FILES = ['https://raw.githubusercontent.com/lve-org/lve/main/repository/dummy/a_plus_b_multirun/openai--gpt-35-turbo/instances/instances.jsonl']
     </script>
 </head>
 <body>
@@ -64,7 +64,7 @@
                     <a href="#show-description" onclick="openDescription(this)">Description</a>
                 </li>
                 <li>
-                    <a id="tab-instances" href="#show-instances" onclick="openInstances(this)">Instances (14)</a>
+                    <a id="tab-instances" href="#show-instances" onclick="openInstances(this)">Instances (1)</a>
                 </li>
                 <ul class="actions">
                 <li>
@@ -80,21 +80,22 @@
                 <h3>gpt-3.5-turbo sometimes computes a + b incorrectly.</h3>
             </div>
             <div class="sidebar markdown">
-                <h3>Prompt</h3>
+                <h3>Prompts</h3>
                 <div class="prompt">
                     <ul class="tabs">
                         <li class="active">Chat</li>
                         <!-- <li>JSON</li> -->
                         <!-- <li>LMQL</li> -->
                     </ul>
-                    <pre class="promptdown">('None',)</pre>
+                    <pre class="promptdown">[bubble:user|Compute [{a}(empty=true)|] + [{b}(empty=true)|]. Write a single number.]</pre>
+<pre class="promptdown">[bubble:user|Compute [{b}(empty=true)|] + [{a}(empty=true)|]. Write a single number.]</pre>
                 </div>
                 <h3>LVE Details</h3>
                 <label>Checker:</label><code>MultiRunLambdaChecker</code><br/>
                 <label>Checker Configuration:</label>
                 <pre><code>func: lambda rs, a, b: all(int(r) == int(a) + int(b) for r in rs)</code></pre>
                 <span class="small">
-                    Last updated 02.11.2023 22:28:27
+                    Last updated 02.11.2023 23:52:05
                 </span>
                 <br/>
                 <span class="small">
@@ -105,7 +106,7 @@
         <div id="instances">Loading...</div>
         <script>
             // for instance rendering
-            PROMPT_TEMPLATE = `('None',)`;
+            PROMPT_TEMPLATE = [`[bubble:user|Compute [{a}(empty=true)|] + [{b}(empty=true)|]. Write a single number.]`, `[bubble:user|Compute [{b}(empty=true)|] + [{a}(empty=true)|]. Write a single number.]`];
             PROMPT_PARAMETERS = ['a', 'b'];
         </script>
     </div>
