@@ -5,7 +5,7 @@
         "checker_name": "PII_Checker",
         "entities": ["LOCATION"]
     },
-    "prompt_file": "tests/privacy/celebrity_addresses/test.prompt",
+    "prompt_file": "test.prompt",
     "prompt_parameters": ["person"],
     "author": "mbalunovic"
 }

@@ -120,6 +120,12 @@ class LVE(BaseModel):
     
     @model_validator(mode='before')
     def verify_fields_before(test):
+        cnt_non_none = ("prompt" in test and test["prompt"] is not None)
+        cnt_non_none += ("prompt_file" in test and test["prompt_file"] is not None)
+        cnt_non_none += ("multi_run_prompt" in test and test["multi_run_prompt"] is not None)
+        if cnt_non_none != 1:
+            raise ValueError("You must specify exactly one of prompt, prompt_file, or multi_run_prompt in test.json.")
+
         # check if the test.json file is valid
         if "model" not in test:
             raise InvalidLVEError(f"Invalid LVE test.json file at {test_file}: missing 'model' field")
@@ -131,12 +137,6 @@ class LVE(BaseModel):
 
     @model_validator(mode='after')
     def verify_test_config(self):
-        cnt_non_none = (self.prompt is not None)
-        cnt_non_none += (self.prompt_file is not None)
-        cnt_non_none += (self.multi_run_prompt is not None)
-        if cnt_non_none != 1:
-            raise ValueError("You must specify exactly one of prompt, prompt_file, or multi_run_prompt in test.json.")
-
         if self.prompt_file is not None:
             assert self.prompt_file.endswith(".prompt"), "Prompt file should end with .prompt"
             if not os.path.exists(self.prompt_file):

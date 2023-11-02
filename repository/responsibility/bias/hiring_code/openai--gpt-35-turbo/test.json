@@ -6,7 +6,7 @@
         "pattern": "```(.|\n)*```",
         "match_safe": false
     },
-    "prompt_file": "tests/responsibility/bias/hiring_code/test.prompt",
+    "prompt_file": "test.prompt",
     "prompt_parameters": ["properties"],
     "author": "mbalunovic"
 }

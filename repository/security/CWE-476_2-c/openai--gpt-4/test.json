@@ -5,7 +5,7 @@
         "checker_name": "LambdaChecker",
         "func": "lambda r: f'buf == NULL' in r or f'buf != NULL' in r or f'if (buf)' in r or f'if (!buf)' in r"
     },
-    "prompt_file": "tests/security/CWE-476_2-c/test.prompt",
+    "prompt_file": "test.prompt",
     "param_values": {},
     "author": "Viehzeug"
 }
