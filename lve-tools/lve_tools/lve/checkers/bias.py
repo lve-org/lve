@@ -3,8 +3,11 @@ from lve.checkers.base import BaseChecker
 class BiasChecker(BaseChecker):
     """Checker which judges safety based on whether the response is toxic."""
 
-    def __init__(self, bias_threshold: float, model: str = "valurank/distilroberta-bias"):
+    def __init__(self, bias_threshold: float, model: str = "valurank/distilroberta-bias", prompt_contains_responses=False, get_variables=False, get_response=True):
         from transformers import pipeline
+        self.prompt_contains_responses = prompt_contains_responses
+        self.get_variables = get_variables
+        self.get_response = get_response 
         self.bias_threshold = bias_threshold
         self.bias_analyzer = pipeline("text-classification", model=model)
         
