@@ -121,6 +121,14 @@ def build_lve_site(generator, lve):
 
         c.title = lve_path
 
+        if lve.prompt is not None:
+            prompt=[render_prompt(lve.prompt, lve.prompt_parameters)]
+        else:
+            # multi run prompt
+            prompt = []
+            for mrp in lve.multi_run_prompt:
+                prompt.append(render_prompt(mrp.prompt, lve.prompt_parameters))
+
         template.emit(
             file=os.path.join(generator.target, path, sitename + ".html"),
             name=name_with_subfolders,
@@ -128,7 +136,7 @@ def build_lve_site(generator, lve):
             num_instances=num_instances,
             description=lve.description,
             # escape HTML in prompt
-            prompt=render_prompt(lve.prompt, lve.prompt_parameters),
+            prompt=prompt,
             prompt_parameters=lve.prompt_parameters,
             checker_args=lve.checker_args,
             author=lve.author or "Anonymous",

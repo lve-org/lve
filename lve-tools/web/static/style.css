@@ -1017,6 +1017,10 @@ nav ul li.active a {
     color: var(--text-body);
 }
 
+.prompt h3 {
+    margin-left: 20pt;
+}
+
 .instance {
     border-radius: 5pt;
     border: 1pt solid var(--chrome-border);
@@ -1219,3 +1223,4 @@ pre.expand.expanded code {
 .markdown.lve-description h3 {
     margin-bottom: 5pt;
 }
+

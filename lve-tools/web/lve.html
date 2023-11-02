@@ -46,14 +46,14 @@
                 {{ readme }}
             </div>
             <div class="sidebar markdown">
-                <h3>Prompt</h3>
+                <h3>{{"Prompt" if len(prompt) == 1 else "Prompts"}}</h3>
                 <div class="prompt">
                     <ul class="tabs">
                         <li class="active">Chat</li>
                         <!-- <li>JSON</li> -->
                         <!-- <li>LMQL</li> -->
                     </ul>
-                    <pre class="promptdown">{{ prompt }}</pre>
+                    {{ '\n'.join([f'<pre class="promptdown">{p}</pre>' for p in prompt]) }}
                 </div>
                 <h3>LVE Details</h3>
                 <label>Checker:</label><code>{{ checker_args.get("checker_name") }}</code><br/>
@@ -71,7 +71,7 @@
         <div id="instances">Loading...</div>
         <script>
             // for instance rendering
-            PROMPT_TEMPLATE = `{{ prompt }}`;
+            PROMPT_TEMPLATE = {{ "[" + ", ".join(f"`{p}`" for p in prompt) + "]" }};
             PROMPT_PARAMETERS = {{ prompt_parameters }};
         </script>
     </div>

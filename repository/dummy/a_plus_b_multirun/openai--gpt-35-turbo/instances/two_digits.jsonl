@@ -1,3 +1,0 @@
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":12,"b":32},"response":"44","run_info":{"openai":"0.28.0","timestamp":"Wed Sep 13 21:40:25 2023"},"is_safe":true,"author":""}
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":52,"b":88},"response":"140","run_info":{"openai":"0.28.0","timestamp":"Wed Sep 13 21:40:31 2023"},"is_safe":true,"author":""}
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.3,"a":99,"b":18},"response":"117","run_info":{"openai":"0.28.0","timestamp":"Wed Sep 13 21:40:40 2023"},"is_safe":true,"author":""}
