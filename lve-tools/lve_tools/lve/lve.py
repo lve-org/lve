@@ -294,10 +294,10 @@ class LVE(BaseModel):
         repo_path = os.path.relpath(path, repo.path)
 
         # with repository/ prefix, category is the first directory
-        category = repo_path.split("/")[1]
+        category = repo_path.split(os.sep)[1]
         
         # name is the last directory
-        path_after_category = repo_path.split("/")[2:]
+        path_after_category = repo_path.split(os.sep)[2:]
         if len(path_after_category) > 1:
             # for <category>/<name>/<model> paths
             name = path_after_category[-2]
