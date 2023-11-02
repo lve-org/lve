@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict 
 from lve.prompt import Role
 
 def extract_variables_from_prompt(prompt):
@@ -26,6 +27,7 @@ class CheckerRegistryHolder(type):
         return dict(cls.CHECKER_REGISTRY)
     
 
+
 class BaseChecker(metaclass=CheckerRegistryHolder):
     
     def __init__(self, prompt_contains_responses=False, get_variables=False, get_response=True):
@@ -33,9 +35,8 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
         self.get_variables = get_variables
         self.get_response = get_response 
         
-    def invoke_check(self, prompt_in, prompt_out, param_values=None):
-        """ Calls the correct signature of is_safe based on the configuration.
-            Main function exposed to the lve internals, but not the user.
+    def get_args(self, prompt_in, prompt_out, param_values=None):
+        """ Extracts a kwargs dictionary from the input and output prompts.
             
             Args:
                 prompt_in: The chat corresponding to the input.
@@ -43,7 +44,7 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
                 param_values: The parameter values plugged into the prompt.
             
             Returns:
-                is_safe: Whether the response is safe as determined by is_safe.
+                kwargs: A dictionary of arguments to be passed to is_safe.
                 response_or_variables: If there is only one response, returns the response as string, else returns all variables as a dictionary.
         """
         kwargs = {}
@@ -63,6 +64,22 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
                 response_or_variables = variables
 
         kwargs["param_values"] = param_values
+        return kwargs, response_or_variables
+        
+    def invoke_check(self, prompt_in, prompt_out, param_values=None):
+        """ Calls the correct signature of is_safe based on the configuration.
+            Main function exposed to the lve internals, but not the user.
+            
+            Args:
+                prompt_in: The chat corresponding to the input.
+                prompt_out: The chat including model responses.
+                param_values: The parameter values plugged into the prompt.
+            
+            Returns:
+                is_safe: Whether the response is safe as determined by is_safe.
+                response_or_variables: If there is only one response, returns the response as string, else returns all variables as a dictionary.
+        """
+        kwargs, response_or_variables = self.get_args(prompt_in, prompt_out, param_values)
         return self.is_safe(**kwargs), response_or_variables
 
     def is_safe(self, prompt, response, param_values=None) -> bool:
@@ -143,3 +160,48 @@ class RegexChecker(BaseChecker):
     def is_safe(self, prompt, response, param_values) -> bool:
         matches = self.pattern.search(response) is not None
         return matches == self.match_safe
+
+class MultiRunBaseChecker(BaseChecker):
+    
+    def invoke_check(self, prompts_in, prompts_out, param_values=None):
+        """ Calls the correct signature of is_safe based on the configuration.
+            Main function exposed to the lve internals, but not the user.
+            
+            Args:
+                prompts_in: List of the chats corresponding to the inputs.
+                prompts_out: List of the chats including the model responses. Order should match prompts_in.
+                param_values: The parameter values plugged into the prompt.
+            
+            Returns:
+                is_safe: Whether the response is safe as determined by is_safe.
+                response_or_variables: List of responses or variable sets to return.
+        """
+        assert len(prompts_in) == len(prompts_out)
+        responses = []
+        args = defaultdict(list)
+        for i in range(len(prompts_in)):
+            kwargs, response_or_variables = self.get_args(prompts_in[i], prompts_out[i], param_values)
+            for k, v in kwargs.items():
+                if k != "param_values":
+                    args[k].append(v)
+            responses.append(response_or_variables)
+        if param_values is not None:
+            args["param_values"] = param_values
+        return self.is_safe(**args), responses
+
+    def is_safe(self) -> bool:
+        """Determines whether the response is safe given the prompt and the parameters as a list over all instances.
+        """
+        raise NotImplementedError
+    
+class MultiRunLambdaChecker(MultiRunBaseChecker   ):
+    """Checker which uses a lambda function to check safety."""
+
+    def __init__(self, func):
+        super().__init__()
+        self.func = eval(func)
+        
+    def is_safe(self, prompt, response, param_values) -> bool:
+        return self.func(response, **param_values)
+
+
