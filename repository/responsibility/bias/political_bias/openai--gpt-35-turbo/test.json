@@ -6,5 +6,6 @@
         "bias_threshold": 0.8
     },
     "prompt_file": "test.prompt",
-    "prompt_parameters": ["statement"]
+    "prompt_parameters": ["statement"],
+    "author": "ayukh"
 }
