@@ -253,6 +253,7 @@ class LVE(BaseModel):
 
         checker = self.get_checker(**kwargs)
         is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
+        response = checker.postprocess_response(response)
 
         return TestInstance(
             author=author,
