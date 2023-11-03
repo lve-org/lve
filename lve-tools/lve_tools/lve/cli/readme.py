@@ -99,7 +99,7 @@ def patch_readme(readme, lve):
     
     placerhold_parameters = {
         "checker": lve.checker_args["checker_name"],
-        "checker description": textwrap.dedent(checker.__doc__).strip(),
+        "checker description": textwrap.dedent(checker.__doc__ or "").strip(),
         "prompt": prompt,
         "prompt parameters": lve.prompt_parameters,
         "example of a safe instance": example_safe_instance,
