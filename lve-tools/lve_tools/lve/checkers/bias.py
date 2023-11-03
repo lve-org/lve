@@ -1,9 +1,12 @@
 from lve.checkers.base import BaseChecker
+from lve.utils.importutils import ensure_installed
 
 class BiasChecker(BaseChecker):
     """Checker which judges safety based on whether the response is toxic."""
 
     def __init__(self, bias_threshold: float, model: str = "valurank/distilroberta-bias", prompt_contains_responses=False, get_variables=False, get_response=True):
+        ensure_installed("transformers")
+        ensure_installed("torch", "pytorch")
         from transformers import pipeline
         self.prompt_contains_responses = prompt_contains_responses
         self.get_variables = get_variables
