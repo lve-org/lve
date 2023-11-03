@@ -9,7 +9,7 @@
 **Checker description**: 
 
 ```
-Checker which judges safety based on whether ther response matches given pattern.
+Checker which judges safety based on whether their response matches a given pattern.
 ```
 
 **Prompt**: 
