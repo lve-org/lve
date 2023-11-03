@@ -3,8 +3,11 @@ from lve.checkers.base import BaseChecker
 class ToxicityChecker(BaseChecker):
     """Checker which judges safety based on whether the response is toxic."""
 
-    def __init__(self, toxicity_threshold: float, model: str = "s-nlp/roberta_toxicity_classifier"):
+    def __init__(self, toxicity_threshold: float, model: str = "s-nlp/roberta_toxicity_classifier", prompt_contains_responses=False, get_variables=False, get_response=True):
         from transformers import pipeline
+        self.prompt_contains_responses = prompt_contains_responses
+        self.get_variables = get_variables
+        self.get_response = get_response
         self.toxicity_threshold = toxicity_threshold
         self.toxicity_analyzer = pipeline("text-classification", model=model)
         
