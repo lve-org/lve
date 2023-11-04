@@ -7,32 +7,22 @@ import inspect
 
 import openai
 import lmql
+from lve.inference import execute_openai, execute_replicate
 from lve.errors import *
+from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS
 from lve.prompt import Role, Message, get_prompt, prompt_to_openai
 import copy
 
 from pydantic import BaseModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
 
-openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
-if openai_is_azure:
-    openai.api_key = os.getenv("AZURE_OPENAI_KEY")
-    openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
-    if os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"):
-        with open(os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"), "r") as f:
-            _openai_azure_model_to_engine_map = json.loads(f.read())
-    else:
-        _openai_azure_model_to_engine_map = dict()
-    openai_azure_model_to_engine = lambda x: _openai_azure_model_to_engine_map.get(x, x)
-    openai.api_type = 'azure'
-    openai.api_version = '2023-05-15' # this may change in the future
-
-
 def split_instance_args(args, prompt_parameters):
     if prompt_parameters is None:
         return {}, args
     param_values, model_args = {}, {}
     for key in args:
+        if args[key] is None:
+            continue
         if key in prompt_parameters:
             param_values[key] = args[key]
         else:
@@ -174,60 +164,12 @@ class LVE(BaseModel):
                 new_prompt.append(msg)
         return new_prompt
     
-
-    async def execute_openai(self, prompt_in, verbose=False, **model_args):
-        """
-        Executes a prompt in Openai.
-
-        Args:
-            prompt_in: The prompt to execute. Will not be changes.
-            verbose: Print the prompt and response.
-            model_args: Arguments to pass to the Openai API.
-            
-        Returns:
-            A new prompt where all assistant messages have been filled in.
-            A assistant message will always be added at the end.
-        """
-        prompt = copy.deepcopy(prompt_in)
-
-        # get model path
-        # for now just remove the openai/ prefix
-        model = self.model
-        if model.startswith("openai/"):
-            model = model[len("openai/"):]
-
-
-        # if we use azure openai use the correct engine for the model
-        if openai_is_azure:
-            model_args['engine'] = openai_azure_model_to_engine(model)
-            
-        # if the last message is not an assistant message, add one
-        if prompt[-1].role != Role.assistant:
-            prompt.append(Message(content=None, role=Role.assistant, variable='response'))
-            
-        cnt_variables = sum(p.role == Role.assistant for p in prompt)
-        cnt_variable_names = sum(p.role == Role.assistant and p.variable is not None for p in prompt)
-        if cnt_variables > 1 and cnt_variable_names != cnt_variables:
-            assert False, "If more than one assistant message is present, all of them must have a variable name."
-
-        # go through all messages and fill in assistant messages, sending everything before as context
-        for i in range(len(prompt)):
-            if prompt[i].role == Role.assistant and prompt[i].content == None:
-                prompt_openai = prompt_to_openai(prompt[:i])
-
-                completion = await openai.ChatCompletion.acreate(
-                    model=model,
-                    messages=prompt_openai,
-                    **model_args,
-                )
-                response = completion.choices[0]["message"]["content"]
-                prompt[i].content = response
-            if verbose:
-                msg = prompt[i]
-                print(f"[{msg.role}] {msg.content}")
-
-        return prompt
-
+    async def execute(self, prompt_in, verbose=False, **model_args):
+        if self.model.startswith("openai/") or self.model in OPENAI_MODELS:
+            return await execute_openai(self.model, prompt_in, verbose, **model_args)
+        else:
+            assert self.model in REPLICATE_MODELS, f"Model {self.model} is not supported."
+            return await execute_replicate(self.model, prompt_in, verbose, **model_args)
     
     async def run(self, author=None, verbose=False, engine='openai', **kwargs):
         if engine == 'lmql':
@@ -241,13 +183,13 @@ class LVE(BaseModel):
 
         if self.prompt is not None:
             prompt = self.fill_prompt(param_values)
-            prompt_out = await self.execute_openai(prompt, **model_args)
+            prompt_out = await self.execute(prompt, **model_args)
         else:
             prompt = []
             prompt_out = []
             for mrp in self.multi_run_prompt:
                 p = self.fill_prompt(param_values, prompt=mrp.prompt)
-                po = await self.execute_openai(p, **model_args)
+                po = await self.execute(p, **model_args)
                 prompt.append(p)
                 prompt_out.append(po)
 
