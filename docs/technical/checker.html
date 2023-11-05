@@ -79,18 +79,6 @@ For more details see the respective class comments on <a href="https://github.co
 <li><strong>Example LVE:</strong> <a href="/dummy/a_plus_b/openai--gpt-35-turbo">dummy/a_plus_b</a></li>
 </ul>
 </li>
-<li><strong>NumberChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/base.py#L114">(Source)</a><ul>
-<li>Checker which uses a lambda to compute an expected number that is  compared to the model response, normalizing the number format first.</li>
-<li><strong>Attributes</strong><ul>
-<li><em>expected_value_func:</em> Is executed once to determine the value to be checked against. Should return a number.</li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <code>none</code></li>
-</ul>
-</li>
 <li><strong>RegexChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/base.py#L134">(Source)</a><ul>
 <li>Checker which judges safety based on whether the response matches given pattern.</li>
 <li><strong>Attributes</strong><ul>
