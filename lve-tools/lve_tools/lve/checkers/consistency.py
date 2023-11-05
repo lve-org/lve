@@ -7,6 +7,7 @@ def map_dict(dictionary, fn_key=lambda k: k, fn_value=lambda v: v):
     return {fn_key(k): fn_value(v) for k, v in dictionary.items()}
 
 class MonotoncityChecker(BaseChecker):
+    """Checks wether the variable values (as floats) in a multi variable setting are monotonically increasing/decreasing with respect to parameters in the prompts (as floats)."""
 
     def __init__(self, answer_value_regex:str=r'([0-9]+)',
                        answer_variable_identifier_regex:str=r'([0-9]+)',

@@ -132,7 +132,7 @@ class NumberChecker(BaseChecker):
         return self.normalize_number(response) == self.normalize_number(expected)
 
 class RegexChecker(BaseChecker):
-    """Checker which judges safety based on whether ther response matches given pattern."""
+    """Checker which judges safety based on whether the response matches given pattern."""
 
     def get_flag(self, flag):
         if flag == "A" or flag == "ASCII":
@@ -194,7 +194,7 @@ class MultiRunBaseChecker(BaseChecker):
         """
         raise NotImplementedError
     
-class MultiRunLambdaChecker(MultiRunBaseChecker   ):
+class MultiRunLambdaChecker(MultiRunBaseChecker):
     """Checker which uses a lambda function to check safety."""
 
     def __init__(self, func):
