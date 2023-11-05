@@ -194,7 +194,7 @@ class MultiRunBaseChecker(BaseChecker):
         """
         raise NotImplementedError
     
-class MultiRunLambdaChecker(MultiRunBaseChecker   ):
+class MultiRunLambdaChecker(MultiRunBaseChecker):
     """Checker which uses a lambda function to check safety."""
 
     def __init__(self, func):
