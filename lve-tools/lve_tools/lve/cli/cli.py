@@ -17,6 +17,7 @@ from .prepare import main as prepare_main
 from .pr import main as pr_main
 from .run import main as run_main
 from .readme import main as readme_main
+from .unit_test import main as unit_test_main
 
 DOCUMENTATION = f"""\
 The 'lve' command line tool can be used to record and document language model vulnerabilities and exposures (LVEs). 
@@ -90,6 +91,7 @@ def main():
         "pr": pr_main,
         "run": run_main,
         "readme": readme_main,
+        "unit-test": unit_test_main,
     }
 
     if cmd not in cmds:
