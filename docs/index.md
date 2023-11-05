@@ -118,10 +118,7 @@ In this folder, the `test.json` configuration file defines a prompt template and
 ```
 
 The checker here refers to the class name of one of the default checkers in `lve-tools`. For details see [Checkers](./technical/checker.md).
-
-The prompt here can be a list of messages in JSON format (with `content` and `role`) or point to a `promptfile` congaing the prompt. For more details and prompts with multiple variables see [Prompt Formats](./technical/prompt).
-
-
+For details on the prompt see [Prompts](./technical/prompt.md).
 
 ### LVE Instances 
 
