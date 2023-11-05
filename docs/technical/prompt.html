@@ -62,14 +62,33 @@
             </ul></nav>
         <div class="markdown">
          <h1 id="prompt">Prompt</h1>
+<p>In <code>test.json</code>, the prompt can be specified in three ways, by providing either the <code>prompt</code>, <code>prompt_file</code> or <code>multi_run_prompt</code>.
+However, only one of these may be specified at the same time.</p>
+<p>If <code>prompt</code> is specified, it's value should be a list of JSON objects, so called "messages".
+Each message must have at least the field <code>content</code>.
+Optionally, each message may also have the <code>role</code> field with either the values <code>user</code>, <code>system</code> or <code>assistant</code>. If no role is specified, it defaults to <code>user</code>.
+This mirrors the Chat ML format of the <a href="https://platform.openai.com/docs/guides/gpt/chat-completions-api">OpenAI Chat API</a>.
+We permit further fields in the context of <a href="#multi-variable-prompts">Multi-Variable Prompts</a>.
+After running the LLM, the assistants response will be appended as a new message with the assistant role.</p>
+<p>If <code>prompt_file</code> is specified, it is a path (absolute or relative, though we recommend relative) to a <code>.prompt</code> file containing the prompt. <a href="#prompt-file-format">Below</a> we how this file can be formatted.</p>
+<p>Lastly, we discuss how <code>multi_run_prompt</code> can be specified in <a href="#multi-run-prompts">Multi-Run Prompts</a>.</p>
 <h2 id="prompt-file-format">Prompt File Format</h2>
-<p>A prompt file can contain either plain text, a single message as a single JSON object or a sequence of messages with one JSON object per line (JSONL).</p>
-<p>Each JSON object can have the fields <code>content</code> (the message content) and optionally <code>role</code> (can be <code>system</code> or <code>user</code>, defaulting to <code>user</code>).
-If the prompt file contains plain text, this is interpreted as a single user message. Specifying one or more multiple JSON objects (one per line) it is possible to specify a mixture of system and user prompts.</p>
+<p>A prompt file can contain either plain text, a single message as a single JSON object or a sequence of messages with one JSON object per line.</p>
+<p>If just plain text is provided, it read as a single message (with the <code>user</code> role).
+Each JSON object must have the field <code>content</code> and optionally <code>role</code> as discussed above.</p>
+<h2 id="multi-run-prompts">Multi-Run Prompts</h2>
+<p>By default, for each instance the LLM is only invoked one.
+However,  via the field <code>multi_run_prompt</code> it is possible to specify multiple prompts that are all run and the results are jointly fed to the <a href="/docs/technical/checker/#multi-variable-checkers">checker</a> as one instance.
+The field <code>multi_run_prompt</code> can be a list of JSON objects, which each have the fields <code>name</code> (optional, currently ignored), <code>repetitions</code> (optional, defaulting to 1) and either <code>prompt</code> or <code>prompt_file</code> as outlined above. Each prompt specified this way is executed <code>repetitions</code> many times.
+For an example see the corresponding <a href="/dummy/a_plus_b_multirun/openai--gpt-35-turbo">dummy LVE</a>.</p>
 <h2 id="multi-variable-prompts">Multi-Variable Prompts</h2>
-<p>Additionally, the role can be set to <code>assistant</code>. This allows either to specify previous model responses (via non-null content) or multiple model responses, as each <code>assistant</code> message with <code>null</code> content will be completed by the model, with all previous messages as prompt.
-For each <code>assistant</code> message with <code>null</code>-content the <code>variable</code> field must be set. The assistant responses will then be available to the checker under that name.
-For an example see the <a href="/reliability/consistency/monotonicity/gpt-35-turbo.html">Monotonicity LVE</a>.</p>
+<p>By default, the LLM is just invoked to complete the Chat prompt with a single trailing <code>assistant</code> message. However, it is also possible to specify a longer back-and-forth.</p>
+<p>To do this, messages with the role <code>assistant</code>, but content set to <code>null</code> can be specified. Whenever such a message is encountered, all the messages prior to it are send to the LLM as a prompt, the completion is saved as the <code>content</code> of that message and the remainder of the prompt is executed in the same fashion.</p>
+<p>If such messages are present, they need to also have the field <code>variable</code> set. In the checker the results of the individual LLM completions are available through the respective variable names.
+Unless the last message in the prompt is an <code>assistant</code> message with <code>null</code> content one will be appended.</p>
+<p><code>assistant</code> messages with non-<code>null</code> content are still handled in the default way.</p>
+<p>Multi-Variable Prompts require <a href="/docs/technical/checker/#multi-variable-checkers">special checkers</a>. For an example see the <a href="/reliability/consistency/monotonicity/gpt-35-turbo.html">Monotonicity LVE</a>.</p>
+<p>Combining Multi-Variable and Multi-Run Prompts is possible, but requires adapted checkers.</p>
         </div>
     </div>
     </div>

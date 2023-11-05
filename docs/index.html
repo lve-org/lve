@@ -168,8 +168,8 @@ lve pr
     &quot;author&quot;: &quot;mbalunovic&quot;
 }
 </code></pre>
-<p>The checker here refers to the class name of one of the default checkers in <code>lve-tools</code>. For details see <a href="./technical/checker.html">Checkers</a>.</p>
-<p>The prompt here can be a list of messages in JSON format (with <code>content</code> and <code>role</code>) or point to a <code>promptfile</code> congaing the prompt. For more details and prompts with multiple variables see <a href="./technical/prompt">Prompt Formats</a>.</p>
+<p>The checker here refers to the class name of one of the default checkers in <code>lve-tools</code>. For details see <a href="./technical/checker.html">Checkers</a>.
+For details on the prompt see <a href="./technical/prompt.html">Prompts</a>.</p>
 <h3 id="lve-instances">LVE Instances</h3>
 <p>Next to the <code>test.json</code> file, the <code>instances/</code> directory contains the recorded instances per LVE/model configuration.</p>
 <p>Each instance is generated using <a href="#recording-an-lve"><code>lve record</code></a>. To create an LVE instance, <code>lve record</code> instantiates the prompt template using concrete placeholder values as provided by the user. It then runs the prompt against the model using a provided inference configuration (e.g. <code>temperature</code>) and finally applies the LVE's checking logic to determine whether the model's response passes or fails the LVE.</p>
