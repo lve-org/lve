@@ -1,4 +1,3 @@
-
 """
 Main entry point for the 'lve' CLI tool.
 """
@@ -80,7 +79,7 @@ def main():
     if len(sys.argv) < 2:
         documentation()
         return
-
+    
     cmd = sys.argv[1]
     cmds = {
         "record": record_main,
