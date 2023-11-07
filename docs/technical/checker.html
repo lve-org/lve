@@ -59,126 +59,16 @@
             <li class="">
                 <a href="/docs/technical/prompt.html">Prompt</a>
             </li>
+            
+            <li class="">
+                <a href="/docs/technical/core_checkers.html">Core Checkers</a>
+            </li>
             </ul></nav>
         <div class="markdown">
          <h1 id="checker">Checker</h1>
 <p>A checker class provides a <code>is_safe</code> function that gets the prompt, model repose(s) and prompt parameters and determines whether an instance of the LVE is safe or not.</p>
 <h2 id="available-checkers">Available Checkers</h2>
-<p>Below we briefly outline the checkers currently available in LVE.
-For more details see the respective class comments on <a href="https://github.com/lve-org/lve/tree/main/lve-tools/lve_tools/lve/checkers">GitHub</a>.</p>
-<ul>
-<li><strong>LambdaChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/base.py#L104">(Source)</a><ul>
-<li>Checker which uses a lambda function to check safety.</li>
-<li><strong>Attributes</strong><ul>
-<li><em>func:</em> The lambda function to be executed. Should return a <code>bool</code>.</li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <a href="/dummy/a_plus_b/openai--gpt-35-turbo">dummy/a_plus_b</a></li>
-</ul>
-</li>
-<li><strong>RegexChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/base.py#L134">(Source)</a><ul>
-<li>Checker which judges safety based on whether the response matches given pattern.</li>
-<li><strong>Attributes</strong><ul>
-<li><em>pattern:</em> The regex pattern.</li>
-<li><em>match_safe:</em> The value of the match to be compared against.</li>
-<li><em>flags:</em> A string containing one <a href="https://docs.python.org/3/library/re.html#flags">Regex Flag</a>. Currently only <code>A</code>, <code>I</code>, <code>L</code>, <code>M</code>, <code>DOTALL</code> are supported.  Defaults to <code>0</code> (no flag).</li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <a href="/responsibility/dual_use/biology/jailbreak_influenza_1918_synthesis/openai--gpt-4">responsibility/dual_use/biology/jailbreak_influenza_1918_synthesis</a></li>
-</ul>
-</li>
-<li><strong>MultiRunLambdaChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/base.py#L197">(Source)</a><ul>
-<li>Checker which uses a lambda function to check safety.</li>
-<li><strong>Attributes</strong><ul>
-<li><em>func:</em> The lambda function to be executed. Should return a <code>bool</code>.</li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> yes</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <a href="/dummy/a_plus_b_multirun/openai--gpt-35-turbo">dummy/a_plus_b_multirun</a></li>
-</ul>
-</li>
-<li><strong>BiasChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/bias.py#L4">(Source)</a><ul>
-<li>Checker which judges safety based on whether the response matches given pattern.</li>
-<li><strong>Attributes</strong><ul>
-<li><em>bias_threshold:</em> Minimal threshold for classification as biased.</li>
-<li><em>model:</em> The identifier of the used HuggingFace model. Defaults to: (valurank/distilroberta-bias)[https://huggingface.co/valurank/distilroberta-bias]</li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <a href="/bias/political_bias/openai--gpt-35-turbo">bias/political_bias</a></li>
-</ul>
-</li>
-<li>
-<p><strong>MonotonicityChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/consistency.py#L9">(Source)</a></p>
-<ul>
-<li>Checks wether the variable values (as floats) in a multi variable setting are monotonically increasing/decreasing with respect to parameters in the prompts (as floats).</li>
-<li><strong>Attributes</strong><ul>
-<li><em>answer_value_regex:</em> Regex to search for the value to be checked in each model response/variable. Default: <code>[0-9]+</code>.</li>
-<li><em>answer_identifier_regex:</em> Regex to search for the identifier of the variable out of the variable name. Variables from the response and parameters are matched on their identifier. Default: <code>[0-9]+</code>.</li>
-<li><em>param_variable_identifier_regex:</em> Regex to search for the identifier a parameter from the parameter name. Default: <code>[0-9]+</code>.</li>
-<li><em>order</em>: Order for the monotonicity check. Can be <code>asc</code> or <code>desc</code>. Default: <code>asc</code></li>
-<li><em>strict</em>: Wether to check for strict monotonicity. Default: <code>False</code></li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> yes</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <a href="/reliability/consistency/monotonicity/gpt-35-turbo">reliability/consistency/monotonicity</a></li>
-</ul>
-</li>
-<li>
-<p><strong>ExactMatchChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/match.py#L3">(Source)</a></p>
-<ul>
-<li>Response is safe it it does not exactly match the pattern.</li>
-<li><strong>Attributes</strong><ul>
-<li><em>pattern:</em> String to be matched (with parameter substitution).</li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <a href="/privacy/inference/age_inference/openai--gpt-4">privacy/inference/age_inference</a></li>
-</ul>
-</li>
-<li>
-<p><strong>PII_Checker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/pii.py#L4">(Source)</a></p>
-<ul>
-<li>Checks for the presence of personally identifying information (PII) using hte Microsoft Presidio Analyzer. Found violations are then redacted from the response.</li>
-<li><strong>Attributes</strong><ul>
-<li><em>entities:</em> Types of PII information to be matched. See the <a href="https://microsoft.github.io/presidio/supported_entities/">Presidio Documentation</a> for details.</li>
-</ul>
-</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> Yes, redacts PII information in stored instances.</li>
-<li><strong>Example LVE:</strong> <a href="/privacy/pii_leakage/celebrity_addresses/openai--gpt-35-turbo">privacy/pii_leakage/celebrity_addresses</a></li>
-</ul>
-</li>
-<li>
-<p><strong>ToxicityChecker</strong> <a href="https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/toxicity.py#L3">(Source)</a></p>
-<ul>
-<li>Checker which judges safety based on whether the response is toxic according to a (HuggingFace) bias detector.</li>
-<li><strong>Attributes</strong></li>
-<li><em>toxicity_threshold:</em> Minimal threshold for classification as toxic.</li>
-<li><em>model:</em> The identifier of the used HuggingFace model. Defaults </li>
-<li>to: (s-nlp/roberta_toxicity_classifier")[https://huggingface.co/s-nlp/roberta_toxicity_classifier]</li>
-<li><strong>Multi-Run:</strong> no</li>
-<li><strong>Multi-Variable:</strong> no</li>
-<li><strong>Post-Processing:</strong> no</li>
-<li><strong>Example LVE:</strong> <a href="/responsibility/toxicity/chatgpt_offensive_comment/openai--gpt-35-turbo">responsibility/toxicity</a></li>
-</ul>
-</li>
-</ul>
+<p>The amiable checkers can be found in <a href="/docs/technical/core_checkers.html">Core Checkers</a>.</p>
 <h2 id="post-processing">Post-Processing</h2>
 <p>Checkers can specify a <code>postprocess_response</code> function that can alter the saved instance (either a response string or dictionary of variables) before saving it to a file. This should be used to avoid storing problematic information such as toxic or private data.</p>
 <h2 id="specifying-custom-checkers">Specifying Custom Checkers</h2>
