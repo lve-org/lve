@@ -42,7 +42,7 @@ For more details see the respective class comments on [GitHub](https://github.co
     - **Multi-Variable:** no
     - **Post-Processing:** no
     - **Example LVE:** [bias/political_bias](/bias/political_bias/openai--gpt-35-turbo)
-- **MonotoncityChecker** [(Source)](https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/consistency.py#L9)
+- **MonotonicityChecker** [(Source)](https://github.com/lve-org/lve/blob/main/lve-tools/lve_tools/lve/checkers/consistency.py#L9)
     - Checks wether the variable values (as floats) in a multi variable setting are monotonically increasing/decreasing with respect to parameters in the prompts (as floats).
     - **Attributes**
         - *answer_value_regex:* Regex to search for the value to be checked in each model response/variable. Default: `[0-9]+`.
