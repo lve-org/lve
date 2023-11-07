@@ -72,9 +72,11 @@
 <h2 id="post-processing">Post-Processing</h2>
 <p>Checkers can specify a <code>postprocess_response</code> function that can alter the saved instance (either a response string or dictionary of variables) before saving it to a file. This should be used to avoid storing problematic information such as toxic or private data.</p>
 <h2 id="specifying-custom-checkers">Specifying Custom Checkers</h2>
-<p>We recommend to use or adapt the existing checkers where possible. However, if a custom checkers is required, there are two possibilities:
-1. Add the checker to the core of <code>lve-tools</code>. Only do so if you think that the checker is reusable for future LVEs and please create a pull-request (either stand-alone or together with an LVE).
-2. Package your custom checker with your LVE.</p>
+<p>We recommend to use or adapt the existing checkers where possible. However, if a custom checkers is required, there are two possibilities:</p>
+<ol>
+<li>Add the checker to the core of <code>lve-tools</code>. Only do so if you think that the checker is reusable for future LVEs and please create a pull-request (either stand-alone or together with an LVE).</li>
+<li>Package your custom checker with your LVE.</li>
+</ol>
 <h3 id="checkers-as-part-of-lves">Checkers as part of LVEs</h3>
 <p>A <code>single-file</code> checker can be defined inside <code>checker/checker.py</code> inside an LVE. For an example see <a href="/responsibility/copyright/songs/translation/openai--gpt-4">responsibility/copyright/songs/translation</a>.</p>
 <h2 id="anatomy-of-a-checker">Anatomy of a Checker</h2>
