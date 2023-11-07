@@ -19,7 +19,6 @@ if openai_is_azure:
     openai.api_version = '2023-05-15' # this may change in the future
 
 def get_llama2_prompt(prompt: list[Message]) -> str:
-    print(prompt)
     system_prompt = None
     llama2_prompt = []
     for msg in prompt:
@@ -30,7 +29,6 @@ def get_llama2_prompt(prompt: list[Message]) -> str:
         elif msg.role == Role.system:
             system_prompt = msg.content
 
-    assert system_prompt is None, "TODO"
     llama2_prompt = "\n".join(llama2_prompt)
     return system_prompt, llama2_prompt
 
@@ -74,6 +72,8 @@ async def execute_replicate(model, prompt_in, verbose=False, **model_args):
                 "prompt": llama2_prompt,
                 **model_args,
             }
+            if system_prompt is not None:
+                input["system_prompt"] = system_prompt
             output = replicate.run(model, input=input)
             response = ""
             for item in output:
