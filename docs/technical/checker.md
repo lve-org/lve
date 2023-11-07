@@ -11,6 +11,7 @@ Checkers can specify a `postprocess_response` function that can alter the saved 
 
 ## Specifying Custom Checkers
 We recommend to use or adapt the existing checkers where possible. However, if a custom checkers is required, there are two possibilities:
+
 1. Add the checker to the core of `lve-tools`. Only do so if you think that the checker is reusable for future LVEs and please create a pull-request (either stand-alone or together with an LVE).
 2. Package your custom checker with your LVE.
 
