@@ -48,7 +48,7 @@ def doc_nav(active, sections):
 
     return html
 
-def build_docs(generator):
+def build_docs(generator, lves):
     # make sure build/docs exists 
     os.makedirs(os.path.join(generator.target, "docs"), exist_ok=True)
 
@@ -78,6 +78,17 @@ def build_docs(generator):
         section = "/".join(path.split("/")[1:-1])
         DOC_SECTIONS.setdefault(section, []).append(page)
 
+    DOC_SECTIONS["technical"].append({'path': 'docs/technical/core_checkers.md',
+                                      'title': 'Core Checkers'})
+    md = build_checkers(lves)
+    md = markdown.markdown(md, extensions=extensions)
+    template = SiteTemplate("docs.html")
+    template.emit(
+        file=os.path.join(generator.target, "docs", "technical", "core_checkers.html"),
+        markdown=md,
+        chapters=DOC_SECTIONS
+    )
+        
     for page in DOC_PAGES:
         template = SiteTemplate("docs.html")
         path = page["path"].replace("docs/", DOCS_DIR + "/")
@@ -95,3 +106,39 @@ def build_docs(generator):
             markdown=md,
             chapters=DOC_SECTIONS
         )
+
+def to_yes_no(val):
+    return "Yes" if val else "No"
+
+def build_checkers(lves):
+    from lve.checkers import CheckerRegistryHolder
+    import inspect
+    from pathlib import Path
+    from lve.repo import get_active_repo
+    import textwrap
+    md = ""
+
+    repo = get_active_repo().remote
+    gh_base_url = f"https://{repo}/tree/main/"
+    base_path = Path(__file__).parent.parent.parent.parent
+    for name, checker in CheckerRegistryHolder.get_checker_registry().items():
+        sourcefile = inspect.getsourcefile(checker)
+        sourcefile = Path(sourcefile).relative_to(base_path)
+        line = inspect.getsourcelines(checker)[1]
+        md += f"## {name} ([Source]({gh_base_url}{sourcefile}#L{line}))\n"
+        md += f"{textwrap.dedent(checker.__doc__ or '').strip()}\n\n"
+        md += f"**Multi-Run:** {to_yes_no(checker.is_multi_run())}\n\n"    
+        md += f"**Multi-Variable:** {to_yes_no(checker.is_multi_variable())}\n\n"    
+        md += f"**Post-Processing:** {to_yes_no(checker.has_post_processing())}\n\n"    
+        
+        md += f"**LVEs:**\n\n"
+        for lve in lves:
+            lve = lve['lve']
+            if lve.checker_args['checker_name'] == name:
+                arg_string = ", ".join([f"{k}={v}" for k, v in lve.checker_args.items() if k != 'checker_name'])
+                path = str(Path(lve.path).relative_to(base_path))
+                path = path.replace("repository/", "")
+                md += f"- [{lve.name}](/{path}.html) ([Source]({gh_base_url}/repository/{path}))<br>"
+                md += f"`{name}({arg_string})`\n"
+
+    return md

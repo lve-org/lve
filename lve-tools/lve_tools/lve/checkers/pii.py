@@ -5,6 +5,10 @@ class PII_Checker(BaseChecker):
     """
     Checks for the presence of personally identifying information (PII) using hte Microsoft Presidio Analyzer.
     Found violations are then redacted from the response.
+    
+    **Attributes**
+
+    - *entities:* Types of PII information to be matched. See the [Presidio Documentation](https://microsoft.github.io/presidio/supported_entities/) for details.
     """
 
     def __init__(self, entities: list[str]):

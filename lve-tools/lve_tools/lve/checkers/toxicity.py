@@ -1,7 +1,14 @@
 from lve.checkers.base import BaseChecker
 
 class ToxicityChecker(BaseChecker):
-    """Checker which judges safety based on whether the response is toxic according to a (HuggingFace) bias detector."""
+    """
+    Checker which judges safety based on whether the response is toxic according to a (HuggingFace) bias detector.
+
+    **Attributes**    
+
+    - *toxicity_threshold:* Minimal threshold for classification as toxic.
+    - *model:* The identifier of the used HuggingFace model. Defaults to: [s-nlp/roberta_toxicity_classifier](https://huggingface.co/s-nlp/roberta_toxicity_classifier)
+    """
 
     def __init__(self, toxicity_threshold: float, model: str = "s-nlp/roberta_toxicity_classifier"):
         super().__init__(prompt_contains_responses=False, get_variables=False, get_response=True)
