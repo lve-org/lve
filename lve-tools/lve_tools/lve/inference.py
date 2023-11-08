@@ -4,6 +4,7 @@ import openai
 import os
 from lve.prompt import Role, Message, prompt_to_openai
 from lve.model_store import REPLICATE_MODELS
+from openai import OpenAI
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -97,6 +98,7 @@ async def execute_openai(model, prompt_in, verbose=False, **model_args):
         A new prompt where all assistant messages have been filled in.
         A assistant message will always be added at the end.
     """
+    client = OpenAI()
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
     # go through all messages and fill in assistant messages, sending everything before as context
@@ -104,12 +106,12 @@ async def execute_openai(model, prompt_in, verbose=False, **model_args):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
             prompt_openai = prompt_to_openai(prompt[:i])
 
-            completion = await openai.ChatCompletion.acreate(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=prompt_openai,
                 **model_args,
             )
-            response = completion.choices[0]["message"]["content"]
+            response = completion.choices[0].message.content
             prompt[i].content = response
         if verbose:
             msg = prompt[i]
