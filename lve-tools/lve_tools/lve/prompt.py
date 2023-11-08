@@ -10,7 +10,13 @@ from pydantic.dataclasses import dataclass
 def prompt_to_openai(prompt):
     messages = []
     for msg in prompt:
-        messages += [{"content": msg.content, "role": str(msg.role)}]
+        content, role = msg.content, str(msg.role)
+        if msg.image_url is not None:
+            content = [
+                {"type": "text", "text": msg.content},
+                {"type": "image_url", "image_url": msg.image_url},
+            ]
+        messages += [{"content": content, "role": role}]
     return messages
 
 class Role(str, Enum):
@@ -26,6 +32,7 @@ class Message:
     content: Optional[str] = None
     role: Role = Role.user
     variable: str = None
+    image_url: Optional[str] = None
     
 
 def get_prompt(lines):

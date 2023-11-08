@@ -156,9 +156,11 @@ class LVE(BaseModel):
         if prompt == None:
             prompt = self.prompt
         for msg in prompt:
-            content, role = msg.content, msg.role
+            content, role, image_url = msg.content, msg.role, msg.image_url
             if msg.role != Role.assistant:
-                new_msg = Message(content=content.format(**param_values), role=role)
+                content = content.format(**param_values)
+                image_url = None if image_url is None else image_url.format(**param_values)
+                new_msg = Message(content=content, role=role, image_url=image_url)
                 new_prompt.append(new_msg)
             else:
                 new_prompt.append(msg)
