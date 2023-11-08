@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>dummy/vision/mountain/openai--gpt-4-vision-preview</title>
+        <link rel="stylesheet" href="/style.css">
+        <meta name="description" content="LVE: gpt-4-vision-preview sometimes does not detect mountian correctly.">
+        <script src="/copy.js"></script>
+        <script src="/instances.js"></script>
+        <script src="/promptdown.dist.js"></script>
+        <script src="/nav.js"></script>
+        <link rel="stylesheet" href="/promptdown.css">
+    
+    <script>
+    let INSTANCE_FILES = ['https://raw.githubusercontent.com/lve-org/lve/main/repository/dummy/vision/mountain/openai--gpt-4-vision-preview/instances/instances.jsonl']
+    </script>
+</head>
+<body>
+    <div class="toolbar">
+    <div class="content">
+        <a href="/index.html">
+            <img class="logo" src="/lve.svg"/>
+            <h1>LVE Repository</h1>
+        </a>
+        <div style="flex: 1"></div>
+        <ul>
+            <li>
+                <a href="/docs">Docs</a>
+            </li>
+            <li class="small">
+                <a href="https://discord.gg/Qgy3rqRx">
+                    <img src="/discord.svg"/>
+                </a>
+            </li>
+            <li class="small">
+                <a href="https://github.com/lve-org/lve">
+                    <img src="/github.png"/>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+    <div class="second-toolbar">
+        <div class="content">
+            <div class="bar">
+            <h3>
+                <a href='/dummy'>dummy</a>/<a class="name">vision/mountain</a>
+            </h3>
+            <code class="command">
+                lve record repository/dummy/vision/mountain/openai--gpt-4-vision-preview
+                <button class="copy" onclick="copy(this)"></button>
+                <label>
+                    Run this command to record an instance of this LVE.
+                </label>
+            </code>
+            </div>
+                    <div class='affected'>
+            <a class='badge-link' href='gpt-4-vision-preview.html'><span class='badge active'>gpt-4-vision-preview</span></a>
+        </div>
+    
+            <ul class="tabs">
+                <li class="active" id="tab-description">
+                    <a href="#show-description" onclick="openDescription(this)">Description</a>
+                </li>
+                <li>
+                    <a id="tab-instances" href="#show-instances" onclick="openInstances(this)">Instances (2)</a>
+                </li>
+                <ul class="actions">
+                <li>
+                    <a class="btn" href="https://github.com/lve-org/lve/tree/main/repository/dummy/vision/mountain/openai--gpt-4-vision-preview">Edit On GitHub</a>
+                </li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+    <div class="content lve-details description">
+        <div id="description">
+            <div class="markdown lve-description">
+                <h3>gpt-4-vision-preview sometimes does not detect mountian correctly.</h3>
+<p><strong>Attributes</strong>    </p>
+<ul>
+<li><em>pattern</em>: The regex pattern.</li>
+<li><em>match_safe</em>: The value of the match to be compared against.</li>
+<li><em>flags</em>: A string containing one Regex Flag. Currently only <code>A</code>, <code>I</code>, <code>L</code>, <code>M</code>, <code>DOTALL</code> are supported. Defaults to 0 (no flag).
+```</li>
+</ul>
+            </div>
+            <div class="sidebar markdown">
+                <h3>Prompt</h3>
+                <div class="prompt">
+                    <ul class="tabs">
+                        <li class="active">Chat</li>
+                        <!-- <li>JSON</li> -->
+                        <!-- <li>LMQL</li> -->
+                    </ul>
+                    <pre class="promptdown">[bubble:user|Which mountain is in this image?]</pre>
+                </div>
+                <h3>LVE Details</h3>
+                <label>Checker:</label><code>RegexChecker</code><br/>
+                <label>Checker Configuration:</label>
+                <pre><code>pattern: {mountain}<br/>match_safe: True</code></pre>
+                <span class="small">
+                    Last updated 08.11.2023 21:54:24
+                </span>
+                <br/>
+                <span class="small">
+                    Contributed by <i>mbalunovic</i>.
+                </span>
+            </div>
+        </div>
+        <div id="instances">Loading...</div>
+        <script>
+            // for instance rendering
+            PROMPT_TEMPLATE = [`[bubble:user|Which mountain is in this image?]`];
+            PROMPT_PARAMETERS = ['img_url', 'mountain'];
+        </script>
+    </div>
+    
+</body>
+</html>
