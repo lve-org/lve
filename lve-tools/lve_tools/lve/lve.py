@@ -77,8 +77,22 @@ TMultiPrompt = Union[MultiPrompt, list[MultiPrompt]]
 
 class LVE(BaseModel):
     """
-    Base class for an LVE test case, as represented
-    by a directory with a test.json file.
+    Represents an LVE from the repository.
+
+    Attributes:
+        name: Name of the LVE
+        category: Category of the LVE (e.g. security or privacy)
+        path: Path to the LVE
+
+        description: Brief description of the LVE
+        model: Model whose vulnerability the LVE expresses
+        checker_args: Arguments to the checker ("checker_name" arg determines the actual checker)
+        author: An author of the LVE
+
+        prompt_file: Relative path to the file where prompt is located (None if specified directly)
+        multi_run_prompt: Boolean which indicates if the LVE is based on multi-run prompting
+        prompt: Prompt given as string or list of messages (possibly None if read from file)
+        prompt_parameters: List of parameters of the prompt (None if no parameters)
     """
     name: str
     category: str
@@ -152,6 +166,16 @@ class LVE(BaseModel):
         return self
 
     def fill_prompt(self, param_values, prompt=None):
+        """
+        Fills the LVE prompt by replacing placeholders with concrete parameter values.
+
+        Args:
+            param_values: dict mapping parameter names to the actual values
+            prompt: prompt to fill
+
+        Returns:
+            Prompt filled with parameter values.
+        """
         new_prompt = []
         if prompt == None:
             prompt = self.prompt

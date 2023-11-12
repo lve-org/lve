@@ -20,6 +20,20 @@ if openai_is_azure:
     openai.api_version = '2023-05-15' # this may change in the future
 
 def get_llama2_prompt(prompt: list[Message]) -> str:
+    """
+    Preprocesses the prompt (as list of messages) into string that can be used as an input to Llama-2 models.
+    For example, the resulting prompt could be something like:
+
+    [INST] Hi! [/INST]
+    Hello! How are you?
+    [INST] I'm great, thanks for asking. Could you help me with a task? [/INST]
+
+    Args:
+        prompt: Prompt as list of messages
+
+    Returns:
+        Tuple of two strings: system prompt and Llama-2 prompt
+    """
     system_prompt = None
     llama2_prompt = []
     for msg in prompt:
@@ -35,6 +49,18 @@ def get_llama2_prompt(prompt: list[Message]) -> str:
 
 
 def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
+    """
+    Preprocesses model and prompt before running the inference.
+
+    Args:
+        model: Model to be preprocessed
+        prompt_pin: Input prompt to be processed
+        verbose: Should the output be verbose
+        model_args: Additional arguments to the model
+
+    Returns:
+        Tuple of prompt and model ready for the inference
+    """
     prompt = copy.deepcopy(prompt_in)
 
     # get model path
@@ -60,6 +86,17 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
     return prompt, model
 
 async def execute_replicate(model, prompt_in, verbose=False, **model_args):
+    """
+    Executes a prompt using Replicate.
+
+    Args:
+        prompt_in: The prompt to execute. Will not be changes.
+        verbose: Print the prompt and response.
+        model_args: Arguments to pass to the Replicate.
+        
+    Returns:
+        A new prompt where all assistant messages have been filled in (assistant message always at the end)
+    """
     import replicate
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
@@ -87,7 +124,7 @@ async def execute_replicate(model, prompt_in, verbose=False, **model_args):
 
 async def execute_openai(model, prompt_in, verbose=False, **model_args):
     """
-    Executes a prompt in Openai.
+    Executes a prompt in OpenAI.
 
     Args:
         prompt_in: The prompt to execute. Will not be changes.
@@ -95,8 +132,7 @@ async def execute_openai(model, prompt_in, verbose=False, **model_args):
         model_args: Arguments to pass to the Openai API.
         
     Returns:
-        A new prompt where all assistant messages have been filled in.
-        A assistant message will always be added at the end.
+        A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
     client = OpenAI()
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
