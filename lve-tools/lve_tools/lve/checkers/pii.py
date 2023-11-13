@@ -18,9 +18,8 @@ class PII_Checker(BaseChecker):
         self.analyzer = AnalyzerEngine()
         self.entities = entities
 
-    def is_safe(self, prompt, response, param_values) -> bool:
+    def is_safe(self, prompt, response, param_values=None) -> bool:
         results = self.analyzer.analyze(text=response, language='en')
-        print(results)
         for res in results:
             if res.entity_type in self.entities:
                 return False

@@ -1,4 +1,5 @@
 from lve.checkers.base import BaseChecker
+from lve.utils.importutils import ensure_installed
 
 class ToxicityChecker(BaseChecker):
     """
@@ -15,9 +16,6 @@ class ToxicityChecker(BaseChecker):
         ensure_installed("transformers", version=">=4.34.1")
         ensure_installed("torch", "pytorch", version=">=2.1.0")
         from transformers import pipeline
-        self.prompt_contains_responses = prompt_contains_responses
-        self.get_variables = get_variables
-        self.get_response = get_response
         self.toxicity_threshold = toxicity_threshold
         self.toxicity_analyzer = pipeline("text-classification", model=model)
         
