@@ -85,7 +85,7 @@ class SiteTemplate:
     def __str__(self):
         return str(self.placeholders)
     
-    def emit(self, file, **kwargs):
+    def render(self, file, **kwargs):
         page = os.path.join("/".join(file.split("/")[1:]))
         # resolve '.' and '..' from path
         page = os.path.normpath(page)
@@ -97,17 +97,81 @@ class SiteTemplate:
             "page": page
         }
 
+        contents = self.contents
+        for p in self.placeholders:
+            try:
+                value = eval(p.strip(), {**components, **kwargs})
+            except Exception as e:
+                value = "[COULD NOT EVALUATE PLACEHOLDER {{ %s }}]" % p.strip()
+                print("Error: Failed to evaluate placeholder {{ %s }}" % p.strip())
+                print(e)
+            contents = contents.replace("{{%s}}" % p, str(value))
+        return contents
+
+    def emit(self, file, **kwargs):
+        contents = self.render(file, **kwargs)
         # make sure the directory exists
         os.makedirs(os.path.dirname(file), exist_ok=True)
 
         with open(file, "w") as f:
-            contents = self.contents
-            for p in self.placeholders:
-                try:
-                    value = eval(p.strip(), {**components, **kwargs})
-                except Exception as e:
-                    value = "[COULD NOT EVALUATE PLACEHOLDER {{ %s }}]" % p.strip()
-                    print("Error: Failed to evaluate placeholder {{ %s }}" % p.strip())
-                    print(e)
-                contents = contents.replace("{{%s}}" % p, str(value))
             f.write(contents)
+
+
+def strip_frontmatter(md):
+    if not md.startswith("---"):
+        return md
+    return "".join(md.split("---", 2)[2:])
+
+def frontmatter(file):
+    with open(file) as f:
+        contents = f.read()
+        if not contents.startswith("---"):
+            return {}
+        fm = contents.split("---")[1]
+    
+    # parse as key: value 
+    fm = dict([l.split(":") for l in fm.split("\n") if ":" in l])
+    return fm
+    
+
+def render_markdown(*args, **kwargs):
+    import markdown
+    from markdown.extensions.tables import TableExtension
+
+    # markdown extensions
+    extensions = [
+        "fenced_code",
+        TableExtension(use_align_attribute=True),
+        # anchor headers
+        "toc"
+    ]
+
+    return markdown.markdown(*args, extensions=extensions, **kwargs)
+
+
+def sanitize(s):
+    if s is None: return None
+    s = s.replace("<", "&lt;").replace(">", "&gt;")
+    s = s.replace("[", "\\\&#91;").replace("]", "\\\&#93;")
+    s = s.strip()
+    return s
+
+def render_prompt(prompt, parameters):
+    def render_content(content):
+        for p in parameters or []:
+            content = content.replace(f"{{{p}}}", f"[{{{p}}}(empty=true)|]")
+        return content
+    
+    if type(prompt) is list:
+        r = f""
+        for msg in prompt:
+            content = sanitize(msg.content)
+            if str(msg.role).lower() == "assistant" and msg.content is None:
+                if msg.variable is not None:
+                    content = f"[{{{msg.variable}}}(empty=true)|]"
+                else:
+                    content = ""
+            r += f"[bubble:{msg.role}|{render_content(content)}]"
+        return r.strip()
+    
+    return sanitize(str(prompt)),

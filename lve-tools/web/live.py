@@ -28,14 +28,18 @@ if __name__ == '__main__':
     ensure_onchange_available()
     ensure_live_server_available()
 
-    print("> onchange ../lve_tools/**/* ../../repository/**/* ./*.html ../../docs/**/* ./static/**/* ./*.py generator/**/*.py -- python make.py", flush=True)
+    print("> onchange ../competitions/**/* ../lve_tools/**/* ../../repository/**/* ./*.html ../../docs/**/* ./static/**/* ./*.py generator/**/*.py -- python make.py", flush=True)
     # with shell
-    watcher = subprocess.Popen('onchange ../lve_tools/**/* ../../repository/**/* ./*.html ../../docs/**/* ./static/**/* ./*.py generator/**/*.py -- python make.py', shell=True)
+    watcher = subprocess.Popen('onchange ../competitions/**/* ../lve_tools/**/* ../../repository/**/* ./*.html ../../docs/**/* ./static/**/* ./*.py generator/**/*.py -- python make.py', shell=True)
     server = subprocess.Popen(['npx', 'live-server'], cwd='build')
 
     try:
         watcher.wait()
     except KeyboardInterrupt:
+        server.kill()
+        watcher.kill()
+        print("Killed watcher and server")
+    finally:
         server.kill()
         watcher.kill()
         print("Killed watcher and server")

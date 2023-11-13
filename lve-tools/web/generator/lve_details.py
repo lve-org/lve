@@ -7,33 +7,6 @@ import os
 from .common import *
 from .readme_parser import LVEReadmeParser
 
-def sanitize(s):
-    if s is None: return None
-    s = s.replace("<", "&lt;").replace(">", "&gt;")
-    s = s.replace("[", "\\\&#91;").replace("]", "\\\&#93;")
-    s = s.strip()
-    return s
-
-def render_prompt(prompt, parameters):
-    def render_content(content):
-        for p in parameters or []:
-            content = content.replace(f"{{{p}}}", f"[{{{p}}}(empty=true)|]")
-        return content
-    
-    if type(prompt) is list:
-        r = f""
-        for msg in prompt:
-            content = sanitize(msg.content)
-            if str(msg.role).lower() == "assistant" and msg.content is None:
-                if msg.variable is not None:
-                    content = f"[{{{msg.variable}}}(empty=true)|]"
-                else:
-                    content = ""
-            r += f"[bubble:{msg.role}|{render_content(content)}]"
-        return r.strip()
-    
-    return sanitize(str(prompt)),
-
 def selector(options, active=None):
     """
     Selector of model if an LVE affects multiple models.

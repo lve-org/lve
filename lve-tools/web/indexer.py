@@ -14,7 +14,7 @@ class LVEIndex:
         if os.path.exists(file):
             os.remove(file)
 
-        self.curs = sqlite3.connect(file).cursor()        
+        self.curs = sqlite3.connect(file).cursor()
         self.prepare()
 
     def prepare(self):
@@ -73,10 +73,14 @@ class LVEIndex:
                     for i, line in enumerate(file.readlines()):
                         line = json.loads(line)
                         instance_time = line.get("run_info", {}).get("timestamp", "Thu Jan 1 00:00:00 1970")
+                        try:
+                            instance_time = time.strftime("%Y-%m-%d %H:%M:%S", time.strptime(instance_time, "%a %b %d %H:%M:%S %Y"))
+                        except:
+                            pass
                         self.curs.execute("""INSERT INTO instances VALUES (?, ?, ?, ?, ?)""", (
                             lve.path,
                             f + ":" + str(i),
-                            time.strftime("%Y-%m-%d %H:%M:%S", time.strptime(instance_time, "%a %b %d %H:%M:%S %Y")),
+                            instance_time,
                             line.get("passed", line.get("is_safe", False)),
                             line.get("author", "Anonymous")
                         ))
