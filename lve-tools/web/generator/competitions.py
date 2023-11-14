@@ -12,6 +12,7 @@ def build_competition(generator, competition_markdown_file, target):
     markdown = open(competition_markdown_file).read()
     markdown = strip_frontmatter(markdown)
     rendered = render_markdown(markdown)
+    competition_id = os.path.basename(competition_markdown_file).replace(".md", "")
 
     if not "lve" in fm:
         raise ValueError("Competition {} does not specify an 'lve' in its frontmatter".format(competition_markdown_file))
@@ -21,7 +22,6 @@ def build_competition(generator, competition_markdown_file, target):
     for pm in lve.prompt_parameters:
         # [{${p}}(empty=true)|
         prompt = prompt.replace("[{" + pm + "}(empty=true)|", "[" + pm + "(empty=true)|")
-    print(prompt)
 
     widget = SiteTemplate("competition-widget.html")
     widget_rendered = widget.render(
@@ -29,12 +29,14 @@ def build_competition(generator, competition_markdown_file, target):
         prompt=prompt,
         lve_url="/" + fm["lve"].strip() + ".html",
         **fm,
+        competition_id=competition_id
     )
     rendered = rendered.replace("{{ competition_widget }}", widget_rendered)
 
     index.emit(
         content=rendered,
-        file=file
+        file=file,
+        competition_id=competition_id
     )
 
 def build_competitions(generator): 

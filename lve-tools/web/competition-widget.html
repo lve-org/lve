@@ -1,28 +1,38 @@
 <center>
     <a href="{{ lve_url }}" target="_blank">See the LVE →</a>
+    <br/>
 </center>
 <br/>
 <br/>
 <br/>
-<br/>
-<div class="competition-widget">
+<div class="competition-widget" id="competition-widget">
     <div class="hint">
         {{ hint }}
     </div>
     <br/>
-    <pre class="promptdown">{{ prompt }}</pre>
-    <div class="result">
-        <h2>✅ You Broke The LLM!</h2>
+    <pre class="promptdown" id="pd-input">{{ prompt }}</pre>
+    <pre class="promptdown" id="pd-output"></pre>
+    <div class="result success">
+        <h2>❌ You Broke The LLM!</h2>
         <p>
-            Score: <span class="score">0</span>
+            Score: <span id="score">0</span>.
+        </p>
+        <p>
+            Thank you for your submission, your score has been recorded.
         </p>
     </div>
-    <input class="highscore-name" placeholder="Highscore Name"/>
-    <button class="send btn primary">Send</button>
+    <div class="result failed">
+        <h2>✅ Output looks good!</h2>
+        <p>
+            Looks like the machine outsmarted you, try again!
+        </p>
+    </div>
+    <input class="highscore-name" id="highscore-name" placeholder="Highscore Name"/>
+    <button onclick="submit()" class="send btn primary" id="submit">Send</button>
 </div>
 <br/>
 <br/>
-<div class="hint">
+<div class="disclaimer">
     Your submitted solutions will be recorded and published as part of the<br/> LVE open source project, to help document and track LLM vulnerabilities.
 </div>
 <br/>
