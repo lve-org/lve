@@ -190,12 +190,12 @@ class LVE(BaseModel):
                 new_prompt.append(msg)
         return new_prompt
     
-    async def execute(self, prompt_in, verbose=False, **model_args):
+    def execute(self, prompt_in, verbose=False, **model_args):
         if self.model.startswith("openai/") or self.model in OPENAI_MODELS:
-            return await execute_openai(self.model, prompt_in, verbose, **model_args)
+            return execute_openai(self.model, prompt_in, verbose, **model_args)
         else:
             assert self.model in REPLICATE_MODELS, f"Model {self.model} is not supported."
-            return await execute_replicate(self.model, prompt_in, verbose, **model_args)
+            return execute_replicate(self.model, prompt_in, verbose, **model_args)
     
     async def run(self, author=None, verbose=False, engine='openai', **kwargs):
         if engine == 'lmql':
@@ -209,13 +209,13 @@ class LVE(BaseModel):
 
         if self.prompt is not None:
             prompt = self.fill_prompt(param_values)
-            prompt_out = await self.execute(prompt, **model_args)
+            prompt_out = self.execute(prompt, **model_args)
         else:
             prompt = []
             prompt_out = []
             for mrp in self.multi_run_prompt:
                 p = self.fill_prompt(param_values, prompt=mrp.prompt)
-                po = await self.execute(p, **model_args)
+                po = self.execute(p, **model_args)
                 prompt.append(p)
                 prompt_out.append(po)
 

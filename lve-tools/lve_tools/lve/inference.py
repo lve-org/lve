@@ -85,7 +85,7 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
 
     return prompt, model
 
-async def execute_replicate(model, prompt_in, verbose=False, **model_args):
+def execute_replicate(model, prompt_in, verbose=False, **model_args):
     """
     Executes a prompt using Replicate.
 
@@ -122,7 +122,7 @@ async def execute_replicate(model, prompt_in, verbose=False, **model_args):
             print(f"[{msg.role}] {msg.content}")
     return prompt
 
-async def execute_openai(model, prompt_in, verbose=False, **model_args):
+def execute_openai(model, prompt_in, verbose=False, **model_args):
     """
     Executes a prompt in OpenAI.
 
