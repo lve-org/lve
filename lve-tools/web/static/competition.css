@@ -181,3 +181,28 @@
 .highscore-name:disabled {
     opacity: 0.3 !important;
 }
+
+.development {
+    opacity: 0.4;
+    font-size: 10pt;
+}
+
+.development input {
+    margin-left: 2.5pt;
+}
+
+#leaderboard-content span.name {
+    font-weight: bold;
+    margin-right: 10pt;
+}
+
+#leaderboard-content .lve {
+    width: 320pt;
+    margin: auto;
+    max-width: 90vw;
+    margin-bottom: 5pt;
+}
+
+#leaderboard-content .lve h3 {
+    text-align: left !important;
+}

@@ -2,6 +2,7 @@ const COMPETITION_ENDPOINT = "http://localhost:9999"
 // last input in competition widget
 let FIRST_INPUT = null;
 let LAST_INPUT = null;
+let API_KEY = localStorage.getItem("api-key");
 
 function initialize() {
     // setup promptdown
@@ -31,6 +32,9 @@ function initialize() {
         });
     });
 
+    // setup api key input
+    initializeAPIKey();
+
     // on enter in last input, submit
     if (LAST_INPUT) {
         LAST_INPUT.addEventListener("keydown", function (event) {
@@ -45,12 +49,7 @@ function initialize() {
         FIRST_INPUT.focus();
     }
 
-    // retrieve leaderboard
-    fetch(COMPETITION_ENDPOINT + "/competition/" + COMPETITION_ID + "/leaderboard")
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        });
+    fetchLeaderboard();
 
     // restore highscore name from local storage if possible
     let highscoreName = localStorage.getItem("highscore-name");
@@ -60,10 +59,61 @@ function initialize() {
     });
 }
 
+function fetchLeaderboard() {
+    // retrieve leaderboard
+    fetch(
+        COMPETITION_ENDPOINT + "/competition/" + COMPETITION_ID + "/leaderboard",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": "Bearer " + API_KEY
+            }
+        }
+    ).then(response => {
+        // check for unauthorized
+        if (response.status == 401) {
+            throw new Error("unauthorized");
+        }
+        return response.json();
+    })
+    .then(data => {
+        let element = document.getElementById("leaderboard-content");
+        element.innerHTML = "";
+
+        data.leaderboard.forEach(function (entry) {
+            let element = document.createElement("a");
+            element.className = "lve";
+            element.innerHTML = "<h3 class=\"name\">" + entry.user + "</h3><label class=\"right\">" + entry.score + "</label>";
+            document.getElementById("leaderboard-content").appendChild(element);
+        });
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
 function setWidgetEnabled(state) {
     document.getElementById("competition-widget").querySelectorAll("input, button").forEach(function (element) {
         element.disabled = !state;
     });
+}
+
+/**
+ * Initializes the API key input element.
+ */
+function initializeAPIKey() {
+    document.getElementById("api-key").addEventListener("keydown", function (event) {
+        localStorage.setItem("api-key", event.target.value);
+        API_KEY = event.target.value;
+    })
+    let apiKey = localStorage.getItem("api-key");
+    if (apiKey) {
+        document.getElementById("api-key").value = apiKey;
+    }
+
+    API_KEY = apiKey;
 }
 
 function submit() {
@@ -101,6 +151,7 @@ function submit() {
         headers: {
             "Content-Type": "application/json",
             "Accept": "text/event-stream",
+            "Authorization": "Bearer " + document.getElementById("api-key").value
         },
         body: JSON.stringify(payload)
     });
@@ -108,7 +159,6 @@ function submit() {
     source.onmessage = function (event) {
         try {
             let data = JSON.parse(event.data);
-            console.log(data);
             if (data.token) {
                 pd(output, output.getAttribute('pd-text') + data.token);
             } else if (data.status) {
@@ -117,6 +167,8 @@ function submit() {
                     document.getElementById("competition-widget").querySelector(".result.success #score").innerText = data.score;
                 } else if (data.status == "failed") {
                     document.getElementById("competition-widget").querySelector(".result.failed").style.display = "block";
+                } else if (data.status == "processing") {
+                    // do nothing for now
                 } else {
                     source.onerror("Unknown result status: " + data.status);
                 }
@@ -127,8 +179,9 @@ function submit() {
     }
 
     source.onerror = function (error) {
-        console.log(error);
         setWidgetEnabled(true);
+
+        pd(output, "[bubble:system|" + error + "]");
 
         if (LAST_INPUT) {
             LAST_INPUT.focus();
@@ -183,7 +236,10 @@ class PostEventSource {
                                 data: v.substring(5)
                             });
                         } else {
-                            console.error("malformed SSE event: ", [v]);
+                            if (v.includes("Authorization")) {
+                                that.onerror(new Error("You are not authorized to submit to this competition. Please check your API key."))
+                                return;
+                            }
                         }
                     });
                     window.setTimeout(next, 0);

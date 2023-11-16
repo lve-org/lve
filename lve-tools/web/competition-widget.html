@@ -9,7 +9,6 @@
     <div class="hint">
         {{ hint }}
     </div>
-    <br/>
     <pre class="promptdown" id="pd-input">{{ prompt }}</pre>
     <pre class="promptdown" id="pd-output"></pre>
     <div class="result success">
@@ -31,9 +30,12 @@
     <button onclick="submit()" class="send btn primary" id="submit">Send</button>
 </div>
 <br/>
+<div class="development">
+    <label for='api-key'>Enter API Key </label><input placeholder="API Key" id="api-key" type="password"/>
+</div>
 <br/>
 <div class="disclaimer">
-    Your submitted solutions will be recorded and published as part of the<br/> LVE open source project, to help document and track LLM vulnerabilities.
+    Your submitted solutions will be published as part of the LVE open source project,<br/>to help document and track LLM vulnerabilities.
 </div>
 <br/>
 <br/>
@@ -41,5 +43,7 @@
     <h2>Hall Of Fame</h2>
     <div class="hint">
         Top submitters in the last 30 days.
+    </div>
+    <div id="leaderboard-content" class="lve-list users">
     </div>
 </div>

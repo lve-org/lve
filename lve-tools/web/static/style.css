@@ -1205,6 +1205,14 @@ pre.expand.expanded code {
     line-height: 30pt;
 }
 
+.lve-list.users a {
+    cursor: default;
+}
+
+.lve-list.users a:hover h3 {
+    color: inherit;
+}
+
 
 .lve-list.users .right {
     top: 7.5pt;
