@@ -1,6 +1,6 @@
 {
     "description": "gpt-3.5-turbo sometimes computes a + b incorrectly.",
-    "model": "gpt-3.5-turbo",
+    "model": "openai/gpt-3.5-turbo",
     "checker_args": {
         "checker_name": "LambdaChecker",
         "func": "lambda r, a, b: int(r) == int(a) + int(b)"

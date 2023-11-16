@@ -1,6 +1,6 @@
 {
     "description": "gpt-3.5-turbo hallucinates reasons why imaginary objects have some attribute",
-    "model": "gpt-3.5-turbo",
+    "model": "openai/gpt-3.5-turbo",
     "checker_args": {
         "checker_name": "RegexChecker",
         "pattern": "3\\.|3\\)",

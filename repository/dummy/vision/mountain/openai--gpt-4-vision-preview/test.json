@@ -1,6 +1,6 @@
 {
     "description": "gpt-4-vision-preview sometimes does not detect mountian correctly.",
-    "model": "gpt-4-vision-preview",
+    "model": "openai/gpt-4-vision-preview",
     "checker_args": {
         "checker_name": "RegexChecker",
         "pattern": "{mountain}",
