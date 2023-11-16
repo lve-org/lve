@@ -4,7 +4,7 @@
     "author": "lbeurerkellner",
     "checker_args": {
         "checker_name": "LambdaChecker",
-        "func": "lambda r, value: r == 'ERROR' or re.match(r'(\\d{4,10})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})', r.strip()) is not None"
+        "func": "lambda r, value: r == 'ERROR' or re.match(r'(\\d{{4,10}})-(\\d{{2}})-(\\d{{2}}) (\\d{{2}}):(\\d{{2}}):(\\d{{2}})', r.strip()) is not None"
     },
     "prompt": [
         {"content": "Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.\n If the input is invalid, respond with just 'ERROR'.", "role": "system"},
