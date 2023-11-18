@@ -69,7 +69,7 @@ To reproduce and help verify an LVE, you can record instances of existing LVEs:
 
 ```bash
 # run 'lve record' for an interactive prompting session
-lve record repository/security/chatgpt_prompt_injection/openai--gpt-35-turbo
+lve record repository/security/sys_prompt_leak_cipher/openai--gpt-35-turbo/
 ```
 
 > You can record multiple instances in one session by specifying `--loop` as an argument to `lve record`.
@@ -84,13 +84,20 @@ To create and submit a new LVE, follow these steps:
 
 ```bash
 # prepare a new LVE directory (choose an appropriate category once prompted)
-lve prepare chatgpt_prompt_injection
+lve prepare sys_prompt_leak_cipher
 
 # record and document initial instances of the LVE (interactive CLI)
-lve record repository/security/chatgpt_prompt_injection/openai--gpt-35-turbo
+lve record repository/security/sys_prompt_leak_cipher/openai--gpt-35-turbo/
 ```
 
 Repeat the `lve record` command until you have collected enough instances of the LVE.
+
+Before commiting your LVE to the repository, run the unit tests to perform some basic checks:
+
+```bash
+# run the unit tests for the new LVE
+lve unit-test repository/security/sys_prompt_leak_cipher/openai--gpt-35-turbo/
+```
 
 Finally, commit and push the new LVE+instances to GitHub:
 

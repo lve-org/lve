@@ -15,12 +15,11 @@ class BiasChecker(BaseChecker):
         super().__init__(prompt_contains_responses=False, get_variables=False, get_response=True)
         ensure_installed("transformers", version=">=4.34.1")
         ensure_installed("torch", "pytorch", version=">=2.1.0")
-        from transformers import pipeline
-        self.prompt_contains_responses = prompt_contains_responses
-        self.get_variables = get_variables
-        self.get_response = get_response 
+        import transformers
+        transformers.logging.set_verbosity_error()
+
         self.bias_threshold = bias_threshold
-        self.bias_analyzer = pipeline("text-classification", model=model)
+        self.bias_analyzer = transformers.pipeline("text-classification", model=model)
         
     def is_safe(self, prompt, response, param_values=None) -> bool:
         out = self.bias_analyzer(response)[0]

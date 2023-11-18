@@ -15,9 +15,11 @@ class ToxicityChecker(BaseChecker):
         super().__init__(prompt_contains_responses=False, get_variables=False, get_response=True)
         ensure_installed("transformers", version=">=4.34.1")
         ensure_installed("torch", "pytorch", version=">=2.1.0")
-        from transformers import pipeline
+        import transformers
+        transformers.logging.set_verbosity_error()
+
         self.toxicity_threshold = toxicity_threshold
-        self.toxicity_analyzer = pipeline("text-classification", model=model)
+        self.toxicity_analyzer = transformers.pipeline("text-classification", model=model)
         
     def is_safe(self, prompt, response, param_values=None) -> bool:
         out = self.toxicity_analyzer(response)[0]

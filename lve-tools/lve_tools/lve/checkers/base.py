@@ -171,6 +171,9 @@ class RegexChecker(BaseChecker):
     def is_safe(self, prompt, response, param_values) -> bool:
         matches = self.pattern.search(response) is not None
         return matches == self.match_safe
+    
+    def __str__(self):
+        return f"RegexChecker(pattern={self.pattern.pattern}, match_safe={self.match_safe}, flags={self.pattern.flags})"
 
 class MultiRunBaseChecker(BaseChecker):
     

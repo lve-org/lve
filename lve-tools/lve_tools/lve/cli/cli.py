@@ -61,6 +61,13 @@ Commands:
 
     Generates from scratch or updates readme of the given LVE.
 
+{termcolor.colored('lve readme', attrs=['bold'])} [--from-scratch]
+
+    Generates from scratch or updates readme of the given LVE.
+
+{termcolor.colored('lve unit-test', attrs=['bold'])} [lve-path]
+
+    Runs either all unit tests or unit test for the given LVE (if the LVE path is provided)
 """
 
 def documentation():
