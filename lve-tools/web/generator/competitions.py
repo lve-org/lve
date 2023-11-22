@@ -17,7 +17,12 @@ def build_competition(generator, competition_markdown_file, target):
     if not "lve" in fm:
         raise ValueError("Competition {} does not specify an 'lve' in its frontmatter".format(competition_markdown_file))
 
-    lve = LVE.from_path("../../repository/" + fm["lve"].strip())
+
+    try: 
+        lve = LVE.from_path("/repository/"+ fm["lve"].strip())
+    except NoSuchLVEError:
+        lve = LVE.from_path("../../repository/" + fm["lve"].strip())
+
     prompt = render_prompt(lve.prompt, lve.prompt_parameters)
     for pm in lve.prompt_parameters:
         # [{${p}}(empty=true)|
@@ -41,7 +46,7 @@ def build_competition(generator, competition_markdown_file, target):
 
 def build_competitions(generator): 
     # read set of competitions from competitions/active folder
-    competitions_folder = os.path.join("../", "competitions", "active")
+    competitions_folder = os.path.join("/competitions", "active")
     competition_files = [f for f in os.listdir(competitions_folder) if f.endswith(".md")]
     competition_files = [os.path.join(competitions_folder, f) for f in competition_files]
 
