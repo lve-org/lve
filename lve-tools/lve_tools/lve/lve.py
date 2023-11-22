@@ -36,6 +36,7 @@ class TestInstance(BaseModel):
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
+    score: Optional[float] = None
 
 TPrompt = Union[str, list[Message]]
 class MultiPrompt(BaseModel):
@@ -220,7 +221,7 @@ class LVE(BaseModel):
                 prompt_out.append(po)
 
         checker = self.get_checker(**kwargs)
-        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
+        is_safe, response, score = checker.invoke_check(prompt, prompt_out, param_values)
         response = checker.postprocess_response(response)
 
         return TestInstance(
@@ -229,6 +230,7 @@ class LVE(BaseModel):
             response=response,
             run_info=run_info,
             passed=is_safe,
+            score=score
         )
 
     async def run_with_lmql(self, author=None, verbose=False, **kwargs):

@@ -81,7 +81,10 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
                 response_or_variables: If there is only one response, returns the response as string, else returns all variables as a dictionary.
         """
         kwargs, response_or_variables = self.get_args(prompt_in, prompt_out, param_values)
-        return self.is_safe(**kwargs), response_or_variables
+        score = None
+        if self.has_scoring():
+            score = self.calculate_score(**kwargs)
+        return self.is_safe(**kwargs), response_or_variables, score
 
     def is_safe(self, prompt, response, param_values=None) -> bool:
         """Determines whether the response is safe given the prompt and the parameters.
@@ -101,12 +104,20 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
         """
         return response
     
+    def calculate_score(self, prompt, response, param_values=None) -> float:
+        raise NotImplementedError
+    
     # meta information about the checker
 
     @classmethod
     def has_post_processing(cls):
         """Whether the checker has post processing."""
         return not cls.postprocess_response.__code__ == BaseChecker.postprocess_response.__code__
+    
+    @classmethod
+    def has_scoring(cls):
+        """Whether the checker support scoring."""
+        return not cls.calculate_score.__code__ == BaseChecker.calculate_score.__code__
 
     @classmethod 
     def is_multi_run(cls):
@@ -127,12 +138,23 @@ class LambdaChecker(BaseChecker):
     - *func*: The lambda function to be executed. Should return a `bool`.
     """
 
-    def __init__(self, func):
+    def __init__(self, func, score=None):
         super().__init__()
         self.func = eval(func)
+        if score is not None:
+            self.score_fn = eval(score)
+        else:
+            self.score_fn = None
+
         
     def is_safe(self, prompt, response, param_values) -> bool:
         return self.func(response, **param_values)
+
+    def calculate_score(self, prompt, response, param_values) -> float:
+        if self.score_fn is not None:
+            return self.score_fn(response, **param_values)
+        else:
+            return None
 
 class RegexChecker(BaseChecker):
     """
