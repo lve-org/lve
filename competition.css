@@ -1,0 +1,208 @@
+.competition h1, .competition h2, .competition h3 {
+    text-align: center !important;
+}
+
+.competition {
+    padding-bottom: 150pt !important;
+}
+
+.competition h2 {
+    margin-top: 20pt;
+    font-size: 22pt !important;
+}
+
+.competition.markdown .header {
+    font-size: 14pt;
+    width: 320pt;
+    margin: auto;
+    margin-top: 10pt;
+}
+
+.competition.markdown p {
+    text-align: justify;
+    margin-top: 10pt;
+    width: 400pt;
+    font-size: 14pt;
+}
+
+.competition.markdown .subtitle {
+    text-align: center;
+}
+
+.competition .hint {
+    margin: 20pt 10pt;
+    color: #999;
+    text-align: center;
+}
+
+.competition .disclaimer {
+    margin: 10pt 10pt;
+    color: #999;
+    text-align: center;
+    font-size: 10pt;
+}
+
+.competition-widget {
+    border: 1px solid #ccc;
+    text-align: right;
+    padding: 20pt;
+    width: 600pt;
+    max-width: 90vw;
+    margin: auto;
+    position: relative;
+    border-radius: 4pt;
+    box-shadow: 0 0 100pt #cccccc4a;
+}
+
+.competition-widget pre.promptdown {
+    border: none;
+    padding: 0pt;
+}
+
+.competition-widget pre.promptdown p,
+.competition-widget pre.promptdown .promptdown-bubble {
+    width: auto;
+    font-size: 14pt !important;
+}
+
+
+.competition-widget pre.promptdown .promptdown-var.empty {
+    white-space: nowrap;
+}
+
+.competition-widget pre.promptdown .promptdown-var input {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    position: relative;
+    top: 0pt;
+    left: 1pt;
+    font-size: 1.1em;
+    background: none;
+    /* slighlty alpha white */
+    background-color: white;
+    border-radius: 3pt;
+    border: 1pt solid grey;
+    padding: 5pt;
+    margin-left: 2pt;
+}
+
+.competition-widget pre.promptdown .promptdown-var input:disabled {
+    color: grey;
+}
+
+.competition-widget button.send {
+    margin: 0pt;
+    margin-right: 2pt;
+}
+
+.competition-widget button.send:disabled,
+.competition-widget button.send:hover {
+    opacity: 0.6;
+    background-color: #1e883e;
+}
+
+.competition-widget .promptdown-bubble:before {
+    font-size: 12pt !important;
+}
+
+.competition-widget .result {
+    border-radius: 5pt;
+    margin: 2pt;
+    margin-left: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 15pt;
+    padding: 5pt;
+    color: white;
+    text-align: left;
+    animation: fadein 0.5s;
+    display: none;
+    background-color: rgba(236, 233, 233, 0.873);
+}
+
+.competition-widget .result.success {
+    border: 2pt solid red;
+}
+
+.competition-widget .result.failed {
+    border: 2pt solid rgb(14, 169, 14);
+}
+
+@keyframes fadein {
+    from { 
+        opacity: 0;
+    }
+    to   { 
+        opacity: 1; 
+    }
+}
+
+.competition-widget .result h2 {
+    font-size: 12pt !important;
+    text-align: left !important;
+    margin: 6pt;
+    margin-left: 5pt;
+}
+
+.competition-widget .result p {
+    margin: 0;
+    padding: 0;
+    font-size: 12pt;
+    padding-left: 6pt;
+    margin-top: 10pt;
+    margin-bottom: 10pt;
+}
+
+.highscore-name {
+    font-weight: bold;
+    position: absolute;
+    left: 19pt;
+    border-radius: 0pt;
+    border: 1pt solid #ccc;
+    padding: 4pt;
+    opacity: 0.3;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    border: none;
+    outline: none;
+    font-size: 10pt;
+    line-height: 20pt;
+}
+
+.highscore-name:active, .highscore-name:focus, .highscore-name:hover {
+    opacity: 1;
+    user-select: none;
+    -webkit-user-select: none;
+    border: none;
+    outline: none;
+}
+
+.highscore-name:disabled {
+    opacity: 0.3 !important;
+}
+
+.development {
+    opacity: 0.4;
+    font-size: 10pt;
+}
+
+.development input {
+    margin-left: 2.5pt;
+}
+
+#leaderboard-content span.name {
+    font-weight: bold;
+    margin-right: 10pt;
+}
+
+#leaderboard-content .lve {
+    width: 320pt;
+    margin: auto;
+    max-width: 90vw;
+    margin-bottom: 5pt;
+}
+
+#leaderboard-content .lve h3 {
+    text-align: left !important;
+}
