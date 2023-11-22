@@ -55,7 +55,7 @@ def build_docs(generator, lves):
     DOC_SECTIONS["technical"].append({'path': 'docs/technical/core_checkers.md',
                                       'title': 'Core Checkers'})
     md = build_checkers(lves)
-    md = markdown.markdown(md, extensions=extensions)
+    md = render_markdown(md)
     template = SiteTemplate("docs.html")
     template.emit(
         file=os.path.join(generator.target, "docs", "technical", "core_checkers.html"),
