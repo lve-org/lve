@@ -7,6 +7,7 @@ from .common import *
 from .docs import *
 from .home import build_home
 from .lve_details import build_lve_sites
+from .competitions import build_competitions
 
 class LVESiteGenerator:
     def __init__(self, target="build/"):
@@ -25,6 +26,9 @@ class LVESiteGenerator:
 
         # create model-specific lve sites
         lve_data = build_lve_sites(self)
+
+        # create competition sites
+        build_competitions(self)
 
         # build index pages for categories
         category_buckets = {}

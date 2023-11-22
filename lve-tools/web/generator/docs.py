@@ -1,26 +1,8 @@
 from .common import component
 import os
-import markdown
 import itertools
-from markdown.extensions.tables import TableExtension
 from .readme_parser import LVEReadmeParser
 from .common import *
-
-def strip_frontmatter(md):
-    if not md.startswith("---"):
-        return md
-    return "".join(md.split("---", 2)[2:])
-
-def frontmatter(file):
-    with open(file) as f:
-        contents = f.read()
-        if not contents.startswith("---"):
-            return {}
-        fm = contents.split("---")[1]
-    
-    # parse as key: value 
-    fm = dict([l.split(":") for l in fm.split("\n") if ":" in l])
-    return fm
 
 @component
 def doc_nav(active, sections):
@@ -52,14 +34,6 @@ def build_docs(generator, lves):
     # make sure build/docs exists 
     os.makedirs(os.path.join(generator.target, "docs"), exist_ok=True)
 
-    # markdown extensions
-    extensions = [
-        "fenced_code",
-        TableExtension(use_align_attribute=True),
-        # anchor headers
-        "toc"
-    ]
-
     # build markdown files in docs/
     DOCS_DIR = "../../docs"
     DOC_PAGES = []
@@ -81,7 +55,7 @@ def build_docs(generator, lves):
     DOC_SECTIONS["technical"].append({'path': 'docs/technical/core_checkers.md',
                                       'title': 'Core Checkers'})
     md = build_checkers(lves)
-    md = markdown.markdown(md, extensions=extensions)
+    md = render_markdown(md)
     template = SiteTemplate("docs.html")
     template.emit(
         file=os.path.join(generator.target, "docs", "technical", "core_checkers.html"),
@@ -94,7 +68,7 @@ def build_docs(generator, lves):
         path = page["path"].replace("docs/", DOCS_DIR + "/")
         md = open(path).read()
         md = strip_frontmatter(md)
-        md = markdown.markdown(md, extensions=extensions)
+        md = render_markdown(md)
 
         # replace links 'a href="..."' to .md files with .html
         for link in re.findall(r"<a href=\"(.*?)\">", md):

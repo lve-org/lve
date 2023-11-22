@@ -6,6 +6,7 @@ import time
 from .errors import *
 import subprocess
 from lve.lve import LVE
+import pathlib
 
 def file_system_repr(model_name: str) -> str:
     model_name = model_name.replace("/", "--")
@@ -129,7 +130,7 @@ def get_active_repo() -> LVERepo:
     Returns the active LVE repository (derives it from the current path by 
     traversing up, until it finds a file named .lverepo).
     """
-    path = os.getcwd()
+    path = pathlib.Path(__file__).parent
     try:
         while path != "/" and path != "":
             if os.path.exists(os.path.join(path, ".lverepo")):

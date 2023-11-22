@@ -924,13 +924,13 @@ nav ul li.active a {
     line-break: loose;
 }
 
-.lve-details pre.promptdown {
+pre.promptdown {
     padding: 10pt;
     border: 1pt solid var(--chrome-border);
     background-color: var(--chrome);
 }
 
-.lve-details pre.promptdown .promptdown-bubble {
+pre.promptdown .promptdown-bubble {
     position: relative;
     padding-top: 20pt;
     max-width: 100%;
@@ -941,7 +941,7 @@ nav ul li.active a {
     text-align: left;
 }
 
-.lve-details pre.promptdown .promptdown-bubble.user:before {
+pre.promptdown .promptdown-bubble.user:before {
     content: 'user';
     color: white;
     position: absolute;
@@ -950,7 +950,7 @@ nav ul li.active a {
     font-family: monospace;
 }
 
-.lve-details pre.promptdown .promptdown-bubble.assistant:before {
+pre.promptdown .promptdown-bubble.assistant:before {
     content: 'assistant';
     color: grey;
     position: absolute;
@@ -959,11 +959,11 @@ nav ul li.active a {
     font-family: monospace;
 }
 
-.lve-details pre.promptdown .promptdown-bubble-container.user {
+pre.promptdown .promptdown-bubble-container.user {
     text-align: left;
 }
 
-.lve-details pre.promptdown .promptdown-bubble.system:before {
+pre.promptdown .promptdown-bubble.system:before {
     content: 'system';
     color: grey;
     position: absolute;
@@ -972,16 +972,16 @@ nav ul li.active a {
     font-family: monospace;
 }
 
-.lve-details pre.promptdown .promptdown-bubble.system {
+pre.promptdown .promptdown-bubble.system {
     background-color: rgb(234, 233, 233);
 }
 
-.lve-details pre.promptdown p {
+pre.promptdown p {
     margin: 0;
 }
 
-.lve-details pre.promptdown .promptdown-var.empty {
-    padding-right: 0pt;
+pre.promptdown .promptdown-var.empty {
+    padding-right: 1pt;
 }
 
 .lve-details pre.promptdown .promptdown-bubble-container:last-of-type {
@@ -1203,6 +1203,14 @@ pre.expand.expanded code {
 
 .lve-list.users h3 {
     line-height: 30pt;
+}
+
+.lve-list.users a {
+    cursor: default;
+}
+
+.lve-list.users a:hover h3 {
+    color: inherit;
 }
 
 
