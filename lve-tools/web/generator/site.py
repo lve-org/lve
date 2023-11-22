@@ -28,7 +28,8 @@ class LVESiteGenerator:
         lve_data = build_lve_sites(self)
 
         # create competition sites
-        build_competitions(self)
+        if os.path.exists("/competitions"):
+            build_competitions(self)
 
         # build index pages for categories
         category_buckets = {}
