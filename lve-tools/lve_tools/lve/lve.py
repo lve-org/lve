@@ -200,7 +200,8 @@ class LVE(BaseModel):
         # if we use azure openai use the correct engine for the model
         if openai_is_azure:
             model_args['engine'] = openai_azure_model_to_engine(model)
-            
+
+        print(model_args, file=open('/app/foo.txt', 'w'))
         # if the last message is not an assistant message, add one
         if prompt[-1].role != Role.assistant:
             prompt.append(Message(content=None, role=Role.assistant, variable='response'))
