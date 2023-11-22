@@ -5,7 +5,7 @@
     A repository of Language Model Vulnerabilities and Exposures (LVEs).
     <br />
     <br />
-    <a href="/repository">Browse LVEs</a>
+    <a href="https://lve-project.org/">Browse LVEs</a>
     ·
     <a href="#documenting-a-new-lve">Add LVEs</a>
     ·
@@ -41,7 +41,7 @@ The LVE repository is organized into different categories, each containing a set
 | <a href="/repository/security/">Security</a> | Prompt leakage, Prompt injection, Unsafe code
 | <a href="/repository/trust/">Trust</a> | Accuracy, Hallucinations, Explainability |
 
-To start browsing the LVE repository, you can either [browse LVEs on GitHub](/repository) or clone the repository and browse locally.
+To start browsing the LVE repository, you can either [browse LVEs on the web](https://lve-project.org/) or clone the repository and browse locally.
 
 
 ### Contributing to the LVE repository

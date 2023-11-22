@@ -7,32 +7,22 @@ import inspect
 
 import openai
 import lmql
+from lve.inference import execute_openai, execute_replicate
 from lve.errors import *
+from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS
 from lve.prompt import Role, Message, get_prompt, prompt_to_openai
 import copy
 
 from pydantic import BaseModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
 
-openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
-if openai_is_azure:
-    openai.api_key = os.getenv("AZURE_OPENAI_KEY")
-    openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
-    if os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"):
-        with open(os.getenv("AZURE_OPENAI_MODEL_TO_ENGINE_PATH"), "r") as f:
-            _openai_azure_model_to_engine_map = json.loads(f.read())
-    else:
-        _openai_azure_model_to_engine_map = dict()
-    openai_azure_model_to_engine = lambda x: _openai_azure_model_to_engine_map.get(x, x)
-    openai.api_type = 'azure'
-    openai.api_version = '2023-05-15' # this may change in the future
-
-
 def split_instance_args(args, prompt_parameters):
     if prompt_parameters is None:
         return {}, args
     param_values, model_args = {}, {}
     for key in args:
+        if args[key] is None:
+            continue
         if key in prompt_parameters:
             param_values[key] = args[key]
         else:
@@ -87,8 +77,22 @@ TMultiPrompt = Union[MultiPrompt, list[MultiPrompt]]
 
 class LVE(BaseModel):
     """
-    Base class for an LVE test case, as represented
-    by a directory with a test.json file.
+    Represents an LVE from the repository.
+
+    Attributes:
+        name: Name of the LVE
+        category: Category of the LVE (e.g. security or privacy)
+        path: Path to the LVE
+
+        description: Brief description of the LVE
+        model: Model whose vulnerability the LVE expresses
+        checker_args: Arguments to the checker ("checker_name" arg determines the actual checker)
+        author: An author of the LVE
+
+        prompt_file: Relative path to the file where prompt is located (None if specified directly)
+        multi_run_prompt: Boolean which indicates if the LVE is based on multi-run prompting
+        prompt: Prompt given as string or list of messages (possibly None if read from file)
+        prompt_parameters: List of parameters of the prompt (None if no parameters)
     """
     name: str
     category: str
@@ -162,18 +166,31 @@ class LVE(BaseModel):
         return self
 
     def fill_prompt(self, param_values, prompt=None):
+        """
+        Fills the LVE prompt by replacing placeholders with concrete parameter values.
+
+        Args:
+            param_values: dict mapping parameter names to the actual values
+            prompt: prompt to fill
+
+        Returns:
+            Prompt filled with parameter values.
+        """
         new_prompt = []
         if prompt == None:
             prompt = self.prompt
         for msg in prompt:
-            content, role = msg.content, msg.role
+            content, role, image_url = msg.content, msg.role, msg.image_url
             if msg.role != Role.assistant:
-                new_msg = Message(content=content.format(**param_values), role=role)
+                content = content.format(**param_values)
+                image_url = None if image_url is None else image_url.format(**param_values)
+                new_msg = Message(content=content, role=role, image_url=image_url)
                 new_prompt.append(new_msg)
             else:
                 new_prompt.append(msg)
         return new_prompt
     
+<<<<<<< HEAD
 
     async def execute_openai(self, prompt_in, verbose=False, **model_args):
         """
@@ -229,6 +246,14 @@ class LVE(BaseModel):
 
         return prompt
 
+=======
+    def execute(self, prompt_in, verbose=False, **model_args):
+        if self.model.startswith("openai/") or self.model in OPENAI_MODELS:
+            return execute_openai(self.model, prompt_in, verbose, **model_args)
+        else:
+            assert self.model in REPLICATE_MODELS, f"Model {self.model} is not supported."
+            return execute_replicate(self.model, prompt_in, verbose, **model_args)
+>>>>>>> main
     
     async def run(self, author=None, verbose=False, engine='openai', **kwargs):
         if engine == 'lmql':
@@ -242,18 +267,19 @@ class LVE(BaseModel):
 
         if self.prompt is not None:
             prompt = self.fill_prompt(param_values)
-            prompt_out = await self.execute_openai(prompt, **model_args)
+            prompt_out = self.execute(prompt, **model_args)
         else:
             prompt = []
             prompt_out = []
             for mrp in self.multi_run_prompt:
                 p = self.fill_prompt(param_values, prompt=mrp.prompt)
-                po = await self.execute_openai(p, **model_args)
+                po = self.execute(p, **model_args)
                 prompt.append(p)
                 prompt_out.append(po)
 
         checker = self.get_checker(**kwargs)
         is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
+        response = checker.postprocess_response(response)
 
         return TestInstance(
             author=author,
@@ -360,10 +386,10 @@ class LVE(BaseModel):
         repo_path = os.path.relpath(path, repo.path)
 
         # with repository/ prefix, category is the first directory
-        category = repo_path.split("/")[1]
+        category = repo_path.split(os.sep)[1]
         
         # name is the last directory
-        path_after_category = repo_path.split("/")[2:]
+        path_after_category = repo_path.split(os.sep)[2:]
         if len(path_after_category) > 1:
             # for <category>/<name>/<model> paths
             name = path_after_category[-2]

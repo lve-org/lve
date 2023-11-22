@@ -1,0 +1,14 @@
+{
+    "description": "gpt-4-vision-preview sometimes does not detect mountian correctly.",
+    "model": "gpt-4-vision-preview",
+    "checker_args": {
+        "checker_name": "RegexChecker",
+        "pattern": "{mountain}",
+        "match_safe": true
+    },
+    "prompt": [
+        {"content": "Which mountain is in this image?", "image_url": "{img_url}", "role": "user"}
+    ],
+    "prompt_parameters": ["img_url", "mountain"],
+    "author": "mbalunovic"
+}

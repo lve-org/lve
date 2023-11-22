@@ -45,7 +45,8 @@ class LVESiteGenerator:
                 category_lves=partial(lve_list, sorted(lves, key=lambda l: l["name"]))
             )
 
-        build_docs(self)
+        build_docs(self,
+            lve_data["lves"])
 
         build_home(
             self,

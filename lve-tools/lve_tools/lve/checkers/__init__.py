@@ -2,6 +2,7 @@ import os
 import sys
 from importlib import import_module
 from lve.checkers.base import *
+from lve.checkers.bias import *
 from lve.checkers.match import *
 from lve.checkers.pii import *
 from lve.checkers.toxicity import *
