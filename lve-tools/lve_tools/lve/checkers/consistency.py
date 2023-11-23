@@ -33,7 +33,7 @@ class MonotonicityChecker(BaseChecker):
         self.strict = strict
 
     def is_safe(self, prompt_out, param_values=None) -> bool:
-        variables = extract_variables_from_prompt(prompt_out)
+        variables = self.extract_variables_from_prompt(prompt_out)
         try:
             variables = map_dict(variables,
                                  fn_key=lambda k: re.search(self.answer_variable_identifier_regex, k).group(1),

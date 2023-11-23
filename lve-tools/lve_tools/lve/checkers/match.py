@@ -14,6 +14,6 @@ class ExactMatchChecker(BaseChecker):
         self.pattern = pattern
 
     def is_safe(self, prompt_out, param_values=None) -> bool:
-        response = extract_response_from_prompt(prompt_out)
+        response = self.extract_response_from_prompt(prompt_out)
         pattern = self.pattern.format(**param_values)
         return pattern not in response

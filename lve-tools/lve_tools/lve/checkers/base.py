@@ -2,21 +2,6 @@ import re
 from collections import defaultdict 
 from lve.prompt import Role
 
-def extract_variables_from_prompt(prompt):
-    variables = {}
-    for msg in prompt:
-        if msg.role == Role.assistant:
-            varname = msg.variable
-            if varname is None:
-                varname = str(len(variables))
-            variables[varname] = msg.content
-    return variables
-
-def extract_response_from_prompt(prompt):
-    response = ""
-    assert prompt[-1].role == Role.assistant
-    return prompt[-1].content
-
 class CheckerRegistryHolder(type):
 
     CHECKER_REGISTRY = {}
@@ -37,6 +22,21 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
     
     def __init__(self):
         pass
+    
+    def extract_variables_from_prompt(self, prompt):
+        variables = {}
+        for msg in prompt:
+            if msg.role == Role.assistant:
+                varname = msg.variable
+                if varname is None:
+                    varname = str(len(variables))
+                variables[varname] = msg.content
+        return variables
+
+    def extract_response_from_prompt(self, prompt):
+        response = ""
+        assert prompt[-1].role == Role.assistant
+        return prompt[-1].content
        
     def invoke_check(self, prompt_in, prompt_out, param_values=None):
         """ Function called by LVE to invoke the checker.
@@ -56,9 +56,9 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
         is_safe = self.is_safe(prompt_out, param_values)
         
         if cnt_variables > 1:
-            response_or_variables = extract_variables_from_prompt(prompt_out) 
+            response_or_variables = self.extract_variables_from_prompt(prompt_out) 
         else:
-            response_or_variables = extract_response_from_prompt(prompt_out)
+            response_or_variables = self.extract_response_from_prompt(prompt_out)
 
         score = None
         if self.has_scoring():
@@ -127,12 +127,12 @@ class LambdaChecker(BaseChecker):
 
         
     def is_safe(self, prompt_out, param_values=None) -> bool:
-        response = extract_response_from_prompt(prompt_out)
+        response = self.extract_response_from_prompt(prompt_out)
         return self.func(response, **param_values)
 
     def calculate_score(self, prompt_out, param_values=None) -> float:
         if self.score_fn is not None:
-            response = extract_response_from_prompt(prompt_out)
+            response = self.extract_response_from_prompt(prompt_out)
             return self.score_fn(response, **param_values)
         else:
             return None
@@ -172,7 +172,7 @@ class RegexChecker(BaseChecker):
         self.match_safe = match_safe
     
     def is_safe(self, prompt_out, param_values=None) -> bool:
-        response = extract_response_from_prompt(prompt_out)
+        response = self.extract_response_from_prompt(prompt_out)
         matches = self.pattern.search(response) is not None
         return matches == self.match_safe
     
@@ -201,7 +201,7 @@ class MultiRunBaseChecker(BaseChecker):
         
         response_or_variables = response
         if cnt_variables > 1:
-            response_or_variables = extract_variables_from_prompt(prompt_out) 
+            response_or_variables = self.extract_variables_from_prompt(prompt_out) 
 
         score = None
         if self.has_scoring():
@@ -227,7 +227,7 @@ class MultiRunLambdaChecker(MultiRunBaseChecker):
         self.func = eval(func)
         
     def is_safe(self, prompts_out, param_values) -> bool:
-        responses = [extract_response_from_prompt(p) for p in prompts_out]
+        responses = [self.extract_response_from_prompt(p) for p in prompts_out]
         return self.func(response, **param_values)
 
 

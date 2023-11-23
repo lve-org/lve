@@ -12,7 +12,7 @@ class ToxicityChecker(BaseChecker):
     """
 
     def __init__(self, toxicity_threshold: float, model: str = "s-nlp/roberta_toxicity_classifier"):
-        super().__init__(prompt_contains_responses=False, get_variables=False, get_response=True)
+        super().__init__()
         ensure_installed("transformers", version=">=4.34.1")
         ensure_installed("torch", "pytorch", version=">=2.1.0")
         import transformers
@@ -22,7 +22,7 @@ class ToxicityChecker(BaseChecker):
         self.toxicity_analyzer = transformers.pipeline("text-classification", model=model)
         
     def is_safe(self, prompt_out, param_values=None) -> bool:
-        response = extract_response_from_prompt(prompt_out)
+        response = self.extract_response_from_prompt(prompt_out)
         out = self.toxicity_analyzer(response)[0]
         label, score = out["label"], out["score"]
 
