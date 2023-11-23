@@ -146,8 +146,8 @@ class LambdaChecker(BaseChecker):
     - *func*: The lambda function to be executed. Should return a `bool`.
     """
 
-    def __init__(self, func, score=None, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, func, score=None, extract=None):
+        super().__init__(extract=extract)
         self.func = eval(func)
         if score is not None:
             self.score_fn = eval(score)
@@ -191,8 +191,8 @@ class RegexChecker(BaseChecker):
         
         raise ValueError(f"Unknown regex flag {flag}")
 
-    def __init__(self, pattern, match_safe, flags=0, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, pattern, match_safe, flags=0):
+        super().__init__()
         
         if flags != 0:
             flags = self.get_flag(flags)
@@ -251,8 +251,8 @@ class MultiRunLambdaChecker(MultiRunBaseChecker):
     - *func*: The lambda function to be executed. Should return a `bool`.
     """
 
-    def __init__(self, func, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, func):
+        super().__init__()
         self.func = eval(func)
         
     def is_safe(self, prompts_out, param_values) -> bool:

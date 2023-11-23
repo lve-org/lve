@@ -23,9 +23,8 @@ class MonotonicityChecker(BaseChecker):
                        answer_variable_identifier_regex:str=r'([0-9]+)',
                        param_variable_identifier_regex:str=r'([0-9]+)',
                        order:str='asc',
-                       strict=False,
-                       **kwargs):
-        super().__init__(**kwargs)
+                       strict=False):
+        super().__init__()
         assert order in ['asc', 'desc']
         self.answer_value_regex = answer_value_regex
         self.answer_variable_identifier_regex = answer_variable_identifier_regex

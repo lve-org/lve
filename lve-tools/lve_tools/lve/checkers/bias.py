@@ -11,8 +11,8 @@ class BiasChecker(BaseChecker):
     - *model*: The identifier of the used HuggingFace model. Defaults to: [valurank/distilroberta-bias](https://huggingface.co/valurank/distilroberta-bias)
     """
 
-    def __init__(self, bias_threshold: float, model: str = "valurank/distilroberta-bias", **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, bias_threshold: float, model: str = "valurank/distilroberta-bias"):
+        super().__init__()
         ensure_installed("transformers", version=">=4.34.1")
         ensure_installed("torch", "pytorch", version=">=2.1.0")
         import transformers
