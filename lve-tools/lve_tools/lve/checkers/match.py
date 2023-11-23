@@ -1,4 +1,4 @@
-from lve.checkers.base import BaseChecker
+from lve.checkers.base import *
 
 class ExactMatchChecker(BaseChecker):
     """
@@ -13,6 +13,7 @@ class ExactMatchChecker(BaseChecker):
         super().__init__()
         self.pattern = pattern
 
-    def is_safe(self, prompt, response, param_values=None) -> bool:
+    def is_safe(self, prompt_out, param_values=None) -> bool:
+        response = extract_response_from_prompt(prompt_out)
         pattern = self.pattern.format(**param_values)
         return pattern not in response

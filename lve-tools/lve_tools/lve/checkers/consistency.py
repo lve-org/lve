@@ -1,4 +1,4 @@
-from lve.checkers.base import BaseChecker
+from lve.checkers.base import *
 from lve.prompt import Role
 import numpy as np
 import re
@@ -32,7 +32,8 @@ class MonotonicityChecker(BaseChecker):
         self.order = order
         self.strict = strict
 
-    def is_safe(self, prompt, variables, param_values) -> bool:
+    def is_safe(self, prompt_out, param_values=None) -> bool:
+        variables = extract_variables_from_prompt(prompt_out)
         try:
             variables = map_dict(variables,
                                  fn_key=lambda k: re.search(self.answer_variable_identifier_regex, k).group(1),

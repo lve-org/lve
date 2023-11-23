@@ -3,6 +3,7 @@ from lve.checkers.base import *
 from lve.checkers.toxicity import ToxicityChecker
 from lve.checkers.pii import PII_Checker
 from lve.checkers.match import ExactMatchChecker
+from lve.prompt import Message, Role
 
 class TestLambdaChecker(unittest.TestCase):
 
@@ -10,8 +11,10 @@ class TestLambdaChecker(unittest.TestCase):
         self.sum_checker = LambdaChecker("lambda r, x, y, z: r.strip() == str(int(x) + int(y) + int(z))")
 
     def test_is_safe(self):
-        self.assertTrue(self.sum_checker.is_safe("", "6", {"x": "1", "y": "2", "z": "3"}))
-        self.assertFalse(self.sum_checker.is_safe("", "10", {"x": "2", "y": "5", "z": "9"}))
+        prompt = [Message("6", Role.assistant)]
+        self.assertTrue(self.sum_checker.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+        prompt = [Message("10", Role.assistant)]
+        self.assertFalse(self.sum_checker.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
 
 
 class TestRegexChecker(unittest.TestCase):
@@ -21,9 +24,12 @@ class TestRegexChecker(unittest.TestCase):
         self.address_checker = RegexChecker(address_pattern, True)
 
     def test_is_safe(self):
-        self.assertTrue(self.address_checker.is_safe("", "123 Main Street", {}))
-        self.assertTrue(self.address_checker.is_safe("", "101 Raemistrasse", {}))
-        self.assertFalse(self.address_checker.is_safe("", "123 is great", {}))
+        prompt = [Message("123 Main Street", Role.assistant)]
+        self.assertTrue(self.address_checker.is_safe(prompt, {}))
+        prompt = [Message("101 Raemistrasse", Role.assistant)]
+        self.assertTrue(self.address_checker.is_safe(prompt, {}))
+        prompt = [Message("123 is great", Role.assistant)]
+        self.assertFalse(self.address_checker.is_safe(prompt, {}))
 
 
 class TestExactMatchChecker(unittest.TestCase):
@@ -32,8 +38,10 @@ class TestExactMatchChecker(unittest.TestCase):
         self.checker = ExactMatchChecker("password")
 
     def test_is_safe(self):
-        self.assertTrue(self.checker.is_safe("", "happy birthday", {}))
-        self.assertFalse(self.checker.is_safe("", "my password is 123", {}))
+        prompt = [Message("happy birthday", Role.assistant)]
+        self.assertTrue(self.checker.is_safe(prompt, {}))
+        prompt = [Message("my password is 123", Role.assistant)]
+        self.assertFalse(self.checker.is_safe(prompt, {}))
 
 
 class TestToxicityChecker(unittest.TestCase):
@@ -42,8 +50,10 @@ class TestToxicityChecker(unittest.TestCase):
         self.toxicity_checker = ToxicityChecker(0.9)
 
     def test_is_safe(self):
-        self.assertFalse(self.toxicity_checker.is_safe("", "i hate you"))
-        self.assertTrue(self.toxicity_checker.is_safe("", "i like you"))
+        prompt = [Message("i hate you", Role.assistant)]
+        self.assertFalse(self.toxicity_checker.is_safe(prompt))
+        prompt = [Message("i like you", Role.assistant)]
+        self.assertTrue(self.toxicity_checker.is_safe(prompt))
 
 
 class TestPII_Checker(unittest.TestCase):
@@ -52,10 +62,10 @@ class TestPII_Checker(unittest.TestCase):
         self.pii_checker = PII_Checker(["LOCATION"])
 
     def test_is_safe(self):
-        response_1 = "I live in Paris"
-        self.assertFalse(self.pii_checker.is_safe("", response_1))
-        self.assertEqual(self.pii_checker.postprocess_response(response_1), "I live in <LOCATION>")
+        prompt = [Message("I live in Paris", Role.assistant)]
+        self.assertFalse(self.pii_checker.is_safe(prompt))
+        self.assertEqual(self.pii_checker.postprocess_response(prompt[-1].content), "I live in <LOCATION>")
 
-        response_2 = "I live here"
-        self.assertTrue(self.pii_checker.is_safe("", response_2))
-        self.assertEqual(self.pii_checker.postprocess_response(response_2), "I live here")
+        prompt = [Message("I live here", Role.assistant)]
+        self.assertTrue(self.pii_checker.is_safe(prompt))
+        self.assertEqual(self.pii_checker.postprocess_response(prompt[-1].content), "I live here")
