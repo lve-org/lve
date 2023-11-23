@@ -7,13 +7,13 @@ from openai import OpenAI
 class TranslatedSongCopyrightChecker(BaseChecker):
     """Checks if LLM outputs copyrighted text that can be recovered by translating to English"""
 
-    def __init__(self, lyrics_url, language, threshold, translation_model='gpt-3.5-turbo'):
+    def __init__(self, lyrics_url, language, threshold, translation_model='gpt-3.5-turbo', **kwargs):
         ensure_installed("bs4", "beautifulsoup4")
         ensure_installed("thefuzz")
         from bs4 import BeautifulSoup
         from thefuzz import fuzz
 
-        super().__init__()
+        super().__init__(**kwargs)
 
         self.lyrics_url = lyrics_url
         self.language = language
