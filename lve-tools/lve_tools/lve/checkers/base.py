@@ -35,11 +35,9 @@ class CheckerRegistryHolder(type):
 
 class BaseChecker(metaclass=CheckerRegistryHolder):
     
-    def __init__(self, prompt_contains_responses=False, get_variables=False, get_response=True):
-        self.prompt_contains_responses = prompt_contains_responses
-        self.get_variables = get_variables
-        self.get_response = get_response 
-        
+    def __init__(self):
+        pass
+       
     def invoke_check(self, prompt_in, prompt_out, param_values=None):
         """ Function called by LVE to invoke the checker.
             Main function exposed to the lve internals, but not the user.
