@@ -5,6 +5,21 @@ from lve.checkers.pii import PII_Checker
 from lve.checkers.match import ExactMatchChecker
 from lve.prompt import Message, Role
 
+class TestLambdaCheckerExtract(unittest.TestCase):
+
+    def setUp(self):
+        self.sum_checker = LambdaChecker("lambda r, x, y, z: r == int(x) + int(y) + int(z)", extract="int_last")
+
+    def test_is_safe(self):
+        prompt = [Message("6 the answer is", Role.assistant)]
+        self.assertTrue(self.sum_checker.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+        prompt = [Message("1+2+3=6", Role.assistant)]
+        self.assertTrue(self.sum_checker.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+        prompt = [Message("the answer is 10", Role.assistant)]
+        self.assertFalse(self.sum_checker.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
+        prompt = [Message("the answer is", Role.assistant)]
+        self.assertFalse(self.sum_checker.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
+
 class TestLambdaChecker(unittest.TestCase):
 
     def setUp(self):

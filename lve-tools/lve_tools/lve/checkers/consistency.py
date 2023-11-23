@@ -23,8 +23,9 @@ class MonotonicityChecker(BaseChecker):
                        answer_variable_identifier_regex:str=r'([0-9]+)',
                        param_variable_identifier_regex:str=r'([0-9]+)',
                        order:str='asc',
-                       strict=False):
-        super().__init__(prompt_contains_responses=True, get_variables=True, get_response=False)
+                       strict=False,
+                       **kwargs):
+        super().__init__(**kwargs)
         assert order in ['asc', 'desc']
         self.answer_value_regex = answer_value_regex
         self.answer_variable_identifier_regex = answer_variable_identifier_regex

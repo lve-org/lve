@@ -20,10 +20,34 @@ class CheckerRegistryHolder(type):
 
 class BaseChecker(metaclass=CheckerRegistryHolder):
     
-    def __init__(self):
-        pass
-    
-    def extract_variables_from_prompt(self, prompt):
+    def __init__(self, extract=None):
+        self.extract = extract
+        assert extract is None or extract in ['int_last', 'int_first', 'float_last', 'float_first']
+        
+    def _extract(self, value):
+        if self.extract is None:
+            return value
+        try:
+            if self.extract == 'int_last':
+                pattern = r"(\d{1,3}(?:[,'_]\d{3})*)"
+                match = re.findall(pattern, value)[-1]
+                return int(match.replace(',', '').replace("'", "").replace("_", ""))
+            elif self.extract == 'int_first':
+                pattern = r"(\d{1,3}(?:[,'_]\d{3})*)"
+                match = re.findall(pattern, value)[0]
+                return int(match.replace(',', '').replace("'", "").replace("_", ""))
+            elif self.extract == 'float_last':
+                pattern = r"(\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?|\d+[eE][+-]?\d+)"
+                match = re.findall(pattern, value)[-1]
+                return float(match.replace(',', '').replace("'", "").replace("_", ""))
+            elif self.extract == 'float_first':
+                pattern = r"(\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?|\d+[eE][+-]?\d+)"
+                match = re.findall(pattern, value)[0]
+                return float(match.replace(',', '').replace("'", "").replace("_", ""))
+        except:
+            return value
+        
+    def extract_variables_from_prompt(self, prompt, full=False):
         variables = {}
         for msg in prompt:
             if msg.role == Role.assistant:
@@ -31,12 +55,17 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
                 if varname is None:
                     varname = str(len(variables))
                 variables[varname] = msg.content
+                if not full:
+                    variables[varname] = self._extract(variables[varname]) 
         return variables
 
-    def extract_response_from_prompt(self, prompt):
+    def extract_response_from_prompt(self, prompt, full=False):
         response = ""
         assert prompt[-1].role == Role.assistant
-        return prompt[-1].content
+        response = prompt[-1].content
+        if not full:
+            response = self._extract(response)
+        return response
        
     def invoke_check(self, prompt_in, prompt_out, param_values=None):
         """ Function called by LVE to invoke the checker.
@@ -56,9 +85,9 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
         is_safe = self.is_safe(prompt_out, param_values)
         
         if cnt_variables > 1:
-            response_or_variables = self.extract_variables_from_prompt(prompt_out) 
+            response_or_variables = self.extract_variables_from_prompt(prompt_out, full=True) 
         else:
-            response_or_variables = self.extract_response_from_prompt(prompt_out)
+            response_or_variables = self.extract_response_from_prompt(prompt_out, full=True)
 
         score = None
         if self.has_scoring():
@@ -117,8 +146,8 @@ class LambdaChecker(BaseChecker):
     - *func*: The lambda function to be executed. Should return a `bool`.
     """
 
-    def __init__(self, func, score=None):
-        super().__init__()
+    def __init__(self, func, score=None, **kwargs):
+        super().__init__(**kwargs)
         self.func = eval(func)
         if score is not None:
             self.score_fn = eval(score)
@@ -162,8 +191,8 @@ class RegexChecker(BaseChecker):
         
         raise ValueError(f"Unknown regex flag {flag}")
 
-    def __init__(self, pattern, match_safe, flags=0):
-        super().__init__()
+    def __init__(self, pattern, match_safe, flags=0, **kwargs):
+        super().__init__(**kwargs)
         
         if flags != 0:
             flags = self.get_flag(flags)
@@ -222,8 +251,8 @@ class MultiRunLambdaChecker(MultiRunBaseChecker):
     - *func*: The lambda function to be executed. Should return a `bool`.
     """
 
-    def __init__(self, func):
-        super().__init__()
+    def __init__(self, func, **kwargs):
+        super().__init__(**kwargs)
         self.func = eval(func)
         
     def is_safe(self, prompts_out, param_values) -> bool:

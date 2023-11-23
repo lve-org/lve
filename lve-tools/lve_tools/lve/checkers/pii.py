@@ -11,8 +11,8 @@ class PII_Checker(BaseChecker):
     - *entities:* Types of PII information to be matched. See the [Presidio Documentation](https://microsoft.github.io/presidio/supported_entities/) for details.
     """
 
-    def __init__(self, entities: list[str]):
-        super().__init__()
+    def __init__(self, entities: list[str], **kwargs):
+        super().__init__(**kwargs)
         ensure_installed("presidio_analyzer")
         from presidio_analyzer import AnalyzerEngine
         self.analyzer = AnalyzerEngine()

@@ -11,8 +11,8 @@ class ToxicityChecker(BaseChecker):
     - *model:* The identifier of the used HuggingFace model. Defaults to: [s-nlp/roberta_toxicity_classifier](https://huggingface.co/s-nlp/roberta_toxicity_classifier)
     """
 
-    def __init__(self, toxicity_threshold: float, model: str = "s-nlp/roberta_toxicity_classifier"):
-        super().__init__()
+    def __init__(self, toxicity_threshold: float, model: str = "s-nlp/roberta_toxicity_classifier", **kwargs):
+        super().__init__(**kwargs)
         ensure_installed("transformers", version=">=4.34.1")
         ensure_installed("torch", "pytorch", version=">=2.1.0")
         import transformers
