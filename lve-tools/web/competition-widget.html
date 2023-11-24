@@ -11,8 +11,14 @@
     </div>
     <pre class="promptdown" id="pd-input">{{ prompt }}</pre>
     <pre class="promptdown" id="pd-output"></pre>
+    <div class="result invalid">
+        <h2>❌ Invalid Input!</h2>
+        <p>
+            You provided invalid paramters.
+        </p>
+    </div>
     <div class="result success">
-        <h2>❌ You Broke The LLM!</h2>
+        <h2>🤯 You Broke The LLM!</h2>
         <p>
             Score: <span id="score">0</span>.
         </p>
@@ -21,7 +27,7 @@
         </p>
     </div>
     <div class="result failed">
-        <h2>✅ Output looks good!</h2>
+        <h2>😐 Output looks good!</h2>
         <p>
             Looks like the machine outsmarted you, try again!
         </p>
