@@ -1232,19 +1232,12 @@ pre.expand.expanded code {
     margin-bottom: 5pt;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+.footer {
+    margin: 50pt auto;
+    opacity: 0.5;
+    font-size: 10pt;
+    text-align: center;
+}
 
 .competition-list .competition {
     border-radius: 5pt;
@@ -1291,4 +1284,3 @@ pre.expand.expanded code {
 .competition-list {
     padding: 0pt 15pt;
 }
-
