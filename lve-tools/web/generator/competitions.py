@@ -23,8 +23,11 @@ def build_competition(generator, competition_markdown_file, target):
     except NoSuchLVEError:
         lve = LVE.from_path("../../repository/" + fm["lve"].strip())
 
-    prompt = render_prompt(lve.prompt, lve.prompt_parameters)
-    for pm in lve.prompt_parameters:
+    fixed_parameters = fm.get("prompt_parameters", dict())
+    free_parameters = set(lve.prompt_parameters) - set(fixed_parameters.keys())
+    prompt = lve.fill_prompt(fixed_parameters, partial=True)
+    prompt = render_prompt(prompt, free_parameters)
+    for pm in free_parameters:
         # [{${p}}(empty=true)|
         prompt = prompt.replace("[{" + pm + "}(empty=true)|", "[" + pm + "(empty=true)|")
 
@@ -43,6 +46,11 @@ def build_competition(generator, competition_markdown_file, target):
         file=file,
         competition_id=competition_id
     )
+    
+def list_competitions(targets):
+    targets = sorted(targets)
+    links = [f"<li><a href='{t}'>{t}</a></li>" for t in targets]
+    return "<ul>" + "\n".join(links) + "</ul>"
 
 def build_competitions(generator): 
     # read set of competitions from competitions/active folder
@@ -50,9 +58,16 @@ def build_competitions(generator):
     competition_files = [f for f in os.listdir(competitions_folder) if f.endswith(".md")]
     competition_files = [os.path.join(competitions_folder, f) for f in competition_files]
 
+    competition_targets = []
     for competition in competition_files:
         target = os.path.basename(competition).replace(".md", ".html") 
-        build_competition(generator, competition_files[0], "competitions/" + target)
+        build_competition(generator, competition, "competitions/" + target)
+        competition_targets.append(target)
     
-    first_competition = competition_files[0]
-    build_competition(generator, first_competition, "competitions/index.html")
+    #first_competition = competition_files[0]
+    #build_competition(generator, first_competition, "competitions/index.html")
+    template = SiteTemplate("competitions.html")
+    template.emit(
+        file=os.path.join(generator.target, "competitions", "index.html"),
+        competitions=list_competitions(competition_targets)
+    )

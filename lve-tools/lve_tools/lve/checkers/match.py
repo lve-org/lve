@@ -9,7 +9,7 @@ class ExactMatchChecker(BaseChecker):
     - *pattern:* String to be matched (with parameter substitution).
     """
     
-    def __init__(self, pattern:str, **kwargs):
+    def __init__(self, pattern:str):
         super().__init__()
         self.pattern = pattern
 

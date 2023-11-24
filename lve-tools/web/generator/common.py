@@ -5,6 +5,7 @@ import re
 import os
 import time
 from dataclasses import dataclass
+import yaml
 
 # components available in template HTML files as {{ fct(..) }}
 components = {}
@@ -128,10 +129,7 @@ def frontmatter(file):
         if not contents.startswith("---"):
             return {}
         fm = contents.split("---")[1]
-    
-    # parse as key: value 
-    fm = dict([l.split(":") for l in fm.split("\n") if ":" in l])
-    return fm
+    return yaml.safe_load(fm)
     
 
 def render_markdown(*args, **kwargs):

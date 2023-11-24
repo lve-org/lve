@@ -185,7 +185,7 @@ class LVE(BaseModel):
             else: assert False
         return True
 
-    def fill_prompt(self, param_values, prompt=None):
+    def fill_prompt(self, param_values, prompt=None, partial=False):
         """
         Fills the LVE prompt by replacing placeholders with concrete parameter values.
 
@@ -197,12 +197,19 @@ class LVE(BaseModel):
             Prompt filled with parameter values.
         """
         new_prompt = []
+
+        if partial:
+            class PartialValueDict(dict):
+                def __missing__(self, key):
+                    return "{" + key + "}"
+            param_values = PartialValueDict(param_values)
+
         if prompt == None:
             prompt = self.prompt
         for msg in prompt:
             content, role, image_url = msg.content, msg.role, msg.image_url
             if msg.role != Role.assistant:
-                content = content.format(**param_values)
+                content = content.format_map(param_values)
                 image_url = None if image_url is None else image_url.format(**param_values)
                 new_msg = Message(content=content, role=role, image_url=image_url)
                 new_prompt.append(new_msg)
