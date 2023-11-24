@@ -29,19 +29,19 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
             return value
         try:
             if self.extract == 'int_last':
-                pattern = r"(\d{1,3}(?:[,'_]\d{3})*)"
+                pattern = r"(\d+|(?:\d{1,3}(?:[,'_]\d{3})*))"
                 match = re.findall(pattern, value)[-1]
                 return int(match.replace(',', '').replace("'", "").replace("_", ""))
             elif self.extract == 'int_first':
-                pattern = r"(\d{1,3}(?:[,'_]\d{3})*)"
+                pattern = r"(\d+|(?:\d{1,3}(?:[,'_]\d{3})*))"
                 match = re.findall(pattern, value)[0]
                 return int(match.replace(',', '').replace("'", "").replace("_", ""))
             elif self.extract == 'float_last':
-                pattern = r"(\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?|\d+[eE][+-]?\d+)"
+                pattern = r"((?:\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?)|(?:\d+[eE][+-]?\d+))"
                 match = re.findall(pattern, value)[-1]
                 return float(match.replace(',', '').replace("'", "").replace("_", ""))
             elif self.extract == 'float_first':
-                pattern = r"(\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?|\d+[eE][+-]?\d+)"
+                pattern = r"((?:\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?)|(?:\d+[eE][+-]?\d+))"
                 match = re.findall(pattern, value)[0]
                 return float(match.replace(',', '').replace("'", "").replace("_", ""))
         except:
