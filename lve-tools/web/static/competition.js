@@ -1,4 +1,4 @@
-const COMPETITION_ENDPOINT = "http://localhost:9999"
+const COMPETITION_ENDPOINT = window.location.host.includes("lve-project") ? "/api" : "http://localhost:9999/api";
 // last input in competition widget
 let FIRST_INPUT = null;
 let LAST_INPUT = null;
