@@ -17,8 +17,8 @@ class LVESiteGenerator:
         shutil.rmtree("build/", ignore_errors=True)
         os.makedirs("build/")
 
-    def build(self, index=None):
-        push_context(GenerationContext("LVE Repository", "We document and track vulnerabilities and exposures of large language models (LVEs)."))
+    def build(self, index=None, **kwargs):
+        push_context(GenerationContext("LVE Repository", "We document and track vulnerabilities and exposures of large language models (LVEs).", metadata=kwargs))
 
         # copy static resources
         for file in os.listdir("static"):

@@ -22,6 +22,7 @@ generator_context = ContextVar("generator_context")
 class GenerationContext:
     title: str
     description: str
+    metadata: dict = None
 
     def __enter__(self):
         push_context(self)
@@ -39,6 +40,10 @@ def push_context(context):
         if generator_context.get() is None:
             generator_context.set([context])
         else:
+            last = generator_context.get()[-1]
+            # inherit metadata from last context if not set
+            if context.metadata is None and last.metadata is not None:
+                context.metadata = last.metadata
             generator_context.set(generator_context.get() + [context])
     except:
         generator_context.set([context])
@@ -58,6 +63,14 @@ def head():
         <script src="/promptdown.dist.js"></script>
         <script src="/nav.js"></script>
         <link rel="stylesheet" href="/promptdown.css">
+    """
+
+@component
+def footer():
+    return f"""\
+        <div class="footer">
+            <span class='buildinfo'>{context().metadata.get("build_hash", "local")} @ {context().metadata.get("build_time", "local")}</span>
+        </div>
     """
 
 @component
