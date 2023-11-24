@@ -167,6 +167,8 @@ function submit() {
                     document.getElementById("competition-widget").querySelector(".result.success #score").innerText = data.score;
                 } else if (data.status == "failed") {
                     document.getElementById("competition-widget").querySelector(".result.failed").style.display = "block";
+                }  else if (data.status == "invalid") {
+                    document.getElementById("competition-widget").querySelector(".result.invalid").style.display = "block";
                 } else if (data.status == "processing") {
                     // do nothing for now
                 } else {
