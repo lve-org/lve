@@ -6,8 +6,8 @@
     padding-bottom: 150pt !important;
 }
 
-.competition h2 {
-    margin-top: 20pt;
+.competition h1, .competition h2, .competition h3 {
+    margin-top: 10pt;
     font-size: 22pt !important;
 }
 
@@ -205,4 +205,32 @@
 
 #leaderboard-content .lve h3 {
     text-align: left !important;
+}
+
+.level-select{
+    border-radius: 5pt;
+    text-align: left;
+    padding: 8pt;
+    line-height: 12pt;
+    border: 1pt solid rgb(213, 213, 213);
+    box-shadow: 0pt 0pt 2pt 1pt rgba(213, 213, 213, 0.479);
+    margin: auto;
+    margin-bottom: 8pt;
+    width: 30%;
+}
+
+.level-select span.level {
+    background-color: #ccc;
+}
+
+.level-select .level {
+    text-decoration: none;
+    border-radius: 5pt;
+    text-align: middle;
+    padding: 8pt;
+    line-height: 12pt;
+    height: 10pt;
+    border: 1pt solid rgb(213, 213, 213);
+    display: inline-block;
+    margin-right: 8pt;
 }
