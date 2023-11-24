@@ -90,6 +90,18 @@ def lve_list(lves):
     """
     return "\n".join(map(template, lves))
 
+@component
+def competition_list(competitions):
+    def template(l):
+        str = '<div class="competition" href="/">'
+        str += f'<a href="{l["levels"][0]["path"]}"><h3>{l["name"]}</h3></a>'
+        for level in l["levels"]:
+            str += f'<a href="{level["path"]}" class="level">{level["name"]}</a>'
+        str += '</div>'
+        return str
+    return "\n".join(map(template, competitions))
+
+
 class SiteTemplate:
     def __init__(self, filename):
         self.contents = open(filename).read()

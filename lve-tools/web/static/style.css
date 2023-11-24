@@ -1238,3 +1238,49 @@ pre.expand.expanded code {
     font-size: 10pt;
     text-align: center;
 }
+
+.competition-list .competition {
+    border-radius: 5pt;
+    text-align: left;
+    padding: 8pt;
+    line-height: 12pt;
+    border: 1pt solid rgb(213, 213, 213);
+    box-shadow: 0pt 0pt 2pt 1pt rgba(213, 213, 213, 0.479);
+    position: relative;
+    display: block;
+    margin-bottom: 8pt;
+    text-decoration: none;
+}
+
+.competition-list .competition a {
+    text-decoration: none;
+}
+
+.competition-list .competition .level {
+    text-decoration: none;
+    border-radius: 5pt;
+    text-align: middle;
+    padding: 8pt;
+    line-height: 12pt;
+    height: 10pt;
+    border: 1pt solid rgb(213, 213, 213);
+    display: inline-block;
+    margin-right: 8pt;
+}
+
+.competition-list .competition h3 {
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+    /* auto truncate */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    padding-bottom: 10pt;
+    font-weight: 600;
+}
+
+.competition-list {
+    padding: 0pt 15pt;
+}
