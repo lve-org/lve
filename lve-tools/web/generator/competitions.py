@@ -22,7 +22,7 @@ def build_competition(generator, competition_name, competition_subtitle, level, 
     markdown = open(competition_markdown_file).read()
     markdown = strip_frontmatter(markdown)
     rendered = render_markdown(markdown)
-    competition_id = os.path.basename(competition_markdown_file).replace(".md", "")
+    competition_id = level['path'].replace(".html", "")
 
     if not "lve" in fm:
         raise ValueError("Competition {} does not specify an 'lve' in its frontmatter".format(competition_markdown_file))
