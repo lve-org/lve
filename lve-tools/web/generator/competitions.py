@@ -55,19 +55,33 @@ def list_competitions(targets):
 def build_competitions(generator): 
     # read set of competitions from competitions/active folder
     competitions_folder = os.path.join("/competitions", "active")
-    competition_files = [f for f in os.listdir(competitions_folder) if f.endswith(".md")]
-    competition_files = [os.path.join(competitions_folder, f) for f in competition_files]
+    competition_folders = [f for f in os.listdir(competitions_folder)]
 
-    competition_targets = []
-    for competition in competition_files:
-        target = os.path.basename(competition).replace(".md", ".html") 
-        build_competition(generator, competition, "competitions/" + target)
-        competition_targets.append(target)
+    competitions = []
+    for competition_folder in competition_folders:
+        competition_path =  os.path.join(competitions_folder, competition_folder)
+        
+        try:
+            with open(os.path.join(competition_path, "config.yaml"), 'r') as f:
+                competition_config = yaml.safe_load(f)
+        except FileNotFoundError:
+            competition_config = dict()
+            
+        competition_name = competition_config.get("name", competition_folder)
+
+        levels = []
+        for level_file in os.listdir(competition_path):
+            if level_file.endswith(".md"):
+                level_file_path = os.path.join(competition_path, level_file)
+                fm = frontmatter(level_file_path)
+                level_name = fm.get("name", level_file.replace(".md", ""))
+                target_name = competition_folder + "-" + level_file.replace(".md", ".html")
+                build_competition(generator, level_file_path, "competitions/" + target_name)
+                levels.append({'name': level_name, 'path': target_name})
+        competitions.append({'name': competition_name, 'levels': levels})
     
-    #first_competition = competition_files[0]
-    #build_competition(generator, first_competition, "competitions/index.html")
     template = SiteTemplate("competitions.html")
     template.emit(
         file=os.path.join(generator.target, "competitions", "index.html"),
-        competitions=list_competitions(competition_targets)
+        competitions=competition_list(competitions)
     )
