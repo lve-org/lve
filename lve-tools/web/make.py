@@ -13,8 +13,7 @@ if __name__ == '__main__':
     PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     if os.path.isdir(os.path.join(PROJECT_ROOT, ".git")):
         # check for dirty working tree
-        git_status = os.popen("git status --porcelain").read().strip()
-        if git_status:
+        if os.environ.get("HOT") == "1":
             build_hash = "dev"
         else:
             build_hash = os.popen("git rev-parse --short HEAD").read().strip()
