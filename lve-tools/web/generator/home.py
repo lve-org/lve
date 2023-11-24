@@ -36,7 +36,7 @@ def leaderboard(indexer):
         """
     return html
 
-def build_home(generator, updated, categories, indexer=None):
+def build_home(generator, updated, categories, indexer=None, **kwargs):
     index = SiteTemplate("index.html")
     
     categories = list(sorted(categories))
@@ -45,5 +45,6 @@ def build_home(generator, updated, categories, indexer=None):
         file=os.path.join(generator.target, "index.html"),
         recently_updated=partial(lve_list, updated),
         category_tiles=partial(make_category_tiles, categories),
-        leaderboard=partial(leaderboard, indexer)
+        leaderboard=partial(leaderboard, indexer),
+        **kwargs
     )

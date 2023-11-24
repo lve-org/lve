@@ -14,8 +14,11 @@
     {{ toolbar() }}
     <div class="content">
         <div class="hero competition markdown">
+            <h1>{{ title }}</h1>
+            <div class='header'>{{ subtitle }}</div>
             {{ content }}
         </div>
     </div>
+    {{ footer() }}
 </body>
 </html>
