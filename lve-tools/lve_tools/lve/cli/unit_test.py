@@ -3,6 +3,7 @@ import unittest
 from lve.tests.test_checkers import *
 from lve.tests.test_repository import *
 from lve.tests.test_lve import *
+from lve.tests.test_inference import *
 
 def main(args):
     parser = argparse.ArgumentParser()
@@ -25,6 +26,10 @@ def main(args):
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestPII_Checker))
 
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestRepository))
+
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestLlama2))
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestMistral))
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestOpenAI))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
 
