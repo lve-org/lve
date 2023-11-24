@@ -7,18 +7,6 @@ from typing import Any, List, Union, Optional
 from pydantic import BaseModel, RootModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
 
-def prompt_to_openai(prompt):
-    messages = []
-    for msg in prompt:
-        content, role = msg.content, str(msg.role)
-        if msg.image_url is not None:
-            content = [
-                {"type": "text", "text": msg.content},
-                {"type": "image_url", "image_url": msg.image_url},
-            ]
-        messages += [{"content": content, "role": role}]
-    return messages
-
 class Role(str, Enum):
     user = "user"
     assistant = "assistant"

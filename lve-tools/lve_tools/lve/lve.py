@@ -7,10 +7,10 @@ import inspect
 
 import openai
 import lmql
-from lve.inference import execute_openai, execute_replicate
+from lve.inference import execute_openai, execute_replicate, get_openai_prompt
 from lve.errors import *
 from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS
-from lve.prompt import Role, Message, get_prompt, prompt_to_openai
+from lve.prompt import Role, Message, get_prompt
 import copy
 
 from pydantic import BaseModel, model_validator, ValidationError
@@ -262,7 +262,7 @@ class LVE(BaseModel):
     async def run_with_lmql(self, author=None, verbose=False, **kwargs):
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
         prompt = self.fill_prompt(param_values)
-        prompt_openai = prompt_to_openai(prompt)
+        prompt_openai = get_openai_prompt(prompt)
 
         # make compatible with previous model identifiers
         model = self.model

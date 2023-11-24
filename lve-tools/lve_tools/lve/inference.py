@@ -2,9 +2,10 @@ import copy
 import json
 import openai
 import os
-from lve.prompt import Role, Message, prompt_to_openai
-from lve.model_store import REPLICATE_MODELS
-from openai import OpenAI
+import replicate
+import openai
+from lve.prompt import Role, Message
+from lve.model_store import REPLICATE_MODELS, OPENAI_MODELS
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -19,9 +20,30 @@ if openai_is_azure:
     openai.api_type = 'azure'
     openai.api_version = '2023-05-15' # this may change in the future
 
-def get_llama2_prompt(prompt: list[Message]) -> str:
+def get_openai_prompt(prompt) -> list[dict]:
     """
-    Preprocesses the prompt (as list of messages) into string that can be used as an input to Llama-2 models.
+    Preprocesses the prompt (as list of Message objects) into a list of messages in the OpenAI format.
+    For example, the resulting prompt could be something like:
+
+    [{"content": "Hi", "role": "user"},
+    {"content": "Hello! How are you?", "role": "assistant"},
+    {"content": "I'm great, thanks for asking. Could you help me with a task?", "role": "user"}]
+    """
+    messages = []
+    for msg in prompt:
+        content, role = msg.content, str(msg.role)
+        if msg.image_url is not None:
+            content = [
+                {"type": "text", "text": msg.content},
+                {"type": "image_url", "image_url": msg.image_url},
+            ]
+        messages += [{"content": content, "role": role}]
+    return None, messages
+
+
+def get_llama2_prompt(prompt: list[Message]) -> tuple[str, str]:
+    """
+    Preprocesses the prompt (as list of Message objects) into string that can be used as an input to Llama-2 models.
     For example, the resulting prompt could be something like:
 
     [INST] Hi! [/INST]
@@ -48,6 +70,30 @@ def get_llama2_prompt(prompt: list[Message]) -> str:
     return system_prompt, llama2_prompt
 
 
+def get_mistral_prompt(prompt: list[Message]) -> tuple[str, str]:
+    """
+    Preprocesses the prompt (as list of Message objects) into string that can be used as an input to Mistral models.
+    For example, the resulting prompt could be something like:
+
+    <s>[INST] How are you? [/INST] Great, and you?</s>[INST] Also great! [/INST]
+
+    Args:
+        prompt: Prompt as list of messages
+
+    Returns:
+        Tuple of two strings: system prompt and Mistral prompt
+    """
+    mistral_prompt = "<s>"
+    for msg in prompt:
+        if msg.role == Role.user:
+            mistral_prompt += f"[INST] {msg.content} [/INST]"
+        elif msg.role == Role.assistant:
+            mistral_prompt += f" {msg.content}</s>"
+        else:
+            raise NotImplementedError("Mistral does not support system messages.")
+    return None, mistral_prompt
+
+
 def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
     """
     Preprocesses model and prompt before running the inference.
@@ -65,8 +111,8 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
 
     # get model path
     # for now just remove the openai/ prefix
-    if model.startswith("openai/"):
-        model = model[len("openai/"):]
+    if model in OPENAI_MODELS:
+        model = model[OPENAI_MODELS]
     elif model in REPLICATE_MODELS:
         model = REPLICATE_MODELS[model]
 
@@ -85,6 +131,17 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
 
     return prompt, model
 
+def get_model_prompt(model, prompt):
+    if model.startswith("meta/llama-2"):
+        return get_llama2_prompt(prompt)
+    elif model.startswith("mistralai/mistral"):
+        return get_mistral_prompt(prompt)
+    elif model.startswith("openai/"):
+        return get_openai_prompt(prompt)
+    else:
+        raise NotImplementedError(f"Cannot get prompt for model {model}!")
+    
+
 def execute_replicate(model, prompt_in, verbose=False, **model_args):
     """
     Executes a prompt using Replicate.
@@ -97,7 +154,6 @@ def execute_replicate(model, prompt_in, verbose=False, **model_args):
     Returns:
         A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
-    import replicate
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
     if "temperature" in model_args:
@@ -105,9 +161,9 @@ def execute_replicate(model, prompt_in, verbose=False, **model_args):
 
     for i in range(len(prompt)):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
-            system_prompt, llama2_prompt = get_llama2_prompt(prompt[:i])
+            system_prompt, model_prompt = get_model_prompt(model, prompt[:i])
             input = {
-                "prompt": llama2_prompt,
+                "prompt": model_prompt,
                 **model_args,
             }
             if system_prompt is not None:
@@ -134,13 +190,13 @@ def execute_openai(model, prompt_in, verbose=False, **model_args):
     Returns:
         A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
-    client = OpenAI()
+    client = openai.OpenAI()
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
     # go through all messages and fill in assistant messages, sending everything before as context
     for i in range(len(prompt)):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
-            prompt_openai = prompt_to_openai(prompt[:i])
+            _, prompt_openai = get_model_prompt(model, prompt[:i])
 
             completion = client.chat.completions.create(
                 model=model,
