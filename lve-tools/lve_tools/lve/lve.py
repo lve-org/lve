@@ -108,6 +108,7 @@ class LVE(BaseModel):
     multi_run_prompt: TMultiPrompt = None
     prompt: TPrompt = None
     prompt_parameters: Union[list[str], None] = None
+    prompt_parameters_validator: Optional[list[str]] = None
 
     # names of existing instance files (instances/*.json)
     instance_files: List[str]
@@ -165,6 +166,24 @@ class LVE(BaseModel):
             raise ValueError(f"'prompt_parameters' in {self.path}/test.json has not been filled in yet!")
 
         return self
+
+
+    def validate_parameters(self, params):
+        if self.prompt_parameters_validator is None: return True
+        for param, validator in zip(self.prompt_parameters, self.prompt_parameters_validator):
+            value = params[param]
+            if validator == "int":
+                try:
+                    int(value)
+                except ValueError:
+                    return False
+            elif validator == "float":
+                try:
+                    float(value)
+                except ValueError:
+                    return False
+            else: assert False
+        return True
 
     def fill_prompt(self, param_values, prompt=None):
         """
