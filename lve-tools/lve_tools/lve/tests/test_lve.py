@@ -28,10 +28,7 @@ def test_lve_instance(test, lve, instance):
         return
     
     new_response = prompt + [Message(instance.response, role=Role.assistant)]
-    if lve.model.startswith("openai/"):
-        execute_patch = patch("lve.lve.execute_openai", return_value=new_response)
-    else:
-        execute_patch = patch("lve.lve.execute_replicate", return_value=new_response)
+    execute_patch = patch("lve.lve.execute_llm", return_value=new_response)
     
     with execute_patch:
         new_instance = asyncio.run(lve.run_instance(instance, engine="openai"))
@@ -51,23 +48,19 @@ class TestLVE(unittest.TestCase):
         """Tests if LVE was correctly loaded"""
         self.assertIsInstance(self.lve, LVE)
 
-    @patch("lve.lve.execute_replicate")
-    @patch("lve.lve.execute_openai")
-    def test_lve_execute(self, mock_execute_openai, mock_execute_replicate):
+    @patch("lve.lve.execute_llm")
+    def test_lve_execute(self, mock_execute_llm):
         """Tests if we can run an LVE with a mock prompt."""
-        MOCK_RESPONSE = "Hello World {}!"
         prompt = [Message("Hi there!")]
-        openai_response = MOCK_RESPONSE.format("OpenAI")
-        replicate_response = MOCK_RESPONSE.format("Replicate")
-        mock_execute_openai.return_value = prompt + [Message(openai_response, role=Role.assistant)]
-        mock_execute_replicate.return_value = prompt + [Message(replicate_response, role=Role.assistant)]
+        mock_response = "Hello World!"
+        mock_execute_llm.return_value = prompt + [Message(mock_response, role=Role.assistant)]
 
         if self.lve.model.startswith("openai/"):
             response = self.lve.execute(prompt)
-            self.assertEqual(response[-1].content, openai_response)
+            self.assertEqual(response[-1].content, mock_response)
         elif self.lve.model.startswith("meta/"):
             response = self.lve.execute(prompt)
-            self.assertEqual(response[-1].content, replicate_response)
+            self.assertEqual(response[-1].content, mock_response)
         else:
             print("Skipped testing (not found model):", os.path.join(self.lve.path, "test.json"))
 

@@ -9,7 +9,6 @@ from lve.prompt import Message, Role
 from lve.repo import get_active_repo
 from lve.tests.test_lve import test_lve_instance
 
-MOCK_RESPONSE = "Hello World {}!"
 
 class TestRepository(unittest.TestCase):
 
@@ -34,23 +33,20 @@ class TestRepository(unittest.TestCase):
         for lve in lves:
             self.assertIsInstance(lve, LVE)
 
-    @patch("lve.lve.execute_replicate")
-    @patch("lve.lve.execute_openai")
-    def test_lve_execute(self, mock_execute_openai, mock_execute_replicate):
+    @patch("lve.lve.execute_llm")
+    def test_lve_execute(self, mock_execute_llm):
         prompt = [Message("Hi there!")]
-        openai_response = MOCK_RESPONSE.format("OpenAI")
-        replicate_response = MOCK_RESPONSE.format("Replicate")
-        mock_execute_openai.return_value = prompt + [Message(openai_response, role=Role.assistant)]
-        mock_execute_replicate.return_value = prompt + [Message(replicate_response, role=Role.assistant)]
+        mock_response = "Hello World!"
+        mock_execute_llm.return_value = prompt + [Message(mock_response, role=Role.assistant)]
 
         lves = self.get_lves()
         for lve in lves:
             if lve.model.startswith("openai/"):
                 response = lve.execute(prompt)
-                self.assertEqual(response[-1].content, openai_response)
+                self.assertEqual(response[-1].content, mock_response)
             elif lve.model.startswith("meta/"):
                 response = lve.execute(prompt)
-                self.assertEqual(response[-1].content, replicate_response)
+                self.assertEqual(response[-1].content, mock_response)
             else:
                 print("Skipped testing (not found model):", os.path.join(lve.path, "test.json"))
 
@@ -73,6 +69,7 @@ class TestRepository(unittest.TestCase):
                     try:
                         test_lve_instance(self, lve, instance)
                     except Exception as e:
+                        print(e)
                         cnt_fail += 1
                 
                 if cnt_fail == 0:
