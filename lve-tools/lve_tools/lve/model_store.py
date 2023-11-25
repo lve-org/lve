@@ -1,7 +1,7 @@
 OPENAI_MODELS = {
-    "gpt-4": "openai/gpt-4",
-    "gpt-3.5-turbo": "openai/gpt-3.5-turbo",
-    "gpt-4-vision-preview": "openai/gpt-4-vision-preview",
+    "openai/gpt-4": "openai/gpt-4",
+    "openai/gpt-3.5-turbo": "openai/gpt-3.5-turbo",
+    "openai/gpt-4-vision-preview": "openai/gpt-4-vision-preview",
 }
 
 REPLICATE_MODELS = {
@@ -11,3 +11,13 @@ REPLICATE_MODELS = {
 
     "mistralai/mistral-7b-instruct-v0.1": "mistralai/mistral-7b-instruct-v0.1:83b6a56e7c828e667f21fd596c338fd4f0039b46bcfa18d973e8e70e455fda70",
 }
+
+DUMMY_MODELS = {
+    "dummy/dummy": "dummy/dummy",
+}
+
+def get_suggested_models():
+    models = []
+    models += list(OPENAI_MODELS.keys())
+    models += list(REPLICATE_MODELS.keys())
+    return models

@@ -3,7 +3,9 @@ import questionary
 import termcolor
 import textwrap
 from lve.repo import get_active_repo, LVERepo, file_system_repr
+from lve.model_store import get_suggested_models
 import json
+from prompt_toolkit.styles import Style
 from lve.lve import LVE
 from lve.errors import *
 import os
@@ -62,12 +64,6 @@ README_TEMPLATE = """### {description}
 
 
 """
-
-SUGGESTED_MODELS = [
-    "openai/gpt-3.5-turbo",
-    "openai/gpt-4",
-    "openai/gpt-3.5-turbo-instruct"
-]
 
 def print_name(name):
     print("Name:", termcolor.colored(name, "green"))
@@ -217,10 +213,13 @@ def main(args):
                 default_model = template.model
 
             model = questionary.autocomplete(
-                "model: ",
-                choices = SUGGESTED_MODELS,
+                "model (press tab for suggestions): ",
+                choices = get_suggested_models(),
                 validate=lambda text: len(text) > 0,
-                default=default_model
+                default=default_model,
+                style=Style([
+                    ('completion-menu', 'bg:#444444'),
+                ])
             ).unsafe_ask()
 
         # check if the LVE already exists

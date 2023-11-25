@@ -5,7 +5,7 @@ import os
 import replicate
 import openai
 from lve.prompt import Role, Message
-from lve.model_store import REPLICATE_MODELS, OPENAI_MODELS
+from lve.model_store import *
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -110,9 +110,8 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
     prompt = copy.deepcopy(prompt_in)
 
     # get model path
-    # for now just remove the openai/ prefix
     if model in OPENAI_MODELS:
-        model = model[OPENAI_MODELS]
+        model = OPENAI_MODELS[model]
     elif model in REPLICATE_MODELS:
         model = REPLICATE_MODELS[model]
 
@@ -138,6 +137,8 @@ def get_model_prompt(model, prompt):
         return get_mistral_prompt(prompt)
     elif model.startswith("openai/"):
         return get_openai_prompt(prompt)
+    elif model.startswith("dummy/"):
+        return "", ""
     else:
         raise NotImplementedError(f"Cannot get prompt for model {model}!")
     
@@ -198,8 +199,9 @@ def execute_openai(model, prompt_in, verbose=False, **model_args):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
             _, prompt_openai = get_model_prompt(model, prompt[:i])
 
+            openai_model = model[len("openai/"):]
             completion = client.chat.completions.create(
-                model=model,
+                model=openai_model,
                 messages=prompt_openai,
                 **model_args,
             )
@@ -210,3 +212,29 @@ def execute_openai(model, prompt_in, verbose=False, **model_args):
             print(f"[{msg.role}] {msg.content}")
 
     return prompt
+
+def execute_dummy(model, prompt_in, verbose=False, **model_args):
+    """
+    Dummy model which fills all assistant messages with "Hello world!"
+    """
+    prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
+
+    # go through all messages and fill in assistant messages, sending everything before as context
+    for i in range(len(prompt)):
+        if prompt[i].role == Role.assistant and prompt[i].content == None:
+            prompt[i].content = "Hello world"
+        if verbose:
+            msg = prompt[i]
+            print(f"[{msg.role}] {msg.content}")
+
+    return prompt
+
+
+def execute_llm(model, prompt_in, verbose=False, **model_args):
+    if model in OPENAI_MODELS:
+        return execute_openai(model, prompt_in, verbose, **model_args)
+    elif model in DUMMY_MODELS:
+        return execute_dummy(model, prompt_in, verbose, **model_args)
+    else:
+        assert model in REPLICATE_MODELS, f"Model {model} is not supported."
+        return execute_replicate(model, prompt_in, verbose, **model_args)

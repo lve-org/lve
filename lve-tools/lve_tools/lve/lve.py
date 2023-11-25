@@ -7,9 +7,9 @@ import inspect
 
 import openai
 import lmql
-from lve.inference import execute_openai, execute_replicate, get_openai_prompt
+from lve.inference import execute_llm, get_openai_prompt
 from lve.errors import *
-from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS
+from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS
 from lve.prompt import Role, Message, get_prompt
 import copy
 
@@ -218,11 +218,7 @@ class LVE(BaseModel):
         return new_prompt
     
     def execute(self, prompt_in, verbose=False, **model_args):
-        if self.model.startswith("openai/") or self.model in OPENAI_MODELS:
-            return execute_openai(self.model, prompt_in, verbose, **model_args)
-        else:
-            assert self.model in REPLICATE_MODELS, f"Model {self.model} is not supported."
-            return execute_replicate(self.model, prompt_in, verbose, **model_args)
+        return execute_llm(self.model, prompt_in, verbose, **model_args)
     
     async def run(self, author=None, verbose=False, engine='openai', **kwargs):
         if engine == 'lmql':
