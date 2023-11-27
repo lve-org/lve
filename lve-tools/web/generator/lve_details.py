@@ -27,7 +27,10 @@ def selector(options, active=None):
     ]))
 
 def get_tags_html(tags):
-    html_tags = [f"<span class='badge {tag.name}'>{str(tag)}</span>" for tag in tags]
+    html_tags = [
+        f"<a class='badge-link' href='/tags/{tag.name}/{tag.value}'><span class='badge {tag.name}'>{str(tag)}</span></a>"
+        for tag in tags
+    ]
     return """\
         <div class='affected'>
             {tags}
