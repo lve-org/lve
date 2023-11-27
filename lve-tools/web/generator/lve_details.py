@@ -26,6 +26,14 @@ def selector(options, active=None):
         "<a class='badge-link' href='{link}'><span class='badge{a}'>{option}</span></a>".format(option=o, link=o+".html", a=(" active" if o == active else "")) for o in options
     ]))
 
+def get_tags_html(tags):
+    html_tags = [f"<span class='badge {tag.name}'>{str(tag)}</span>" for tag in tags]
+    return """\
+        <div class='affected'>
+            {tags}
+        </div>
+    """.format(tags="\n".join(html_tags))
+
 def build_lve_sites(generator):
     # get all test.json files traversing ../repository recursively
     test_files = []
@@ -106,6 +114,7 @@ def build_lve_site(generator, lve):
             file=os.path.join(generator.target, path, sitename + ".html"),
             name=name_with_subfolders,
             category=category,
+            tags=get_tags_html(lve.tags),
             num_instances=num_instances,
             description=lve.description,
             # escape HTML in prompt

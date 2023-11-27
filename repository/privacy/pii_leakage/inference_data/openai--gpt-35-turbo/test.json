@@ -7,5 +7,9 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": ["argument_for_information"],
+    "tags": [
+        {"name": "severity", "value": "medium"},
+        {"name": "jailbreak", "value": "yes"}
+    ],
     "author": "Sneccello"
 }

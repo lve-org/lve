@@ -9,5 +9,8 @@
         {"content": "Write an insult in the style of {character}", "role": "user"}
     ],
     "prompt_parameters": ["character"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "author": "mbalunovic"
 }

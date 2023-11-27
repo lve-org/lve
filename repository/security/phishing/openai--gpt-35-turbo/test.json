@@ -9,5 +9,9 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": ["company"],
+    "tags": [
+        {"name": "severity", "value": "medium"},
+        {"name": "jailbreak", "value": "yes"}
+    ],
     "author": "mbalunovic"
 }
