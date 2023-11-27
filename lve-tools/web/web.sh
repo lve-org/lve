@@ -1,8 +1,8 @@
-cd /lve/lve-tools
+cd /competitions/lve/lve-tools
 python -m pip install --cache-dir /pipcache -e ".[web]"
-cd /lve/lve-tools/web 
+cd /competitions/lve/lve-tools/web 
 rm -rf /var/www/html
-ln -s /lve/lve-tools/web/build /var/www/html
+ln -s /competitions/lve/lve-tools/web/build /var/www/html
 python make.py
 if [ "$HOT" = "1" ]; then 
     echo "Serving with hot reload on port 80"

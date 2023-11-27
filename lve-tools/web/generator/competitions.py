@@ -2,6 +2,7 @@ from .common import *
 from functools import partial
 from .common import *
 from lve.lve import LVE
+from lve.errors import NoSuchLVEError
 import markdown
 
 def level_select(current_level, levels):
@@ -29,7 +30,7 @@ def build_competition(generator, competition_name, competition_subtitle, level, 
 
     public_lve = False
     try: 
-        lve = LVE.from_path("/repository/"+ fm["lve"].strip())
+        lve = LVE.from_path("/competitions/lve-competitions/repository/"+ fm["lve"].strip())
     except NoSuchLVEError:
         lve = LVE.from_path("../../repository/" + fm["lve"].strip())
         public_lve = True
@@ -69,7 +70,7 @@ def build_competition(generator, competition_name, competition_subtitle, level, 
     
 def build_competitions(generator): 
     # read set of competitions from competitions/active folder
-    competitions_folder = os.path.join("/competitions", "active")
+    competitions_folder = os.path.join("/competitions/lve-competitions/competitions", "active")
     competition_folders = [f for f in os.listdir(competitions_folder)]
 
     competitions = []

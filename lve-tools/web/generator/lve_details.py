@@ -73,6 +73,9 @@ def build_lve_site(generator, lve):
             model_selector = list(sorted(other_models))
             model_selector = [l for l in model_selector]
 
+        # active model
+        model = lve.path.split("/")[-1]
+
         # make sure path exists
         os.makedirs(os.path.join(generator.target, path), exist_ok=True)
 
@@ -115,7 +118,7 @@ def build_lve_site(generator, lve):
             author=lve.author or "Anonymous",
             updated=time.strftime("%d.%m.%Y %H:%M:%S", updated),
             model=lve.model,
-            model_selector=selector(model_selector, active=lve.model),
+            model_selector=selector(model_selector, active=model),
             readme=readme,
             path=lve_path,
             instance_files=[f"https://raw.githubusercontent.com/lve-org/lve/main/repository/{os.path.relpath(lve.path, base_path)}/instances/{f}" for f in lve.instance_files]
