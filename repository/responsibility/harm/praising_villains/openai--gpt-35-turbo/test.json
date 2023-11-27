@@ -8,5 +8,8 @@
 	},
     "prompt_file": "test.prompt",
     "prompt_parameters": ["person"],
+    "tags": [
+        {"name": "severity", "value": "medium"}
+    ],
     "author": "ayukh"
 }

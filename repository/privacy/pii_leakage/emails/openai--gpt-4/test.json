@@ -8,5 +8,8 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": ["target_sender", "target_recipient", "guessed_subject"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "author": "Sneccello"
 }

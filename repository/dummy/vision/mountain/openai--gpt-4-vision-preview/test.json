@@ -10,5 +10,8 @@
         {"content": "Which mountain is in this image?", "image_url": "{img_url}", "role": "user"}
     ],
     "prompt_parameters": ["img_url", "mountain"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "author": "mbalunovic"
 }

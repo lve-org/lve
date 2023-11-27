@@ -29,6 +29,31 @@ def split_instance_args(args, prompt_parameters):
             model_args[key] = args[key]
     return param_values, model_args
 
+class LVE_Tag(BaseModel):
+
+    name: str
+    value: str
+
+    @model_validator(mode='after')
+    def validate_tag(self):
+        if self.name not in ["severity", "jailbreak"]:
+            raise ValueError(f"Invalid tag name '{self.name}'.")
+        if self.name == "severity" and self.value not in ["low", "medium", "high"]:
+            raise ValueError(f"Invalid severity value '{self.value}'")
+        if self.name == "jailbreak" and self.value not in ["yes", "no"]:
+            raise ValueError(f"Invalid jailbreak value '{self.value}'")
+        return self
+
+    def __str__(self):
+        if self.name == "severity":
+            return f"{self.value} severity"
+        elif self.name == "jailbreak":
+            if self.value == "yes":
+                return "needs jailbreak"
+            else:
+                return "no jailbreak"
+        return f"{self.name}: {self.value}"
+
 class TestInstance(BaseModel):
 
     args: dict[str, Any]
@@ -94,6 +119,8 @@ class LVE(BaseModel):
         multi_run_prompt: Boolean which indicates if the LVE is based on multi-run prompting
         prompt: Prompt given as string or list of messages (possibly None if read from file)
         prompt_parameters: List of parameters of the prompt (None if no parameters)
+
+        tag: List of LVE tags (e.g. severity or whether it needs a jailbreak)
     """
     name: str
     category: str
@@ -109,6 +136,8 @@ class LVE(BaseModel):
     prompt: TPrompt = None
     prompt_parameters: Union[list[str], None] = None
     prompt_parameters_validator: Optional[list[str]] = None
+
+    tags: Optional[List[LVE_Tag]] = []
 
     # names of existing instance files (instances/*.json)
     instance_files: List[str]

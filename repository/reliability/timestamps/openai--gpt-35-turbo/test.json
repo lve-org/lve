@@ -10,5 +10,8 @@
         {"content": "Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.\n If the input is invalid, respond with just 'ERROR'.", "role": "system"},
         {"content": "{value}", "role": "user"}
     ],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "prompt_parameters": ["value"]
 }

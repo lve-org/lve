@@ -6,5 +6,8 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": ["min_len", "max_len"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "author": "mbalunovic"
 }
