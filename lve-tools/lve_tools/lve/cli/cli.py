@@ -1,4 +1,3 @@
-
 """
 Main entry point for the 'lve' CLI tool.
 """
@@ -17,6 +16,7 @@ from .prepare import main as prepare_main
 from .pr import main as pr_main
 from .run import main as run_main
 from .readme import main as readme_main
+from .unit_test import main as unit_test_main
 
 DOCUMENTATION = f"""\
 The 'lve' command line tool can be used to record and document language model vulnerabilities and exposures (LVEs). 
@@ -26,7 +26,7 @@ be used by security researchers and language model developers.
 
 Commands:
 
-{termcolor.colored('lve record', attrs=['bold'])} <lve-path> [--temperature <temperature>] [--file <name>.json]
+{termcolor.colored('lve record', attrs=['bold'])} <lve-path> [--temperature <temperature>] [--file <name>.jsonl]
 
     Records a new instance of the given LVE. The <category> and <lve-id> correspond to
     the category and LVE number of the LVE being recorded.
@@ -61,6 +61,13 @@ Commands:
 
     Generates from scratch or updates readme of the given LVE.
 
+{termcolor.colored('lve readme', attrs=['bold'])} [--from-scratch]
+
+    Generates from scratch or updates readme of the given LVE.
+
+{termcolor.colored('lve unit-test', attrs=['bold'])} [lve-path]
+
+    Runs either all unit tests or unit test for the given LVE (if the LVE path is provided)
 """
 
 def documentation():
@@ -79,7 +86,7 @@ def main():
     if len(sys.argv) < 2:
         documentation()
         return
-
+    
     cmd = sys.argv[1]
     cmds = {
         "record": record_main,
@@ -90,6 +97,7 @@ def main():
         "pr": pr_main,
         "run": run_main,
         "readme": readme_main,
+        "unit-test": unit_test_main,
     }
 
     if cmd not in cmds:

@@ -95,11 +95,11 @@ def patch_readme(readme, lve):
     else:
         example_unsafe_instance = "No unsafe instances available."
 
-    checker = lve.get_checker()
+    checker = lve.get_checker(**unsafe_param_values)
     
     placerhold_parameters = {
         "checker": lve.checker_args["checker_name"],
-        "checker description": textwrap.dedent(checker.__doc__).strip(),
+        "checker description": textwrap.dedent(checker.__doc__ or "").strip(),
         "prompt": prompt,
         "prompt parameters": lve.prompt_parameters,
         "example of a safe instance": example_safe_instance,

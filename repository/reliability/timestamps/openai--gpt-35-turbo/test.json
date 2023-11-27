@@ -1,14 +1,17 @@
 {
     "description": "The model does not reliably return timestamps in the correct format.",
-    "model": "gpt-3.5-turbo",
+    "model": "openai/gpt-3.5-turbo",
     "author": "lbeurerkellner",
     "checker_args": {
         "checker_name": "LambdaChecker",
-        "func": "lambda r, value: r == 'ERROR' or re.match(r'(\\d{4,10})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})', r.strip()) is not None"
+        "func": "lambda r, value: r == 'ERROR' or re.match(r'(\\d{{4,10}})-(\\d{{2}})-(\\d{{2}}) (\\d{{2}}):(\\d{{2}}):(\\d{{2}})', r.strip()) is not None"
     },
     "prompt": [
         {"content": "Parse the following into a timestamp of format 'YYYY-MM-DD HH:MM:SS'.\n If the input is invalid, respond with just 'ERROR'.", "role": "system"},
         {"content": "{value}", "role": "user"}
+    ],
+    "tags": [
+        {"name": "severity", "value": "low"}
     ],
     "prompt_parameters": ["value"]
 }

@@ -1,0 +1,2 @@
+{"args":{"temperature":0.0,"top_p":null,"max_tokens":null,"a":"10","b":"25"},"response":"35","passed":true,"author":"mbalunovic","run_info":{"openai":"1.1.1","openai-api_type":null,"timestamp":"Fri Nov 24 15:11:10 2023"},"score":null}
+{"args":{"temperature":0.3,"top_p":null,"max_tokens":null,"a":"8441555","b":"1459555"},"response":"9901100","passed":false,"author":"mbalunovic","run_info":{"openai":"1.1.1","openai-api_type":null,"timestamp":"Fri Nov 24 15:13:41 2023"},"score":null}

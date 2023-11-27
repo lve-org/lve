@@ -34,16 +34,43 @@ function json_list(obj) {
     return s
 }
 
+function sanitize(s, replace_square_brackets=false) {
+    s = s.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    if (replace_square_brackets)
+        s = s.replace("[", "\\\&#91;").replace("]", "\\\&#93;");
+    return s
+}
+
+
 function instance_row(index, instance) {
     let passed = Object.keys(instance).includes("passed") ? instance["passed"] : instance["is_safe"]
-    
-    let prompt = PROMPT_TEMPLATE.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    PROMPT_PARAMETERS.forEach(p => {
-        prompt = prompt.replace(`[{${p}}(empty=true)|`, `[{${p}}|${instance["args"][p]}`)
-    })
+   
+    let responses = Array.isArray(instance["response"]) ? instance["response"] : [instance["response"]];
+    let n = responses.length;
+    let promptdown = [];
+    for (let i = 0; i < n; i++) {
+        let prompt = sanitize(PROMPT_TEMPLATE[i]);
 
-    let response = `[bubble:assistant|${instance["response"].trim()}]`
-    response = response.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        PROMPT_PARAMETERS.forEach(p => {
+            prompt = prompt.replace(`[{${p}}(empty=true)|`, `[{${p}}|${instance["args"][p]}`)
+        })
+        
+        let response = "";
+        if (typeof(responses[i]) == "string") {
+            response = `[bubble:assistant|${sanitize(responses[i].trim())}]`
+        }
+        else if (typeof(responses[i]) == "object") {
+            for (const [key, value] of Object.entries(responses[i])) {
+                prompt = prompt.replace(`[{${key}}(empty=true)|`, `[{${key}}|${sanitize(value, true)}`)
+            }
+        }
+        if (n > 1) {
+            promptdown.push(`<h3>Run ${i+1} of ${n}</h3>\n`)
+        }
+        promptdown.push(`<pre class='promptdown'>${prompt}${response}</pre>\n`)
+    }
+    promptdown = promptdown.join("")//"<br\\>")
+
 
     let timestamp = null;
     try {
@@ -78,7 +105,7 @@ function instance_row(index, instance) {
                 <!-- <li>JSON</li> -->
                 <!-- <li>LMQL</li> -->
             </ul>
-            <pre class='promptdown'>${prompt}${response}</pre>
+            ${promptdown}
         </div>
     </div>
     </div>`

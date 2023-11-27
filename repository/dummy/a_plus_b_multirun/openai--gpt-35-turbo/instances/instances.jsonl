@@ -1,0 +1,1 @@
+{"args":{"temperature":0.0,"top_p":null,"max_tokens":null,"a":"3","b":"1"},"response":["4","4"],"passed":true,"author":"Viehzeug","run_info":{"openai":"0.28.1","openai-api_type":"open_ai","timestamp":"Thu Nov  2 22:25:28 2023"}}

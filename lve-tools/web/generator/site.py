@@ -7,6 +7,7 @@ from .common import *
 from .docs import *
 from .home import build_home
 from .lve_details import build_lve_sites
+from .competitions import build_competitions
 
 class LVESiteGenerator:
     def __init__(self, target="build/"):
@@ -16,8 +17,8 @@ class LVESiteGenerator:
         shutil.rmtree("build/", ignore_errors=True)
         os.makedirs("build/")
 
-    def build(self, index=None):
-        push_context(GenerationContext("LVE Repository", "We document and track vulnerabilities and exposures of large language models (LVEs)."))
+    def build(self, index=None, **kwargs):
+        push_context(GenerationContext("LVE Repository", "We document and track vulnerabilities and exposures of large language models (LVEs).", metadata=kwargs))
 
         # copy static resources
         for file in os.listdir("static"):
@@ -25,6 +26,10 @@ class LVESiteGenerator:
 
         # create model-specific lve sites
         lve_data = build_lve_sites(self)
+
+        # create competition sites
+        if os.path.exists("/competitions"):
+            build_competitions(self)
 
         # build index pages for categories
         category_buckets = {}
@@ -41,7 +46,8 @@ class LVESiteGenerator:
                 category_lves=partial(lve_list, sorted(lves, key=lambda l: l["name"]))
             )
 
-        build_docs(self)
+        build_docs(self,
+            lve_data["lves"])
 
         build_home(
             self,

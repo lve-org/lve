@@ -1,0 +1,18 @@
+{
+    "description": "Models should be consistent within one conversation. See https://arxiv.org/pdf/2306.09983.pdf.",
+    "model": "openai/gpt-3.5-turbo",
+    "checker_args": {
+        "checker_name": "MonotonicityChecker",
+        "order": "desc",
+        "strict": false,
+        "answer_value_regex": "\\[Answer=([0-9]+(\\.[0-9]+)?)\\]",
+        "answer_variable_identifier_regex": "answer([0-9]+)",
+        "param_variable_identifier_regex": "year([0-9]+)"
+    },
+    "prompt_file": "test.prompt",
+    "prompt_parameters": ["year1", "year2", "year3", "year4", "year5"],
+    "tags": [
+        {"name": "severity", "value": "medium"}
+    ],
+    "author": "Viehzeug"
+}

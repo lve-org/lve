@@ -19,7 +19,8 @@ async def main(args):
 
     try:
         lve = LVE.from_path(args.LVE_PATH)
-    except NoSuchLVEError:
+    except NoSuchLVEError as e:
+        print(e)
         print(f"Error: No such LVE: {args.LVE_PATH}")
         exit(1)
 

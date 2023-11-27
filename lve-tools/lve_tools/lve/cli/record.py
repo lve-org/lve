@@ -1,4 +1,5 @@
 import argparse
+import json
 from lve.repo import get_active_repo
 from .termutils import spinner, line, block_line
 from lve.lve import LVE
@@ -24,10 +25,14 @@ async def main(args):
     
     parser.add_argument("--loop", action="store_true", help="Whether to loop the recording process.")
     parser.add_argument("--engine", type=str, default="openai", help="The engine to use for inference (openai or lmql). Defaults to openai.", choices=["openai", "lmql"])
-    
+    parser.add_argument("--prompt_params", type=str, default=None)
     parser.add_argument("--author", type=str, default="")
-
     args = parser.parse_args(args)
+
+    prompt_inputs = {}
+    if args.prompt_params is not None:
+        with open(args.prompt_params, "r") as fin:
+            prompt_inputs = json.load(fin)
 
     try:
         lve = LVE.from_path(args.LVE_PATH)
@@ -87,10 +92,19 @@ async def main(args):
             # make sure to later create the file
             write_mode = "w"
 
+        # prompt user for author name if not specified in arguments
+        if args.author != "":
+            author = args.author
+            print(f"Author: {author}")
+        else:
+            author = await questionary.text("author: (leave blank to skip)").unsafe_ask_async()
+
         # prompt user for prompt parameters
         try:
-            prompt_inputs = {}
             for parameter in lve.prompt_parameters:
+                if parameter in prompt_inputs:
+                    print(f"Prompt parameter '{parameter}': {prompt_inputs[parameter]}")
+                    continue
                 prompt_inputs[parameter] = await questionary.text(
                     f"Prompt parameter '{parameter}'",
                 ).unsafe_ask_async()
@@ -104,7 +118,7 @@ async def main(args):
         print(line(), end="\n\n")
         
         async with spinner("Running model..."):
-            test_instance = await lve.run(args.author, **model_args, **prompt_inputs, verbose=True, engine=args.engine)
+            test_instance = await lve.run(author, **model_args, **prompt_inputs, verbose=True, engine=args.engine)
 
         if test_instance.passed:
             print("\n\n" + termcolor.colored(line(), "green"))
@@ -124,7 +138,7 @@ async def main(args):
             ).unsafe_ask_async()
             
             if user_res == "yes":
-                test_instance.response = lve.get_checker().postprocess_response(test_instance.response)
+                test_instance.response = lve.get_checker(**prompt_inputs).postprocess_response(test_instance.response)
                 with open(output_file, write_mode) as fout:
                     fout.write(test_instance.model_dump_json() + "\n")
             else:

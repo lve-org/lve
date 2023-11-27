@@ -7,20 +7,6 @@ import os
 from .common import *
 from .readme_parser import LVEReadmeParser
 
-def render_prompt(prompt, parameters):
-    def render_content(content):
-        for p in parameters or []:
-            content = content.replace(f"{{{p}}}", f"[{{{p}}}(empty=true)|]")
-        return content
-    
-    if type(prompt) is list:
-        r = f""
-        for msg in prompt:
-            r += f"[bubble:{msg.role}|{render_content(msg.content)}]"
-        return r.replace("<", "&lt;").replace(">", "&gt;").strip()
-    
-    return str(prompt).replace("<", "&lt;").replace(">", "&gt;"),
-
 def selector(options, active=None):
     """
     Selector of model if an LVE affects multiple models.
@@ -39,6 +25,14 @@ def selector(options, active=None):
     """.format(options="\n".join([
         "<a class='badge-link' href='{link}'><span class='badge{a}'>{option}</span></a>".format(option=o, link=o+".html", a=(" active" if o == active else "")) for o in options
     ]))
+
+def get_tags_html(tags):
+    html_tags = [f"<span class='badge {tag.name}'>{str(tag)}</span>" for tag in tags]
+    return """\
+        <div class='affected'>
+            {tags}
+        </div>
+    """.format(tags="\n".join(html_tags))
 
 def build_lve_sites(generator):
     # get all test.json files traversing ../repository recursively
@@ -108,14 +102,23 @@ def build_lve_site(generator, lve):
 
         c.title = lve_path
 
+        if lve.prompt is not None:
+            prompt=[render_prompt(lve.prompt, lve.prompt_parameters)]
+        else:
+            # multi run prompt
+            prompt = []
+            for mrp in lve.multi_run_prompt:
+                prompt.append(render_prompt(mrp.prompt, lve.prompt_parameters))
+
         template.emit(
             file=os.path.join(generator.target, path, sitename + ".html"),
             name=name_with_subfolders,
             category=category,
+            tags=get_tags_html(lve.tags),
             num_instances=num_instances,
             description=lve.description,
             # escape HTML in prompt
-            prompt=render_prompt(lve.prompt, lve.prompt_parameters),
+            prompt=prompt,
             prompt_parameters=lve.prompt_parameters,
             checker_args=lve.checker_args,
             author=lve.author or "Anonymous",
