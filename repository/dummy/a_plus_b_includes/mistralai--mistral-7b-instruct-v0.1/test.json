@@ -9,5 +9,8 @@
         {"content": "Compute {a} + {b}. Write a single number.", "role": "user"}
     ],
     "prompt_parameters": ["a", "b"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "author": "mbalunovic"
 }

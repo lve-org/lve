@@ -554,6 +554,16 @@ span.badge.active {
     background-color: #2C5FEA;
 }
 
+span.badge.severity {
+    color: white;
+    background-color: #ec2416;
+}
+
+span.badge.jailbreak {
+    color: white;
+    background-color: #066950;
+}
+
 .affected {
     display: flex;
     flex-direction: row;
