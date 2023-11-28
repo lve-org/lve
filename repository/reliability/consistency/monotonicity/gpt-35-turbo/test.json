@@ -11,5 +11,8 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": ["year1", "year2", "year3", "year4", "year5"],
+    "tags": [
+        {"name": "severity", "value": "medium"}
+    ],
     "author": "Viehzeug"
 }

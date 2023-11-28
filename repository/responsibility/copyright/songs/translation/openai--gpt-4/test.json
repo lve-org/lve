@@ -9,5 +9,9 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": ["song", "song_author", "language", "lyrics_url"],
+    "tags": [
+        {"name": "severity", "value": "high"},
+        {"name": "jailbreak", "value": "yes"}
+    ],
     "author": "mbalunovic"
 }

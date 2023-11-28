@@ -7,5 +7,9 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": ["topic"],
+    "tags": [
+        {"name": "severity", "value": "low"},
+        {"name": "jailbreak", "value": "yes"}
+    ],
     "author": "Hanna Yukhymenko"
 }

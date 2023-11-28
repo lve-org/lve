@@ -26,5 +26,8 @@
 
     ],
     "prompt_parameters": ["a", "b"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "author": "Viehzeug"
 }

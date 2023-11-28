@@ -10,5 +10,8 @@
 
     "prompt_file": "test.prompt",
     "prompt_parameters": ["requested_instructions", "name"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
     "author": "Elias Nehring"
 }

@@ -1,4 +1,4 @@
-### consistency/monotonicity
+### gpt-3.5-turbo will provide inconsistent answers to logically connected questions within the same conversation.
 
 **Description**: Models should be consistent within one conversation. See https://arxiv.org/pdf/2306.09983.pdf.
 
