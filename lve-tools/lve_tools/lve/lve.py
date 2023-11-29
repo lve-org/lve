@@ -142,6 +142,9 @@ class LVE(BaseModel):
 
     # names of existing instance files (instances/*.json)
     instance_files: List[str]
+
+    _min_raw_score = -100.0
+    _max_raw_score = 100.0
     
     def model_post_init(self, __context: Any) -> None:
         super().model_post_init(__context)
@@ -274,7 +277,7 @@ class LVE(BaseModel):
 
         checker = self.get_checker(**kwargs)
         is_safe, response, score = checker.invoke_check(prompt, prompt_out, param_values)
-        hook("checker.run", prompt=prompt, prompt_out=response, param_values=param_values)
+        hook("lve.check", prompt=prompt, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
         
         response = checker.postprocess_response(response)
 
