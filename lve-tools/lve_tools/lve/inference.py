@@ -6,6 +6,7 @@ import replicate
 import openai
 from lve.prompt import Role, Message
 from lve.model_store import *
+from lve.hooks import hook
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -169,6 +170,7 @@ def execute_replicate(model, prompt_in, verbose=False, **model_args):
             }
             if system_prompt is not None:
                 input["system_prompt"] = system_prompt
+            hook("replicate.run", model=model, input=input)
             output = replicate.run(model, input=input)
             response = ""
             for item in output:
@@ -200,6 +202,7 @@ def execute_openai(model, prompt_in, verbose=False, **model_args):
             _, prompt_openai = get_model_prompt(model, prompt[:i])
 
             openai_model = model[len("openai/"):]
+            hook("openai.chat", model=openai_model, messages=prompt_openai, **model_args)
             completion = client.chat.completions.create(
                 model=openai_model,
                 messages=prompt_openai,
