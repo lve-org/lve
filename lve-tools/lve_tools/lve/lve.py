@@ -11,6 +11,7 @@ from lve.inference import execute_llm, get_openai_prompt
 from lve.errors import *
 from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS
 from lve.prompt import Role, Message, get_prompt
+from lve.hooks import hook
 import copy
 
 from pydantic import BaseModel, model_validator, ValidationError
@@ -273,6 +274,8 @@ class LVE(BaseModel):
 
         checker = self.get_checker(**kwargs)
         is_safe, response, score = checker.invoke_check(prompt, prompt_out, param_values)
+        hook("checker.run", prompt=prompt, prompt_out=response, param_values=param_values)
+        
         response = checker.postprocess_response(response)
 
         return TestInstance(
