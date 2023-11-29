@@ -1,7 +1,8 @@
 import unittest
 from lve.inference import *
 from lve.prompt import Role, Message
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, AsyncMock
+import asyncio
 
 class TestLlama2(unittest.TestCase):
 
@@ -24,7 +25,7 @@ class TestLlama2(unittest.TestCase):
     def test_execute_replicate(self, mock_run):
         """Tests if we can execute a prompt with Llama-2 model using Replicate."""
         mock_run.return_value = ["He", "llo", " Wor", "ld"]
-        response = execute_replicate(self.model, self.prompt[:2])
+        response = asyncio.run(execute_replicate(self.model, self.prompt[:2]))
         self.assertEqual(response[-1].content, "Hello World")
 
 
@@ -47,9 +48,8 @@ class TestMistral(unittest.TestCase):
     def test_execute_replicate(self, mock_run):
         """Tests if we can execute a prompt with Mistral model using Replicate."""
         mock_run.return_value = ["He", "llo", " Wor", "ld"]
-        response = execute_replicate(self.model, self.prompt[:1])
+        response = asyncio.run(execute_replicate(self.model, self.prompt[:1]))
         self.assertEqual(response[-1].content, "Hello World")
-
 
 class TestOpenAI(unittest.TestCase):
 
@@ -71,14 +71,15 @@ class TestOpenAI(unittest.TestCase):
             self.assertEqual(openai_prompt[i]["content"], self.prompt[i].content)
             self.assertEqual(openai_prompt[i]["role"], self.prompt[i].role.name)
 
-    @patch("lve.inference.openai.OpenAI")
+    @patch("lve.inference.openai.AsyncOpenAI")
     def test_execute_openai(self, mock_openai):
         """Tests if we can execute a prompt with OpenAI model using OpenAI API."""
-        completion_mock = MagicMock()
+        completion_mock = AsyncMock()
         completion_mock.choices[0].message.content = "Hello World"
-        mock_openai.return_value.chat.completions.create = MagicMock(return_value=completion_mock)
-        response = execute_openai(self.model, self.prompt[:2])
+        mock_openai.return_value.chat.completions.create = AsyncMock(return_value=completion_mock)
+        response = asyncio.run(execute_openai(self.model, self.prompt[:2]))
         self.assertEqual(response[-1].content, "Hello World")
 
-
+# to run these tests with unittest:
+# python -m unittest lve_tools.lve.tests.test_inference
 

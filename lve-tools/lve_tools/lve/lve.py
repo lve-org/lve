@@ -250,8 +250,8 @@ class LVE(BaseModel):
                 new_prompt.append(msg)
         return new_prompt
     
-    def execute(self, prompt_in, verbose=False, **model_args):
-        return execute_llm(self.model, prompt_in, verbose, **model_args)
+    async def execute(self, prompt_in, verbose=False, **model_args):
+        return await execute_llm(self.model, prompt_in, verbose, **model_args)
     
     async def run(self, author=None, verbose=False, engine='openai', **kwargs):
         if engine == 'lmql':
@@ -265,13 +265,13 @@ class LVE(BaseModel):
 
         if self.prompt is not None:
             prompt = self.fill_prompt(param_values)
-            prompt_out = self.execute(prompt, **model_args)
+            prompt_out = await self.execute(prompt, **model_args)
         else:
             prompt = []
             prompt_out = []
             for mrp in self.multi_run_prompt:
                 p = self.fill_prompt(param_values, prompt=mrp.prompt)
-                po = self.execute(p, **model_args)
+                po = await self.execute(p, **model_args)
                 prompt.append(p)
                 prompt_out.append(po)
 

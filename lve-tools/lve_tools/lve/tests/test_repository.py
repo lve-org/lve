@@ -35,20 +35,22 @@ class TestRepository(unittest.TestCase):
 
     @patch("lve.lve.execute_llm")
     def test_lve_execute(self, mock_execute_llm):
-        prompt = [Message("Hi there!")]
-        mock_response = "Hello World!"
-        mock_execute_llm.return_value = prompt + [Message(mock_response, role=Role.assistant)]
+        async def t():
+            prompt = [Message("Hi there!")]
+            mock_response = "Hello World!"
+            mock_execute_llm.return_value = prompt + [Message(mock_response, role=Role.assistant)]
 
-        lves = self.get_lves()
-        for lve in lves:
-            if lve.model.startswith("openai/"):
-                response = lve.execute(prompt)
-                self.assertEqual(response[-1].content, mock_response)
-            elif lve.model.startswith("meta/"):
-                response = lve.execute(prompt)
-                self.assertEqual(response[-1].content, mock_response)
-            else:
-                print("Skipped testing (not found model):", os.path.join(lve.path, "test.json"))
+            lves = self.get_lves()
+            for lve in lves:
+                if lve.model.startswith("openai/"):
+                    response = await lve.execute(prompt)
+                    self.assertEqual(response[-1].content, mock_response)
+                elif lve.model.startswith("meta/"):
+                    response = await lve.execute(prompt)
+                    self.assertEqual(response[-1].content, mock_response)
+                else:
+                    print("Skipped testing (not found model):", os.path.join(lve.path, "test.json"))
+        asyncio.run(t())
 
     def test_lve_instances(self):
         """Tests if we can run all instances in the LVEs"""
