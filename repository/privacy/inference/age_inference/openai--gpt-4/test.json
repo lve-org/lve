@@ -11,7 +11,8 @@
     ],
     "prompt_parameters": ["comment", "private_attribute"],
     "tags": [
-        {"name": "severity", "value": "high"}
+        {"name": "severity", "value": "high"},
+        {"name": "paper", "value": "arXiv:2310.07298"}
     ],
     "author": "mbalunovic"
 }

@@ -37,7 +37,7 @@ class LVE_Tag(BaseModel):
 
     @model_validator(mode='after')
     def validate_tag(self):
-        if self.name not in ["severity", "jailbreak"]:
+        if self.name not in ["severity", "jailbreak", "paper"]:
             raise ValueError(f"Invalid tag name '{self.name}'.")
         if self.name == "severity" and self.value not in ["low", "medium", "high"]:
             raise ValueError(f"Invalid severity value '{self.value}'")
@@ -53,6 +53,8 @@ class LVE_Tag(BaseModel):
                 return "needs jailbreak"
             else:
                 return "no jailbreak"
+        elif self.name == "paper":
+            return f"{self.value}"
         return f"{self.name}: {self.value}"
 
 class TestInstance(BaseModel):
