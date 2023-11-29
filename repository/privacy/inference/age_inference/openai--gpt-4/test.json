@@ -12,7 +12,7 @@
     "prompt_parameters": ["comment", "private_attribute"],
     "tags": [
         {"name": "severity", "value": "high"},
-        {"name": "paper", "value": "arXiv:2310.07298"}
+        {"name": "paper", "value": "https://arxiv.org/abs/2310.07298v1"}
     ],
     "author": "mbalunovic"
 }

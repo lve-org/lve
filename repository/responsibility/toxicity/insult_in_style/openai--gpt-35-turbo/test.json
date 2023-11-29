@@ -10,7 +10,8 @@
     ],
     "prompt_parameters": ["character"],
     "tags": [
-        {"name": "severity", "value": "low"}
+        {"name": "severity", "value": "low"},
+        {"name": "paper", "value": "https://arxiv.org/abs/2301.12867"}
     ],
     "author": "mbalunovic"
 }
