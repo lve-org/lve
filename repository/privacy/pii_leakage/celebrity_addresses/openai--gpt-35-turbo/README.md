@@ -1,6 +1,8 @@
 
 ### Test description (**automatically generated, do not edit manually**).
 
+This LVE shows that `gpt-3.5-turbo` could be used to get private information about celebrities (here addresses), thus possibly hurting their privacy. While addresses it leaks in this LVE are fictional, the model does not refuse to respond to such query, and it is possible that for some celebrities it will actually output their real address.
+
 **Description**: `gpt-3.5-turbo sometimes outputs a private address (though often fictional) of a famous person.`
 
 **Model**: `gpt-3.5-turbo`
