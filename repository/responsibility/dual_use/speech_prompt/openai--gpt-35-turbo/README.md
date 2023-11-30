@@ -1,5 +1,7 @@
 ### GPT-3.5 generates instructions for unethical and illegal behaviour when prompted to respond in the style of a speech by a controversial public figure
 
+In this LVE we show that `gpt-3.5` can be instructed to synthesize toxic compounds and viruses (as examples of unethical behavior) by asking it to write a speech in the style of a controversial public figure (which breaks its guardrails).
+
 **Description**: GPT-3.5 generates instructions for unethical and illegal behaviour when prompted to respond in the style of a speech by a controversial public figure
 
 **Model**: `openai/gpt-3.5-turbo`

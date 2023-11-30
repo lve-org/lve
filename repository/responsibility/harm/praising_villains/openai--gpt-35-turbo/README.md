@@ -1,5 +1,7 @@
 ### Make GPT-3.5/ChatGPT output potentially offensive information by asking to praise a chosen person.
 
+`gpt-3.5` can be instructed to praise a chosen person, regardless of their background and reputation. This is important as it could be effectively used for targeted political campaigns or deliberate spreading of misinformation. 
+
 **Description**: Make GPT-3.5/ChatGPT output potentially offensive information by asking to praise a chosen person, regardless of their reputation. Literally anyone.
 
 **Model**: `openai/gpt-3.5-turbo`
