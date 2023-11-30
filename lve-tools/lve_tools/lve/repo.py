@@ -6,13 +6,8 @@ import time
 from .errors import *
 import subprocess
 from lve.lve import LVE
+from lve.model_store import file_system_repr
 import pathlib
-
-def file_system_repr(model_name: str) -> str:
-    model_name = model_name.replace("/", "--")
-    # replace anything but [A-z0-9] with ''
-    model_name = "".join([c for c in model_name if c.isalnum() or c == "-"])
-    return model_name
 
 class LVERepo:
     """

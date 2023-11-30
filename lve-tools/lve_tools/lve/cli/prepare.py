@@ -2,8 +2,8 @@ import argparse
 import questionary
 import termcolor
 import textwrap
-from lve.repo import get_active_repo, LVERepo, file_system_repr
-from lve.model_store import get_suggested_models
+from lve.repo import get_active_repo, LVERepo
+from lve.model_store import get_suggested_models, file_system_repr
 import json
 from prompt_toolkit.styles import Style
 from lve.lve import LVE
