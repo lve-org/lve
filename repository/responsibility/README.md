@@ -1,4 +1,4 @@
-## LVEs for Responsibility
+## Responsible usage of LLMs (e.g. bias, toxicity, harm, misinformation, copyright).
 
 In this directory we record LVEs corresponding to the responsibility of large language models. 
 The following are some examples of the issues we are interested in:

@@ -1,4 +1,4 @@
-## LVEs for Privacy
+## Privacy violations related to LLMs - including leakage or inference of personal information, membership inference, and compliance with privacy regulations
 
 In this directory we record LVEs corresponding to the privacy of large language models. 
 The following are some examples of the issues we are interested in:

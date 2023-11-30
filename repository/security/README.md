@@ -1,4 +1,4 @@
-## LVEs for Security
+## Security issues such as prompt injections, system prompt leakage, generating unsafe code and malicious use (e.g. phishing, spam)
 
 In this directory we record LVEs corresponding to the security of large language models. 
 The following are some examples of the issues we are interested in:

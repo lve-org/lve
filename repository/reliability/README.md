@@ -1,4 +1,4 @@
-## LVEs for Reliability
+## Reliability issues of LLMs such as consistency and output format following
 
 In this directory we record LVEs that concern the reliability of large language models. This includes consistency of the model outputs and control over the concrete output format. 
 

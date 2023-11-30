@@ -1,4 +1,4 @@
-## LVEs for Trust
+## Issues impacting trustworthiness of LLMS - accuracy, hallucinations, explanability and others
 
 In this directory we record LVEs corresponding to the trust of large language models. 
 The following are some examples of the issues we are interested in:
