@@ -1,5 +1,0 @@
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":2381,"b":4228},"response":"6609","run_info":{"openai":"0.28.0","timestamp":"Tue Sep 12 23:45:22 2023"},"passed":true}
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":23081,"b":421128},"response":"444209","run_info":{"openai":"0.28.0","timestamp":"Tue Sep 12 23:45:39 2023"},"passed":true}
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":1111123081,"b":421123528},"response":"1532246613","run_info":{"openai":"0.28.0","timestamp":"Tue Sep 12 23:45:46 2023"},"passed":false}
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":12,"b":3},"response":"15","run_info":{"openai":"0.28.0","timestamp":"Wed Sep 13 21:39:37 2023"},"passed":true,"author":""}
-{"test_path":"tests/dummy/a_plus_b/test.json","args":{"temperature":0.1,"a":12,"b":3},"response":"15","run_info":{"openai":"0.28.0","timestamp":"Wed Sep 13 21:39:47 2023"},"passed":true,"author":""}
