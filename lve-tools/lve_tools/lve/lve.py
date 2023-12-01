@@ -10,6 +10,7 @@ import lmql
 from lve.inference import execute_llm, get_openai_prompt
 from lve.errors import *
 from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS
+from lve.checkers import BaseChecker
 from lve.prompt import Role, Message, get_prompt
 from lve.hooks import hook
 import copy
@@ -64,7 +65,6 @@ class TestInstance(BaseModel):
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
-    score: Optional[float] = None
 
 TPrompt = Union[str, list[Message]]
 class MultiPrompt(BaseModel):
@@ -145,9 +145,6 @@ class LVE(BaseModel):
     # names of existing instance files (instances/*.json)
     instance_files: List[str]
 
-    _min_raw_score = -100.0
-    _max_raw_score = 100.0
-    
     def model_post_init(self, __context: Any) -> None:
         super().model_post_init(__context)
         if self.prompt_file is not None:
@@ -255,7 +252,7 @@ class LVE(BaseModel):
     async def execute(self, prompt_in, verbose=False, **model_args):
         return await execute_llm(self.model, prompt_in, verbose, **model_args)
     
-    async def run(self, author=None, verbose=False, engine='openai', **kwargs):
+    async def run(self, author=None, verbose=False, engine='openai', score_callback=None, **kwargs):
         if engine == 'lmql':
             return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
         else:
@@ -278,7 +275,7 @@ class LVE(BaseModel):
                 prompt_out.append(po)
 
         checker = self.get_checker(**kwargs)
-        is_safe, response, score = checker.invoke_check(prompt, prompt_out, param_values)
+        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values, score_callback=score_callback)
         hook("lve.check", prompt=prompt, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
         
         response = checker.postprocess_response(response)
@@ -289,7 +286,6 @@ class LVE(BaseModel):
             response=response,
             run_info=run_info,
             passed=is_safe,
-            score=score
         )
 
     async def run_with_lmql(self, author=None, verbose=False, **kwargs):

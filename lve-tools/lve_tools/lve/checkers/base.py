@@ -66,8 +66,8 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
         if not full:
             response = self._extract(response)
         return response
-       
-    def invoke_check(self, prompt_in, prompt_out, param_values=None):
+    
+    def invoke_check(self, prompt_in, prompt_out, param_values=None, score_callback=None):
         """ Function called by LVE to invoke the checker.
             Main function exposed to the lve internals, but not the user.
             
@@ -79,7 +79,6 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
             Returns:
                 is_safe: Whether the response is safe as determined by is_safe.
                 response_or_variables: If there is only one response, returns the response as string, else returns all variables as a dictionary.
-                score: an optional score for the response
         """
         cnt_variables = sum(p.role == Role.assistant and p.variable is not None for p in prompt_out)
         is_safe = self.is_safe(prompt_out, param_values)
@@ -88,12 +87,11 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
             response_or_variables = self.extract_variables_from_prompt(prompt_out, full=True) 
         else:
             response_or_variables = self.extract_response_from_prompt(prompt_out, full=True)
-
-        score = None
-        if self.has_scoring():
-            score = self.calculate_score(prompt_out, param_values)
             
-        return is_safe, response_or_variables, score
+        if score_callback is not None:
+            score_callback(self, is_safe, prompt_out, param_values)
+
+        return is_safe, response_or_variables
 
     def is_safe(self, prompt_out, param_values=None) -> bool:
         """Determines whether the response is safe given the prompt and the parameters.
@@ -112,20 +110,11 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
         """
         return response
     
-    def calculate_score(self, prompt_out, param_values=None) -> float:
-        raise NotImplementedError
-    
     # meta information about the checker
-
     @classmethod
     def has_post_processing(cls):
         """Whether the checker has post processing."""
         return not cls.postprocess_response.__code__ == BaseChecker.postprocess_response.__code__
-    
-    @classmethod
-    def has_scoring(cls):
-        """Whether the checker support scoring."""
-        return not cls.calculate_score.__code__ == BaseChecker.calculate_score.__code__
 
     @classmethod 
     def is_multi_run(cls):
@@ -146,25 +135,13 @@ class LambdaChecker(BaseChecker):
     - *func*: The lambda function to be executed. Should return a `bool`.
     """
 
-    def __init__(self, func, score=None, extract=None):
+    def __init__(self, func, extract=None):
         super().__init__(extract=extract)
         self.func = eval(func)
-        if score is not None:
-            self.score_fn = eval(score)
-        else:
-            self.score_fn = None
-
         
     def is_safe(self, prompt_out, param_values=None) -> bool:
         response = self.extract_response_from_prompt(prompt_out)
         return self.func(response, **param_values)
-
-    def calculate_score(self, prompt_out, param_values=None) -> float:
-        if self.score_fn is not None:
-            response = self.extract_response_from_prompt(prompt_out)
-            return self.score_fn(response, **param_values)
-        else:
-            return None
 
 class RegexChecker(BaseChecker):
     """
@@ -222,21 +199,17 @@ class MultiRunBaseChecker(BaseChecker):
             Returns:
                 is_safe: Whether the response is safe as determined by is_safe.
                 response_or_variables: If there is only one response, returns the response as string, else returns all variables as a dictionary.
-                score: an optional score for the response
         """
-        assert len(prompt_in) == len(prompt_out)
-        cnt_variables = sum(p.role == Role.assistant and p.variable is not None for p in prompt_out[0])
-        is_safe = self.is_safe(prompt_out, param_values)
-        
-        response_or_variables = response
-        if cnt_variables > 1:
-            response_or_variables = self.extract_variables_from_prompt(prompt_out) 
+        assert len(prompts_in) == len(prompts_out)
+        cnt_variables = sum(p.role == Role.assistant and p.variable is not None for p in prompts_out[0])
+        is_safe = self.is_safe(prompts_out, param_values)
 
-        score = None
-        if self.has_scoring():
-            score = self.calculate_score(prompt_out, param_values)
-            
-        return is_safe, response_or_variables, score
+        if cnt_variables > 1:
+            response_or_variables = [self.extract_variables_from_prompt(p, full=True) for p in prompts_out]
+        else:
+            response_or_variables = [self.extract_response_from_prompt(p, full=True) for p in prompts_out]
+           
+        return is_safe, response_or_variables
 
     @classmethod 
     def is_multi_run(cls):
