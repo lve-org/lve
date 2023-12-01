@@ -252,7 +252,7 @@ class LVE(BaseModel):
     async def execute(self, prompt_in, verbose=False, **model_args):
         return await execute_llm(self.model, prompt_in, verbose, **model_args)
     
-    async def run(self, author=None, verbose=False, engine='openai', score_callback=None, **kwargs):
+    async def run(self, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
         if engine == 'lmql':
             return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
         else:
@@ -264,13 +264,14 @@ class LVE(BaseModel):
 
         if self.prompt is not None:
             prompt = self.fill_prompt(param_values)
-            prompt_out = await self.execute(prompt, **model_args)
+            prompt_out = await self.execute(prompt, chunk_callback=chunk_callback, **model_args)
         else:
             prompt = []
             prompt_out = []
-            for mrp in self.multi_run_prompt:
+            for j, mrp in enumerate(self.multi_run_prompt):
                 p = self.fill_prompt(param_values, prompt=mrp.prompt)
-                po = await self.execute(p, **model_args)
+                ccb = chunk_callback if j == 0 else None 
+                po = await self.execute(p, chunk_callback=ccb, **model_args)
                 prompt.append(p)
                 prompt_out.append(po)
 

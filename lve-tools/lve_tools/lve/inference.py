@@ -143,7 +143,7 @@ def get_model_prompt(model, prompt):
         raise NotImplementedError(f"Cannot get prompt for model {model}!")
     
 
-async def execute_replicate(model, prompt_in, verbose=False, **model_args):
+async def execute_replicate(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
     """
     Executes a prompt using Replicate.
 
@@ -175,13 +175,16 @@ async def execute_replicate(model, prompt_in, verbose=False, **model_args):
             response = ""
             for item in output:
                 response += item
+                if chunk_callback is not None:
+                    chunk_callback(item)
+            if chunk_callback is not None: chunk_callback(None)
             prompt[i].content = response
         if verbose:
             msg = prompt[i]
             print(f"[{msg.role}] {msg.content}")
     return prompt
 
-async def execute_openai(model, prompt_in, verbose=False, **model_args):
+async def execute_openai(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
     """
     Executes a prompt in OpenAI.
 
@@ -195,6 +198,8 @@ async def execute_openai(model, prompt_in, verbose=False, **model_args):
     """
     client = openai.AsyncOpenAI()
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
+    
+    stream = chunk_callback is not None
 
     # go through all messages and fill in assistant messages, sending everything before as context
     for i in range(len(prompt)):
@@ -203,12 +208,27 @@ async def execute_openai(model, prompt_in, verbose=False, **model_args):
 
             openai_model = model[len("openai/"):]
             hook("openai.chat", model=openai_model, messages=prompt_openai, **model_args)
-            completion = await client.chat.completions.create(
-                model=openai_model,
-                messages=prompt_openai,
-                **model_args,
-            )
-            response = completion.choices[0].message.content
+            if not stream:
+                completion = await client.chat.completions.create(
+                    model=openai_model,
+                    messages=prompt_openai,
+                    **model_args,
+                )
+                response = completion.choices[0].message.content
+            else:
+                completion_stream = await client.chat.completions.create(
+                    model=openai_model,
+                    messages=prompt_openai,
+                    stream = True,
+                    **model_args,
+                )
+                response = ""
+                async for chunk in completion_stream:
+                    chunk_content = chunk.choices[0].delta.content
+                    if chunk_content is not None:
+                        response += chunk_content
+                        chunk_callback(chunk_content)
+                chunk_callback(None)
             prompt[i].content = response
         if verbose:
             msg = prompt[i]
