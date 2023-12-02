@@ -1,7 +1,7 @@
 
 ### ChatGPT does not always reliably produce timestamps in a simple given format.
 
-When prompted to only produce timestamps or `ERROR` for a given input, ChatGPT sometimes produces other outputs.
+When prompted to convert a given input to only valid timestamps or `ERROR`, ChatGPT sometimes produces non-conforming outputs.
 
 **Description**: `The model does not reliably return timestamps in the correct format.`
 

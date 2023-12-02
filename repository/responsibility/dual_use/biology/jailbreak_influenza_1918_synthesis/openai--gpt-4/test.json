@@ -11,7 +11,8 @@
     "prompt_parameters": [],
     "tags": [
         {"name": "severity", "value": "low"},
-        {"name": "jailbreak", "value": "yes"}
+        {"name": "jailbreak", "value": "yes"},
+        {"name": "paper", "value": "https://arxiv.org/abs/2310.18233"}
     ],
     "author": "mbalunovic"
 }

@@ -10,7 +10,9 @@ import lmql
 from lve.inference import execute_llm, get_openai_prompt
 from lve.errors import *
 from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS
+from lve.checkers import BaseChecker
 from lve.prompt import Role, Message, get_prompt
+from lve.hooks import hook
 import copy
 
 from pydantic import BaseModel, model_validator, ValidationError
@@ -36,7 +38,7 @@ class LVE_Tag(BaseModel):
 
     @model_validator(mode='after')
     def validate_tag(self):
-        if self.name not in ["severity", "jailbreak"]:
+        if self.name not in ["severity", "jailbreak", "paper"]:
             raise ValueError(f"Invalid tag name '{self.name}'.")
         if self.name == "severity" and self.value not in ["low", "medium", "high"]:
             raise ValueError(f"Invalid severity value '{self.value}'")
@@ -52,6 +54,8 @@ class LVE_Tag(BaseModel):
                 return "needs jailbreak"
             else:
                 return "no jailbreak"
+        elif self.name == "paper":
+            return f"{self.value}"
         return f"{self.name}: {self.value}"
 
 class TestInstance(BaseModel):
@@ -61,7 +65,6 @@ class TestInstance(BaseModel):
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
-    score: Optional[float] = None
 
 TPrompt = Union[str, list[Message]]
 class MultiPrompt(BaseModel):
@@ -141,7 +144,7 @@ class LVE(BaseModel):
 
     # names of existing instance files (instances/*.json)
     instance_files: List[str]
-    
+
     def model_post_init(self, __context: Any) -> None:
         super().model_post_init(__context)
         if self.prompt_file is not None:
@@ -246,10 +249,10 @@ class LVE(BaseModel):
                 new_prompt.append(msg)
         return new_prompt
     
-    def execute(self, prompt_in, verbose=False, **model_args):
-        return execute_llm(self.model, prompt_in, verbose, **model_args)
+    async def execute(self, prompt_in, verbose=False, **model_args):
+        return await execute_llm(self.model, prompt_in, verbose, **model_args)
     
-    async def run(self, author=None, verbose=False, engine='openai', **kwargs):
+    async def run(self, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
         if engine == 'lmql':
             return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
         else:
@@ -261,18 +264,21 @@ class LVE(BaseModel):
 
         if self.prompt is not None:
             prompt = self.fill_prompt(param_values)
-            prompt_out = self.execute(prompt, **model_args)
+            prompt_out = await self.execute(prompt, chunk_callback=chunk_callback, **model_args)
         else:
             prompt = []
             prompt_out = []
-            for mrp in self.multi_run_prompt:
+            for j, mrp in enumerate(self.multi_run_prompt):
                 p = self.fill_prompt(param_values, prompt=mrp.prompt)
-                po = self.execute(p, **model_args)
+                ccb = chunk_callback if j == 0 else None 
+                po = await self.execute(p, chunk_callback=ccb, **model_args)
                 prompt.append(p)
                 prompt_out.append(po)
 
         checker = self.get_checker(**kwargs)
-        is_safe, response, score = checker.invoke_check(prompt, prompt_out, param_values)
+        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values, score_callback=score_callback)
+        hook("lve.check", prompt=prompt, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
+        
         response = checker.postprocess_response(response)
 
         return TestInstance(
@@ -281,7 +287,6 @@ class LVE(BaseModel):
             response=response,
             run_info=run_info,
             passed=is_safe,
-            score=score
         )
 
     async def run_with_lmql(self, author=None, verbose=False, **kwargs):
@@ -449,3 +454,8 @@ class LVE(BaseModel):
             run_info["openai-api_version"] = openai.api_version
         return run_info
 
+    def get_tag(self, name):
+        for tag in self.tags:
+            if tag.name == name:
+                return tag.value
+        return None

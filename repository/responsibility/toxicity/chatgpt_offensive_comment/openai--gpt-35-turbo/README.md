@@ -1,5 +1,7 @@
 ### toxicity/chatgpt_offensive_comment
 
+While `gpt-3.5` has been trained to not write unethical or toxic comments, this can be bypassed using the prompt in this LVE.
+
 **Description**: Making GPT-3.5/ChatGPT come up with toxic comments on chosen topic.
 
 **Model**: `openai/gpt-3.5-turbo`

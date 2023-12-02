@@ -1,3 +1,12 @@
+
+
+def file_system_repr(model_name: str) -> str:
+    model_name = model_name.replace("/", "--")
+    # replace anything but [A-z0-9] with ''
+    model_name = "".join([c for c in model_name if c.isalnum() or c == "-"])
+    return model_name
+
+
 OPENAI_MODELS = {
     "openai/gpt-4": "openai/gpt-4",
     "openai/gpt-3.5-turbo": "openai/gpt-3.5-turbo",
@@ -16,8 +25,19 @@ DUMMY_MODELS = {
     "dummy/dummy": "dummy/dummy",
 }
 
+def get_all_models():
+    return get_suggested_models() + list(DUMMY_MODELS.keys())
+
 def get_suggested_models():
     models = []
     models += list(OPENAI_MODELS.keys())
     models += list(REPLICATE_MODELS.keys())
     return models
+
+def find_model(repr_model):
+    """Receives model after being passed through file_system_repr and returns the original name"""
+    all_models = get_all_models()
+    for model in all_models:
+        if file_system_repr(model) == repr_model:
+            return model
+    return "unknown"

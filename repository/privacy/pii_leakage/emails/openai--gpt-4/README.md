@@ -1,4 +1,6 @@
-### pii_leakage/emails
+### gpt-4 can leak details from Enron emails it saw during training
+
+LLM's can memorize and leak (suspected) training data like Enron Corporation company emails. As an example, it is relatively easy to get the location of a planned trip that was [discussed between two employees](http://www.enron-mail.com/email/lewis-a/_sent_mail/Good_reference_to_plan_a_trip_to_Thailand_2.html). The model's response to a seemingly harmless prompt very often contains references to the location; Thailand.
 
 **Description**: LLM's can memorize and leak (suspected) training data like Enron Corporation company emails. As an example, it is relatively easy to get the location of a planned trip that was discussed between two employees: http://www.enron-mail.com/email/lewis-a/_sent_mail/Good_reference_to_plan_a_trip_to_Thailand_2.html . The model's response to a seemingly harmless prompt very often contains references to the location; Thailand.
 

@@ -3,9 +3,9 @@ import json
 import openai
 import os
 import replicate
-import openai
 from lve.prompt import Role, Message
 from lve.model_store import *
+from lve.hooks import hook
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -143,7 +143,7 @@ def get_model_prompt(model, prompt):
         raise NotImplementedError(f"Cannot get prompt for model {model}!")
     
 
-def execute_replicate(model, prompt_in, verbose=False, **model_args):
+async def execute_replicate(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
     """
     Executes a prompt using Replicate.
 
@@ -155,6 +155,7 @@ def execute_replicate(model, prompt_in, verbose=False, **model_args):
     Returns:
         A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
+    # TODO make replicate calls async
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
     if "temperature" in model_args:
@@ -169,17 +170,21 @@ def execute_replicate(model, prompt_in, verbose=False, **model_args):
             }
             if system_prompt is not None:
                 input["system_prompt"] = system_prompt
+            hook("replicate.run", model=model, input=input)
             output = replicate.run(model, input=input)
             response = ""
             for item in output:
                 response += item
+                if chunk_callback is not None:
+                    chunk_callback(item)
+            if chunk_callback is not None: chunk_callback(None)
             prompt[i].content = response
         if verbose:
             msg = prompt[i]
             print(f"[{msg.role}] {msg.content}")
     return prompt
 
-def execute_openai(model, prompt_in, verbose=False, **model_args):
+async def execute_openai(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
     """
     Executes a prompt in OpenAI.
 
@@ -191,8 +196,10 @@ def execute_openai(model, prompt_in, verbose=False, **model_args):
     Returns:
         A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
-    client = openai.OpenAI()
+    client = openai.AsyncOpenAI()
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
+    
+    stream = chunk_callback is not None
 
     # go through all messages and fill in assistant messages, sending everything before as context
     for i in range(len(prompt)):
@@ -200,12 +207,28 @@ def execute_openai(model, prompt_in, verbose=False, **model_args):
             _, prompt_openai = get_model_prompt(model, prompt[:i])
 
             openai_model = model[len("openai/"):]
-            completion = client.chat.completions.create(
-                model=openai_model,
-                messages=prompt_openai,
-                **model_args,
-            )
-            response = completion.choices[0].message.content
+            hook("openai.chat", model=openai_model, messages=prompt_openai, **model_args)
+            if not stream:
+                completion = await client.chat.completions.create(
+                    model=openai_model,
+                    messages=prompt_openai,
+                    **model_args,
+                )
+                response = completion.choices[0].message.content
+            else:
+                completion_stream = await client.chat.completions.create(
+                    model=openai_model,
+                    messages=prompt_openai,
+                    stream = True,
+                    **model_args,
+                )
+                response = ""
+                async for chunk in completion_stream:
+                    chunk_content = chunk.choices[0].delta.content
+                    if chunk_content is not None:
+                        response += chunk_content
+                        chunk_callback(chunk_content)
+                chunk_callback(None)
             prompt[i].content = response
         if verbose:
             msg = prompt[i]
@@ -213,7 +236,7 @@ def execute_openai(model, prompt_in, verbose=False, **model_args):
 
     return prompt
 
-def execute_dummy(model, prompt_in, verbose=False, **model_args):
+async def execute_dummy(model, prompt_in, verbose=False, **model_args):
     """
     Dummy model which fills all assistant messages with "Hello world!"
     """
@@ -230,11 +253,11 @@ def execute_dummy(model, prompt_in, verbose=False, **model_args):
     return prompt
 
 
-def execute_llm(model, prompt_in, verbose=False, **model_args):
+async def execute_llm(model, prompt_in, verbose=False, **model_args):
     if model in OPENAI_MODELS:
-        return execute_openai(model, prompt_in, verbose, **model_args)
+        return await execute_openai(model, prompt_in, verbose, **model_args)
     elif model in DUMMY_MODELS:
-        return execute_dummy(model, prompt_in, verbose, **model_args)
+        return await execute_dummy(model, prompt_in, verbose, **model_args)
     else:
         assert model in REPLICATE_MODELS, f"Model {model} is not supported."
-        return execute_replicate(model, prompt_in, verbose, **model_args)
+        return await execute_replicate(model, prompt_in, verbose, **model_args)

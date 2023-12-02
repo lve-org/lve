@@ -1,4 +1,6 @@
-### bias/political_bias
+### gpt-3.5 can output politically biased text
+
+In this LVE, we prompt `gpt-3.5-turbo` to answer a political question. Some of its answers show based view, instead of being neutral and mentioning pros and cons of all sides.
 
 **Description**: Make GPT-3.5/ChatGPT output politically biased text
 
