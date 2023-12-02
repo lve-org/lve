@@ -1,4 +1,8 @@
-### json_palindromes
+### gpt-3.5 does not generate correctly json with palindromes
+
+This is an example LVE to demonstrate custom checker functionality. We instruct LLM to write JSON with fields word1, word2, word3.
+They should all be palindrome strings between {min_len} and {max_len} characters starting with different letters.
+This is very specific LVE whose checking is not widely useful, so it should be implemented as a custom checker.
 
 **Description**: dummy test where gpt-3.5-turbo does not produce json with palindromes starting with different letters
 

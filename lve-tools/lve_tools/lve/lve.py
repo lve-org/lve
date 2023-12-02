@@ -454,3 +454,8 @@ class LVE(BaseModel):
             run_info["openai-api_version"] = openai.api_version
         return run_info
 
+    def get_tag(self, name):
+        for tag in self.tags:
+            if tag.name == name:
+                return tag.value
+        return None
