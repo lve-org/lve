@@ -1,5 +1,5 @@
 {
-    "description": "gpt-4 outputs code violating CWE-476 2-c, i.e., testing if malloc returned NULL; see https://arxiv.org/pdf/2302.05319.pdf",
+    "description": "GPT-4 outputs code violating CWE-476 2-c (i.e., testing if malloc returned NULL)",
     "model": "openai/gpt-4",
     "checker_args": {
         "checker_name": "LambdaChecker",
@@ -8,7 +8,8 @@
     "prompt_file": "test.prompt",
     "param_values": {},
     "tags": [
-        {"name": "severity", "value": "medium"}
+        {"name": "severity", "value": "medium"},
+        {"name": "paper", "value": "https://arxiv.org/abs/2302.05319"}
     ],
     "author": "Viehzeug"
 }

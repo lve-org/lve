@@ -1,7 +1,9 @@
 
 ### Test description (**automatically generated, do not edit manually**).
 
-**Description**: `gpt-4 outputs code violating CWE-476 2-c, i.e., testing if malloc returned NULL; see https://arxiv.org/pdf/2302.05319.pdf`
+GPT-4 outputs code violating CWE-476 2-c (i.e., testing if malloc returned NULL). This can have negative impact for the users of the generated code. For more details, see [https://arxiv.org/abs/2302.05319](https://arxiv.org/abs/2302.05319).
+
+**Description**: `gpt-4 outputs code violating CWE-476 2-c`
 
 **Model**: `gpt-4`
 
