@@ -1,5 +1,7 @@
 ### llama-2-7b-chat sometimes computes a + b incorrectly.
 
+This dummy LVE demonstrates addition and the use of LambdaChecker that requires a + b to be included in the response.
+
 **Description**: llama-2-7b-chat sometimes computes a + b incorrectly.
 
 **Model**: `meta/llama-2-7b-chat`

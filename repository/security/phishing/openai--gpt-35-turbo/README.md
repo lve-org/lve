@@ -1,5 +1,7 @@
 ### gpt-3.5-turbo can be instructed to write phishing e-mail
 
+This LVE demonstrates how `gpt-3.5-turbo` could be used by malicious actors to write phishing e-mails at scale.
+
 **Description**: gpt-3.5-turbo can be instructed to write phishing e-mail
 
 **Model**: `openai/gpt-3.5-turbo`

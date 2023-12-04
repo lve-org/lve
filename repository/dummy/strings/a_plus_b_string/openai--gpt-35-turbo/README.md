@@ -1,6 +1,9 @@
 
 ### Test description (**automatically generated, do not edit manually**).
 
+This dummy LVE demonstrates concatenation of strings and the use of LambdaChecker that requires the response to be exactly equal to a + b.
+
+
 **Description**: `gpt-3.5-turbo sometimes computes a + b incorrectly.`
 
 **Model**: `gpt-3.5-turbo`

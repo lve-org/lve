@@ -1,5 +1,8 @@
 ### sys_prompt_leak_cipher
 
+This LVE demonstrates how `openai/gpt-3.5-turbo` could be used instructed to leak a secret from system prompt by asking it to encrypt it via (reversible) cipher. See [https://arxiv.org/abs/2308.06463](https://arxiv.org/abs/2308.06463) for more general discussion of this problem.
+
+
 **Description**: openai/gpt-3.5-turbo leaks system prompt if asked to perform a cipher
 
 **Model**: `openai/gpt-3.5-turbo`
