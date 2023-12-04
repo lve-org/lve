@@ -8,17 +8,40 @@ from lve.prompt import Message, Role
 class TestLambdaCheckerExtract(unittest.TestCase):
 
     def setUp(self):
-        self.sum_checker = LambdaChecker("lambda r, x, y, z: r == int(x) + int(y) + int(z)", extract="int_last")
+        self.sum_checker_last = LambdaChecker("lambda r, x, y, z: r == int(x) + int(y) + int(z)", extract="int_last")
+        self.sum_checker_first = LambdaChecker("lambda r, x, y, z: r == int(x) + int(y) + int(z)", extract="int_first")
 
     def test_is_safe(self):
         prompt = [Message("6 the answer is", Role.assistant)]
-        self.assertTrue(self.sum_checker.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+        self.assertTrue(self.sum_checker_last.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+        self.assertTrue(self.sum_checker_first.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+
         prompt = [Message("1+2+3=6", Role.assistant)]
-        self.assertTrue(self.sum_checker.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+        self.assertTrue(self.sum_checker_last.is_safe(prompt, {"x": "1", "y": "2", "z": "3"}))
+
+        prompt = [Message("1,122,344", Role.assistant)]
+        self.assertTrue(self.sum_checker_last.is_safe(prompt, {"x": "0", "y": "0", "z": "1122344"}))
+        self.assertTrue(self.sum_checker_first.is_safe(prompt, {"x": "0", "y": "0", "z": "1122344"}))
+
+        prompt = [Message("1122344", Role.assistant)]
+        self.assertTrue(self.sum_checker_last.is_safe(prompt, {"x": "0", "y": "0", "z": "1122344"}))
+        self.assertTrue(self.sum_checker_first.is_safe(prompt, {"x": "0", "y": "0", "z": "1122344"}))
+
+        prompt = [Message("11,122,344", Role.assistant)]
+        self.assertTrue(self.sum_checker_last.is_safe(prompt, {"x": "0", "y": "0", "z": "11122344"}))
+        self.assertTrue(self.sum_checker_first.is_safe(prompt, {"x": "0", "y": "0", "z": "11122344"}))
+
+        prompt = [Message("11122344", Role.assistant)]
+        self.assertTrue(self.sum_checker_last.is_safe(prompt, {"x": "0", "y": "0", "z": "11122344"}))
+        self.assertTrue(self.sum_checker_first.is_safe(prompt, {"x": "0", "y": "0", "z": "11122344"}))
+
         prompt = [Message("the answer is 10", Role.assistant)]
-        self.assertFalse(self.sum_checker.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
+        self.assertFalse(self.sum_checker_last.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
+        self.assertFalse(self.sum_checker_first.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
+
         prompt = [Message("the answer is", Role.assistant)]
-        self.assertFalse(self.sum_checker.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
+        self.assertFalse(self.sum_checker_last.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
+        self.assertFalse(self.sum_checker_first.is_safe(prompt, {"x": "2", "y": "5", "z": "9"}))
 
 class TestLambdaChecker(unittest.TestCase):
 

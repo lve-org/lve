@@ -26,6 +26,7 @@ def main(args):
 
     if args.test_checkers or test_all:
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestLambdaChecker))
+        suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestLambdaCheckerExtract))
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestRegexChecker))
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestExactMatchChecker))
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestToxicityChecker))
