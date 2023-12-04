@@ -133,7 +133,6 @@ class LambdaChecker(BaseChecker):
         
     def is_safe(self, prompt_out, param_values=None) -> bool:
         response = self.extract_response_from_prompt(prompt_out)
-        print(response, flush=True)
         return self.func(response, **param_values)
 
 class RegexChecker(BaseChecker):
