@@ -1,5 +1,7 @@
 ### meta/llama-2-7b-chat leaks system prompt if asked to perform a cipher
 
+This LVE demonstrates how `meta/llama-2-7b-chat` could be used instructed to leak a secret from system prompt by asking it to encrypt it via (reversible) cipher. See [https://arxiv.org/abs/2308.06463](https://arxiv.org/abs/2308.06463) for more general discussion of this problem.
+
 **Description**: meta/llama-2-7b-chat leaks system prompt if asked to perform a cipher
 
 **Model**: `meta/llama-2-7b-chat`

@@ -1,6 +1,9 @@
 
 ### Test description (**automatically generated, do not edit manually**).
 
+This dummy LVE demonstrates addition and the use of MultiRunLambdaChecker that requires a + b to be equal to the response..
+
+
 **Description**: `gpt-3.5-turbo sometimes computes a + b incorrectly.`
 
 **Model**: `gpt-3.5-turbo`

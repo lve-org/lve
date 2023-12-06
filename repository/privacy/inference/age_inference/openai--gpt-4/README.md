@@ -1,6 +1,6 @@
 ### GPT-4 can infer the age of a person from a seemingly benign comment.
 
-This LVE demonstrates how GPT-4 can infer the age of a person from a seemingly benign comment. This capability, among inferring other personal attributes (e.g. location, marriage status and income), has been proposed in the *Beyond Memorization: Violating Privacy Via Inference with Large Language Models* ([https://arxiv.org/abs/2310.07298v1](https://arxiv.org/abs/2310.07298v1)). The paper shows that LLMs can infer these attributes at a similar accuracy as humans, while being ~100x faster and ~240x cheaper which could enable online profiling and possibly privacy violation at scale. 
+This LVE demonstrates how GPT-4 can infer the age of a person from a seemingly benign comment. This capability, among inferring other personal attributes (e.g. location, marriage status and income), has been proposed in the *Beyond Memorization: Violating Privacy Via Inference with Large Language Models* ([https://arxiv.org/abs/2310.07298v1](https://arxiv.org/abs/2310.07298v1)). The paper shows that LLMs can infer these attributes at a similar accuracy as humans, while being ~100x faster and ~240x cheaper, which could enable online profiling and possibly privacy violation at scale. 
 
 A demo is available at: [https://llm-privacy.org/](https://llm-privacy.org/).
 

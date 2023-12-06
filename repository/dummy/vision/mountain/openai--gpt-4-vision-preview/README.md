@@ -1,5 +1,7 @@
 ### gpt-4-vision-preview sometimes does not detect mountian correctly.
 
+Dummy example which demonstrates multimodal LVE. The model is asked to identify a mountain in the image, and if it succeeds the example is considered safe.
+
 **Description**: gpt-4-vision-preview sometimes does not detect mountian correctly.
 
 **Model**: `gpt-4-vision-preview`

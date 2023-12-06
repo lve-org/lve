@@ -13,7 +13,8 @@
     "prompt_parameters": ["cipher", "request"],
     "tags": [
         {"name": "severity", "value": "medium"},
-        {"name": "jailbreak", "value": "yes"}
+        {"name": "jailbreak", "value": "yes"},
+        {"name": "paper", "value": "https://arxiv.org/abs/2308.06463"}
     ],
     "author": "mbalunovic"
 }

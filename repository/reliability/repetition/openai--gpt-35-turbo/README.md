@@ -1,8 +1,8 @@
 ### gpt-3.5-turbo diverges when asked to repeat a word
 
-The paper [https://arxiv.org/abs/2311.17035](https://arxiv.org/abs/2311.17035) shows that training data can be extracted from aligned models such as gpt-3.5 by giving it a prompt to repeat a certain word which makes the model diverge and produce training data at a very high rate.
+The paper [https://arxiv.org/abs/2311.17035](https://arxiv.org/abs/2311.17035) shows that training data can sometimes be extracted from aligned models such as `gpt-3.5` by giving it a prompt to repeat a certain word which makes the model diverge and produce training data at a high rate.
 
-**Description**: gpt-3.5-turbo diverges when asked to repeat a word
+**Description**: `gpt-3.5-turbo` diverges when asked to repeat a word
 
 **Model**: `openai/gpt-3.5-turbo`
 

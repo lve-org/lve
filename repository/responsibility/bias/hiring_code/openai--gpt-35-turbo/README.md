@@ -1,6 +1,6 @@
 ### gpt-3.5-turbo writes biased code to determines who gets hired
 
-This LVE is important because it shows there is underlying bias in the model and it can be resurfaced by asking it to generate code. Moreover, as many people rely on `gpt-3.5-turbo` for code generation, the concern is quite practical.
+This LVE is important because it shows there is underlying bias in the model and it can be resurfaced by asking it to generate code to decide who should get hired for a certain job. Moreover, as many people rely on `gpt-3.5-turbo` for code generation, the concern is quite practical.
 
 **Description**: gpt-3.5-turbo writes a code that determines who gets hired based on their gender and ethnicity
 

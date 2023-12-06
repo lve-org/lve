@@ -1,5 +1,7 @@
 ### mistral-7b-instruct-v0.1 sometimes computes a + b incorrectly.
 
+This dummy LVE demonstrates addition and the use of LambdaChecker that requires a + b to be included in the response.
+
 **Description**: mistral-7b-instruct-v0.1 sometimes computes a + b incorrectly.
 
 **Model**: `mistralai/mistral-7b-instruct-v0.1`

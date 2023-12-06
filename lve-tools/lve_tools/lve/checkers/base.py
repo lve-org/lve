@@ -22,17 +22,25 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
     
     def __init__(self, extract=None):
         self.extract = extract
-        assert extract is None or extract in ['int', 'float']
+        assert extract is None or extract in ['int_last', 'int_first', 'float_last', 'float_first']
         
     def _extract(self, value):
         if self.extract is None:
             return value
         try:
-            if self.extract == 'int':
-                pattern = r"(\d+|(?:\d{1,3}(?:[,'_]\d{3})*))"
+            if self.extract == 'int_last':
+                pattern = r"((?:\d{1,3}(?:[,']\d{3})+)|\d+)"
+                match = re.findall(pattern, value)[-1]
+                return int(match.replace(',', '').replace("'", "").replace("_", ""))
+            elif self.extract == 'int_first':
+                pattern = r"((?:\d{1,3}(?:[,']\d{3})+)|\d+)"
                 match = re.findall(pattern, value)[0]
                 return int(match.replace(',', '').replace("'", "").replace("_", ""))
-            elif self.extract == 'float':
+            elif self.extract == 'float_last':
+                pattern = r"((?:\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?)|(?:\d+[eE][+-]?\d+))"
+                match = re.findall(pattern, value)[-1]
+                return float(match.replace(',', '').replace("'", "").replace("_", ""))
+            elif self.extract == 'float_first':
                 pattern = r"((?:\d{1,3}(?:[,'_]\d{3})*(?:\.\d+)?)|(?:\d+[eE][+-]?\d+))"
                 match = re.findall(pattern, value)[0]
                 return float(match.replace(',', '').replace("'", "").replace("_", ""))
@@ -133,7 +141,6 @@ class LambdaChecker(BaseChecker):
         
     def is_safe(self, prompt_out, param_values=None) -> bool:
         response = self.extract_response_from_prompt(prompt_out)
-        print(response, flush=True)
         return self.func(response, **param_values)
 
 class RegexChecker(BaseChecker):
