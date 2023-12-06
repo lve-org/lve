@@ -5,7 +5,7 @@ date: 2023-12-02
 
 <img src="/challenges_blog.png" width="500">
 
-Together with the public announcement of the LVE Repository, we are also excited to announce the first batch of our red teaming community challenges!
+Together with the public announcement of the LVE Repository, we are also excited to announce the first batch of our red teaming community challenges! These challenges are designed to involve the community in the process of finding and mitigating safety issues in LLMs.
 
 ## Community Challenges
 
