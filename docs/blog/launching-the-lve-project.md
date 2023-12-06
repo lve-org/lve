@@ -55,7 +55,8 @@ LVE has the goal of being a community-driven project, and we invite everyone to 
 We also encourage everyone to join the [LVE Discord](https://discord.gg/MMQTF2nyer) to discuss LVE and LLM safety issues.
 
 <div class="blog-down-banner">
-    <a href="https://twitter.com/projectlve"><img class="center" src="/lve.svg" width="80"></a>
+    <a style="text-decoration: none;" href="https://twitter.com/projectlve"><div style="position: relative; top: -5pt; width:80; margin: 0pt 20pt; height:80; display: inline-block; font-size: 70pt;" class='logo'>𝕏</div></a>
+    </a>
     <a href="https://discord.gg/MMQTF2nyer"><img class="center" src="/discord.svg" width="80"></a>
     <a href="https://github.com/lve-org/lve"><img class="center" src="/github.png" width="80"></a>
     <h2> Let's make LLMs safe together! </h2>
