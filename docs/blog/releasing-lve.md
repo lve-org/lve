@@ -10,7 +10,7 @@ Throughout the past year, LLMs like ChatGPT have seen an explosion in popularity
 
 The discourse around LLM Safety remains largely unstructured and disconnected, making it difficult for researchers, developers and the broader public to converse and keep track of the latest developments in the field:
 
-- **Fragmented and Scattered Information**: The documentation, reporting and tracking of LLM safety issues has been fragmented and scattered across academic publications, social media or done _solely internally_ by the companies that develop these models. This makes it difficult for researchers and developers to keep track of new and persistings issues with LLMs and their safety implications.
+- **Fragmented and Scattered Information**: The documentation, reporting and tracking of LLM safety issues has been fragmented and scattered across academic publications, social media or done _solely internally_ by the companies that develop these models. This makes it difficult for researchers and developers to keep track of new and persisting issues with LLMs and their safety implications.
 - **Transparency and Accountability**: Without an open and transparent process for reporting and tracking LLM safety issues, it is difficult for the broader public to assess the safety of these models and the applications that are built on top of them and how this might impact them. It also makes it very difficult to hold model vendors and developers accountable for the safety of the models they build and employ, as there is no public record of the issues that have been reported and how and if they have been addressed.
 - **Awareness and Education**: With only scattered, inaccessible and unstructured information about LLM safety, it is difficult for the broader public to become aware of the safety implications of these models and how they might impact them. This poses a significant risk to the safety of the broader public, as they start to rely more and more on these models and the applications that are built on top of them.
 - **Focus and Prioritization**: Much of the discourse has been focused on the concern and philosophy of long-term safety implications of AI. This has distracted many from the short- and mid-term safety issues that are already present in LLMs today, like simple *reliability* issues, *bias* and *toxicity* or *malicious use cases* like spam, phishing and disinformation.
@@ -41,13 +41,13 @@ The LVE Project is structured as an open source project with two main components
 
 - **LVE Repository**: The LVE Repository is a [publicly accessible open source repository](https://github.com/lve-org/lve), which includes the LVE Framework for describing and recording LVEs, as well as the LVE Repository, which is a public database of LVEs that have been reported and documented by the community. We also provide the LVE Website at [lve-project.org](https://lve-project.org), which allows you to browse the repository and learn more about individual LVEs.
 - **LVE Community Challenges**: Secondly, to lower the barrier for participation and to encourage the community to contribute, we are continuously running a series of [LVE Community Challenges](https://lve-project.org/challenges). These challenges are focused on specific safety issues, and allow the broader community to contribute and help us identify and attack safety problems. After each challenge is finished, it will be recorded as an LVE in the repository. We are also tracking leaderboards for each challenge, to recognize and reward the top contributors.
-- **How to Contribute**
+- **How to Contribute**:
 LVE has the goal of being a community-driven project, and we encourage everyone to contribute. This can include challenge participation, documenting new LVEs, reproducing existing LVEs, or even contributing to the LVE Framework itself. To learn more about how to contribute, please visit the [LVE Docs](https://lve-project.org/docs) or the [LVE GitHub](https://github.com/lve-org/lve). Or just play a few levels in the [Community Challeges](https://lve-project.org/challenges). 
 
 We also encourage everyone to join the [LVE Discord](https://discord.gg/MMQTF2nyer) to discuss LVE and LLM safety issues.
 
 <div class="blog-down-banner">
-    <a href="/"><img class="center" src="/lve.svg" width="80"></a>
+    <a href="https://twitter.com/projectlve"><img class="center" src="/lve.svg" width="80"></a>
     <a href="https://discord.gg/MMQTF2nyer"><img class="center" src="/discord.svg" width="80"></a>
     <a href="https://github.com/lve-org/lve"><img class="center" src="/github.png" width="80"></a>
     <h2> Let's make LLM's safe together! </h2>
