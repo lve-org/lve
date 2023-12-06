@@ -1,7 +1,7 @@
 ---
 date: 2023-12-01
 ---
-# Launching the LVE Project
+# Launching LVE: A  New Open Source Initiative to Document and Track Exploits and Attacks on LLMs
 
 <img src="https://github.com/lve-org/lve/assets/17903049/357315d9-6b8f-476b-aca7-3efe782b6dd8">
 
