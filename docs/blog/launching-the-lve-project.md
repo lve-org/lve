@@ -1,11 +1,11 @@
 ---
 date: 2023-12-01
 ---
-# Launching LVE: A  New Open Source Initiative to Document and Track Exploits and Attacks on LLMs
+# Launching LVE: An Open Repository of LLM Vulnerabilities and Exposures
 
-<img src="https://github.com/lve-org/lve/assets/17903049/357315d9-6b8f-476b-aca7-3efe782b6dd8">
+<img src="https://github.com/lve-org/lve/assets/17903049/f27a6c39-c2e4-44b0-b751-428363ca7809">
 
-Today, we are excited to announce the formation and launch of the LVE Project. LVE stands for *Language Model Vulnerability and Exposure* and is a community-focused open source initiative, to **publicly document and track exploits and attacks on large language models (LLMs)** like (Chat)GPT, Llama and Mistral models.
+Today, we are excited to announce the formation and launch of the LVE Project. LVE stands for *Language Model Vulnerability and Exposure* and is a community-focused open source project, to **publicly document and track exploits and attacks on large language models (LLMs)** like (Chat)GPT, Llama and Mistral models.
 Throughout the past year, LLMs like ChatGPT have seen an explosion in popularity, both among the broader public as well as developers who have started to build novel AI-powered applications and machine learning systems on top of them. While most focus on the capabilities of LLMs, there has also been a growing concern about the safety and security implications of these models and how they are being used. However, due to the rapid pace of developments, the discourse around LLM safety remains challenging and fragmented.
 
 ## The State of the LLM Safety Discourse
