@@ -1,9 +1,11 @@
 ---
 date: 2023-12-07
 ---
-# Launching the LVE Project
+# Launching LVE: The First Open Repository of LLM Vulnerabilities and Exposures
 
-Today, we are excited to announce the formation and launch of the LVE Project. LVE stands for *Language Model Vulnerability and Exposure* and is a community-focused open source initiative, to **publicly document and track exploits and attacks on large language models (LLMs)** like (Chat)GPT, Llama and Mistral models.
+<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/17903049/288764406-fa0b5ac4-cbea-4caa-8cc2-ef82bec1e3f7.png">
+
+Today, we are excited to announce the formation and launch of the LVE Project. LVE stands for *Language Model Vulnerability and Exposure* and is a community-focused open source project, to **publicly document and track exploits and attacks on large language models (LLMs)** like (Chat)GPT, Llama and Mistral models.
 Throughout the past year, LLMs like ChatGPT have seen an explosion in popularity, both among the broader public as well as developers who have started to build novel AI-powered applications and machine learning systems on top of them. While most focus on the capabilities of LLMs, there has also been a growing concern about the safety and security implications of these models and how they are being used. However, due to the rapid pace of developments, the discourse around LLM safety remains challenging and fragmented.
 
 ## The State of the LLM Safety Discourse
@@ -53,7 +55,8 @@ LVE has the goal of being a community-driven project, and we invite everyone to 
 We also encourage everyone to join the [LVE Discord](https://discord.gg/MMQTF2nyer) to discuss LVE and LLM safety issues.
 
 <div class="blog-down-banner">
-    <a href="https://twitter.com/projectlve"><img class="center" src="/lve.svg" width="80"></a>
+    <a style="text-decoration: none;" href="https://twitter.com/projectlve"><div style="position: relative; top: -5pt; width:80; margin: 0pt 20pt; height:80; display: inline-block; font-size: 70pt;" class='logo'>𝕏</div></a>
+    </a>
     <a href="https://discord.gg/MMQTF2nyer"><img class="center" src="/discord.svg" width="80"></a>
     <a href="https://github.com/lve-org/lve"><img class="center" src="/github.png" width="80"></a>
     <h2> Let's make LLMs safe together! </h2>

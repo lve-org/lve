@@ -1,6 +1,6 @@
 ### gpt-4 produces lyrics of a copyrighted song if asked to write it in another language
 
-As LLMs are typically trained on the data coming from the entire internet, they are likely to have seen a lot of copyrighted material. This is a problem for the users of the models as they might expose themselves to liabilities for using copyrighted material without permission. This LVE demonstrates that `gpt-4` has memorized lryics of copyrighted songs and can reproduce them if asked to write them in non-standard English (e.g. Pirate English).
+As LLMs are typically trained on the data coming from the entire internet, they are likely to have seen a lot of copyrighted material. This is a problem for the users of the models as they might expose themselves to liabilities for using copyrighted material without permission. This LVE demonstrates that `gpt-4` has memorized lryics of copyrighted songs and can reproduce them if asked to write them in non-standard language (e.g. Pirate English).
 
 **Description**: gpt-4 produces lyrics of a copyrighted song if asked to write it in another language
 
