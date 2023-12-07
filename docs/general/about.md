@@ -19,8 +19,8 @@ The core contributors to the LVE project are:
 For further contributors please see the authorship information on individual LVEs as well as the [GitHub contributors page](https://github.com/lve-org/lve/graphs/contributors).
 
 ## Supporters
-Currently the LLM and hosting costs are covered by by [SRI Lab](https://www.sri.inf.ethz.ch/) at [ETH Zurich](https://ethz.ch).
+
+Currently the LLM and hosting costs are covered by the [SRI Lab](https://www.sri.inf.ethz.ch/) at [ETH Zurich](https://ethz.ch).
 
 ## Contact
-Feel free to reach out on [Twitter](https://twitter.com/projectlve), [Discord](https://discord.gg/MMQTF2nyer) or [email](mailto:hello@lve-project.org). If you want to contrib
-see [LVE GitHub Repository](https://github.com/lve-org/lve).
+Feel free to reach out on [Twitter](https://twitter.com/projectlve), [Discord](https://discord.gg/MMQTF2nyer) or [email](mailto:hello@lve-project.org). If you want to contribute, see [LVE GitHub Repository](https://github.com/lve-org/lve).
