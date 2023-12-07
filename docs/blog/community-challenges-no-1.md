@@ -1,5 +1,5 @@
 ---
-date: 2023-12-02
+date: 2023-12-07
 ---
 # LVE Community Challenges, Batch 1
 

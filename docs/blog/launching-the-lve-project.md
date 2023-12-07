@@ -1,5 +1,5 @@
 ---
-date: 2023-12-01
+date: 2023-12-07
 ---
 # Launching LVE: The First Open Repository of LLM Vulnerabilities and Exposures
 
