@@ -3,8 +3,6 @@ title: About Us
 ---
 # About Us
 
-LVEs is a community-driven effort, however, it is currently maintained by 
-
 
 ## Contributors
 The core contributors to the LVE project are:
@@ -13,7 +11,7 @@ The core contributors to the LVE project are:
 * [Mislav Balunovic](https://www.sri.inf.ethz.ch/people/mislav)
 * [Luca Beurer-Kellner](https://www.sri.inf.ethz.ch/people/luca)
 * [Marc Fischer](https://www.sri.inf.ethz.ch/people/marc)
-* Hanna Yukhymenko
+* [Hanna Yukhymenko](https://github.com/ayukh)
 * [Prof. Martin Vechev](https://www.sri.inf.ethz.ch/people/martin)
 * [Prof. Florian Tramèr](https://www.floriantramer.com/)
 
