@@ -6,6 +6,7 @@ import replicate
 from lve.prompt import Role, Message
 from lve.model_store import *
 from lve.hooks import hook
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -69,6 +70,17 @@ def get_llama2_prompt(prompt: list[Message]) -> tuple[str, str]:
     llama2_prompt = "\n".join(llama2_prompt)
     return system_prompt, llama2_prompt
 
+def get_phi_prompt(prompt: list[Message]) -> tuple[str, str]:
+    system_prompt = None
+    phi_prompt = []
+    for msg in prompt:
+        if msg.role == Role.user:
+            phi_prompt += [f"Alice: {msg.content}"]
+        elif msg.role == Role.assistant:
+            phi_prompt += [f"Bob: {msg.content}"]
+        elif msg.role == Role.system:
+            system_prompt = msg.content
+    return system_prompt, phi_prompt
 
 def get_mistral_prompt(prompt: list[Message]) -> tuple[str, str]:
     """
@@ -112,6 +124,8 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
     # get model path
     if model in OPENAI_MODELS:
         model = OPENAI_MODELS[model]
+    elif model in HUGGINGFACE_MODELS:
+        model = HUGGINGFACE_MODELS[model]
     elif model in REPLICATE_MODELS:
         model = REPLICATE_MODELS[model]
 
@@ -137,11 +151,41 @@ def get_model_prompt(model, prompt):
         return get_mistral_prompt(prompt)
     elif model.startswith("openai/"):
         return get_openai_prompt(prompt)
+    elif model.startswith("microsoft/phi"):
+        return get_phi_prompt(prompt)
     elif model.startswith("dummy/"):
         return "", ""
     else:
         raise NotImplementedError(f"Cannot get prompt for model {model}!")
     
+
+async def execute_huggingface(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
+    """
+    Executes a prompt using Replicate.
+
+    Args:
+        prompt_in: The prompt to execute. Will not be changes.
+        verbose: Print the prompt and response.
+        model_args: Arguments to pass to the Replicate.
+        
+    Returns:
+        A new prompt where all assistant messages have been filled in (assistant message always at the end)
+    """
+    # TODO make huggingface calls async
+    prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
+
+    device = "cuda"
+    hf_model = AutoModelForCausalLM.from_pretrained(model).to(device)
+    tokenizer = AutoTokenizer.from_pretrained(model)
+
+    for i in range(len(prompt)):
+        if prompt[i].role == Role.assistant and prompt[i].content == None:
+            system_prompt, model_prompt = get_model_prompt(model, prompt[:i])
+            inputs = tokenizer(model_prompt, return_tensors="pt", return_attention_mask=False).to(device)
+            outputs = hf_model.generate(**inputs, **model_args)
+            response = tokenizer.batch_decode(outputs, max_length=200)[0]
+            prompt[i].content = response
+    return prompt
 
 async def execute_replicate(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
     """
@@ -256,6 +300,8 @@ async def execute_dummy(model, prompt_in, verbose=False, **model_args):
 async def execute_llm(model, prompt_in, verbose=False, **model_args):
     if model in OPENAI_MODELS:
         return await execute_openai(model, prompt_in, verbose, **model_args)
+    elif model in HUGGINGFACE_MODELS:
+        return await execute_huggingface(model, prompt_in, verbose, **model_args)
     elif model in DUMMY_MODELS:
         return await execute_dummy(model, prompt_in, verbose, **model_args)
     else:

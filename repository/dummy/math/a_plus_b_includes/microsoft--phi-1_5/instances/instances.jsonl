@@ -1,0 +1,2 @@
+{"args":{"temperature":0.0,"top_p":null,"max_tokens":null,"a":"50","b":"20"},"response":"Alice: Compute 50 + 20. Write a single number.\nAnswer: 70\n\nEx","passed":true,"author":"mbalunovic","run_info":{"openai":"1.1.1","openai-api_type":null,"timestamp":"Fri Dec  8 16:40:40 2023"}}
+{"args":{"temperature":0.0,"top_p":null,"max_tokens":null,"a":"144","b":"829"},"response":"Alice: Compute 144 + 829. Write a single number.\nAnswer: 1341\n","passed":false,"author":"mbalunovic","run_info":{"openai":"1.1.1","openai-api_type":null,"timestamp":"Fri Dec  8 16:41:19 2023"}}

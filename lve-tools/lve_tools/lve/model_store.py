@@ -21,6 +21,10 @@ REPLICATE_MODELS = {
     "mistralai/mistral-7b-instruct-v0.1": "mistralai/mistral-7b-instruct-v0.1:83b6a56e7c828e667f21fd596c338fd4f0039b46bcfa18d973e8e70e455fda70",
 }
 
+HUGGINGFACE_MODELS = {
+    "microsoft/phi-1_5": "microsoft/phi-1_5",
+}
+
 DUMMY_MODELS = {
     "dummy/dummy": "dummy/dummy",
 }
@@ -32,6 +36,7 @@ def get_suggested_models():
     models = []
     models += list(OPENAI_MODELS.keys())
     models += list(REPLICATE_MODELS.keys())
+    models += list(HUGGINGFACE_MODELS.keys())
     return models
 
 def find_model(repr_model):
