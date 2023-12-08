@@ -6,7 +6,6 @@ import replicate
 from lve.prompt import Role, Message
 from lve.model_store import *
 from lve.hooks import hook
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -171,6 +170,8 @@ async def execute_huggingface(model, prompt_in, verbose=False, chunk_callback=No
     Returns:
         A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
     # TODO make huggingface calls async
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
