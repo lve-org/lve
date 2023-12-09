@@ -144,7 +144,7 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
     return prompt, model
 
 def get_model_prompt(model, prompt):
-    if model.startswith("meta/llama-2"):
+    if model.startswith("meta/llama-2") or model.startswith("meta-llama/Llama-2"):
         return get_llama2_prompt(prompt)
     elif model.startswith("mistralai/mistral"):
         return get_mistral_prompt(prompt)
@@ -171,12 +171,13 @@ async def execute_huggingface(model, prompt_in, verbose=False, chunk_callback=No
         A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
     from transformers import AutoModelForCausalLM, AutoTokenizer
+    import torch
 
     # TODO make huggingface calls async
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
     device = "cuda"
-    hf_model = AutoModelForCausalLM.from_pretrained(model).to(device)
+    hf_model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16, device_map='auto').to(device)
     tokenizer = AutoTokenizer.from_pretrained(model)
 
     for i in range(len(prompt)):
@@ -184,7 +185,7 @@ async def execute_huggingface(model, prompt_in, verbose=False, chunk_callback=No
             system_prompt, model_prompt = get_model_prompt(model, prompt[:i])
             inputs = tokenizer(model_prompt, return_tensors="pt", return_attention_mask=False).to(device)
             outputs = hf_model.generate(**inputs, **model_args)
-            response = tokenizer.batch_decode(outputs, max_length=200)[0]
+            response = tokenizer.batch_decode(outputs[:, inputs['input_ids'].shape[1]:])[0]
             prompt[i].content = response
     return prompt
 

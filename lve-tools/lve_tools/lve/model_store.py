@@ -23,6 +23,7 @@ REPLICATE_MODELS = {
 
 HUGGINGFACE_MODELS = {
     "microsoft/phi-1_5": "microsoft/phi-1_5",
+    "hf-meta/llama-2-7b-chat": "meta-llama/Llama-2-7b-chat-hf",
 }
 
 DUMMY_MODELS = {
