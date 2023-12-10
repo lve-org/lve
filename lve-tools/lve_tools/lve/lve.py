@@ -131,6 +131,7 @@ class LVE(BaseModel):
     
     description: str
     model: str
+    default_model_args: dict[str, Any]
     checker_args: dict[str, Any]
     author: Optional[str] = None
 
@@ -250,7 +251,9 @@ class LVE(BaseModel):
         return new_prompt
     
     async def execute(self, prompt_in, verbose=False, **model_args):
-        return await execute_llm(self.model, prompt_in, verbose, **model_args)
+        model_args_upd = self.default_model_args
+        model_args_upd.update(model_args)
+        return await execute_llm(self.model, prompt_in, verbose, **model_args_upd)
     
     async def run(self, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
         if engine == 'lmql':
