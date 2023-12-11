@@ -131,7 +131,7 @@ class LVE(BaseModel):
     
     description: str
     model: str
-    default_model_args: dict[str, Any]
+    default_model_args: Optional[dict[str, Any]] = None
     checker_args: dict[str, Any]
     author: Optional[str] = None
 
