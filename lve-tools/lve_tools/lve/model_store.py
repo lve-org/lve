@@ -48,3 +48,14 @@ def find_model(repr_model):
         if file_system_repr(model) == repr_model:
             return model
     return "unknown"
+
+def get_inference_lib(model):
+    if model in OPENAI_MODELS:
+        return "openai"
+    elif model in REPLICATE_MODELS:
+        return "replicate"
+    elif model in HUGGINGFACE_MODELS:
+        return "huggingface"
+    else:
+        return None
+

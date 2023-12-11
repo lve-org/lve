@@ -179,16 +179,15 @@ async def execute_huggingface(model, prompt_in, verbose=False, chunk_callback=No
     # TODO make huggingface calls async
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
-    device = "cuda"
-    hf_model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16, device_map='auto').to(device)
+    hf_model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16, device_map='auto')
     tokenizer = AutoTokenizer.from_pretrained(model)
 
     generation_cfg = GenerationConfig(**model_args)
 
     for i in range(len(prompt)):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
-            system_prompt, model_prompt = get_model_prompt(model, prompt[:i])
-            inputs = tokenizer(model_prompt, return_tensors="pt", return_attention_mask=False).to(device)
+            _, model_prompt = get_model_prompt(model, prompt[:i])
+            inputs = tokenizer(model_prompt, return_tensors="pt", return_attention_mask=False).to(hf_model.device)
             outputs = hf_model.generate(**inputs, generation_config=generation_cfg)
             response = tokenizer.batch_decode(outputs[:, inputs['input_ids'].shape[1]:])[0]
             prompt[i].content = response

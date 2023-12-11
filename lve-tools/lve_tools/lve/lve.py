@@ -2,6 +2,7 @@ import json
 import os
 import time
 from enum import Enum
+from importlib.metadata import version
 from typing import Any, List, Union, Optional
 import inspect
 
@@ -9,7 +10,7 @@ import openai
 import lmql
 from lve.inference import execute_llm, get_openai_prompt
 from lve.errors import *
-from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS
+from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS, get_inference_lib
 from lve.checkers import BaseChecker
 from lve.prompt import Role, Message, get_prompt
 from lve.hooks import hook
@@ -251,7 +252,7 @@ class LVE(BaseModel):
         return new_prompt
     
     async def execute(self, prompt_in, verbose=False, **model_args):
-        model_args_upd = self.default_model_args
+        model_args_upd = self.default_model_args if self.default_model_args is not None else {}
         model_args_upd.update(model_args)
         return await execute_llm(self.model, prompt_in, verbose, **model_args_upd)
     
@@ -448,13 +449,19 @@ class LVE(BaseModel):
         return os.path.abspath(file).startswith(os.path.abspath(self.path))
 
     def get_run_info(self):
+        inference_lib = get_inference_lib(self.model)
         run_info = {
-            "openai": openai.__version__,
-            "openai-api_type": openai.api_type,
             "timestamp": time.ctime(),
         }
-        if openai.api_version is not None:
-            run_info["openai-api_version"] = openai.api_version
+        if inference_lib == "openai":
+            run_info["openai"] = version("openai")
+            run_info["openai-api_type"] = openai.api_type
+            if openai.api_version is not None:
+                run_info["openai-api_version"] = openai.api_version
+        elif inference_lib == "huggingface":
+            run_info["transformers"] = version("transformers")
+        elif inference_lib == "replicate":
+            run_info["replicate"] = version("replicate")
         return run_info
 
     def get_tag(self, name):
