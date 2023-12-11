@@ -125,7 +125,7 @@ def get_active_repo() -> LVERepo:
     Returns the active LVE repository (derives it from the current path by 
     traversing up, until it finds a file named .lverepo).
     """
-    path = pathlib.Path(__file__).parent
+    path = os.getcwd()
     try:
         while path != "/" and path != "":
             if os.path.exists(os.path.join(path, ".lverepo")):
