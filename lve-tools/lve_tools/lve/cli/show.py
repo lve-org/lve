@@ -67,6 +67,7 @@ def show(path, instance_file=None):
 
         # otherwise, print error
         print(f"Error: No such LVE: {path}")
+        print("\nMake sure you have cloned a copy of an LVE repository at this path.")
         return 1
     except InvalidLVEError as e:
         print(f"Error: Invalid LVE: {path}")

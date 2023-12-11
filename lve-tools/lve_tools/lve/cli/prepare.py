@@ -128,6 +128,7 @@ def main(args):
             return 1
         except NoSuchLVEError:
             print(f"Error: The template LVE at {args.template} does not exist.")
+            print("\nMake sure you have cloned a copy of an LVE repository at this path.")
             return 1
 
     if args.LVE_NAME is None:

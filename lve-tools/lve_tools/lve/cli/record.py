@@ -38,6 +38,7 @@ async def main(args):
         lve = LVE.from_path(args.LVE_PATH)
     except NoSuchLVEError:
         print(f"Error: No such LVE: {args.LVE_PATH}")
+        print("\nMake sure you have cloned a copy of an LVE repository at this path.")
         return 1
     except InvalidLVEError as e:
         print(f"Error: Invalid LVE: {args.LVE_PATH}")
