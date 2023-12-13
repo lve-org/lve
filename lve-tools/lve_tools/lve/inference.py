@@ -286,7 +286,7 @@ async def execute_openai(model, prompt_in, verbose=False, chunk_callback=None, *
 
     return prompt
 
-async def execute_dummy(model, prompt_in, verbose=False, **model_args):
+async def execute_dummy(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
     """
     Dummy model which fills all assistant messages with "Hello world!"
     """
@@ -295,7 +295,10 @@ async def execute_dummy(model, prompt_in, verbose=False, **model_args):
     # go through all messages and fill in assistant messages, sending everything before as context
     for i in range(len(prompt)):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
-            prompt[i].content = "Hello world"
+            prompt[i].content = model_args.get("response", "Hello world")
+            if chunk_callback is not None:
+                chunk_callback(prompt[i].content)
+                chunk_callback(None)
         if verbose:
             msg = prompt[i]
             print(f"[{msg.role}] {msg.content}")
