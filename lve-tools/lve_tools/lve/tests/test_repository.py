@@ -58,8 +58,6 @@ class TestRepository(unittest.TestCase):
         for lve in lves:
             if len(lve.instance_files) == 0:
                 continue
-            if lve.multi_run_prompt is not None:
-                continue
 
             for instance_file in lve.instance_files:
                 path = os.path.join(lve.path, "instances", instance_file)

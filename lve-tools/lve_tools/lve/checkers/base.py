@@ -187,7 +187,7 @@ class RegexChecker(BaseChecker):
 
 class MultiRunBaseChecker(BaseChecker):
 
-    def invoke_check(self, prompts_in, prompts_out, param_values=None):
+    def invoke_check(self, prompts_in, prompts_out, param_values=None, score_callback=None):
         """ Function called by LVE to invoke the checker.
             Main function exposed to the lve internals, but not the user.
             
@@ -208,7 +208,10 @@ class MultiRunBaseChecker(BaseChecker):
             response_or_variables = [self.extract_variables_from_prompt(p, full=True) for p in prompts_out]
         else:
             response_or_variables = [self.extract_response_from_prompt(p, full=True) for p in prompts_out]
-           
+        
+        if score_callback is not None:
+            score_callback(self, is_safe, prompts_out, param_values)
+
         return is_safe, response_or_variables
 
     @classmethod 
@@ -230,6 +233,6 @@ class MultiRunLambdaChecker(MultiRunBaseChecker):
         
     def is_safe(self, prompts_out, param_values) -> bool:
         responses = [self.extract_response_from_prompt(p) for p in prompts_out]
-        return self.func(response, **param_values)
+        return self.func(responses, **param_values)
 
 

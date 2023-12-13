@@ -66,44 +66,6 @@ class TestInstance(BaseModel):
     author: Optional[str] = None
     run_info: dict
 
-TPrompt = Union[str, list[Message]]
-class MultiPrompt(BaseModel):
-    name: str
-    prompt: TPrompt = None
-    prompt_file: str = None
-    repetition: int = 1
-    path: str = None
-
-    def model_post_init(self, __context: Any) -> None:
-        super().model_post_init(__context)
-        if self.prompt_file is not None:
-            # interpreter prompt_file relative to test path if it exists
-            if os.path.exists(os.path.join(self.path, self.prompt_file)):
-                self.prompt_file = os.path.join(self.path, self.prompt_file)
-        
-            with open(self.prompt_file, 'r') as f:
-                self.prompt = get_prompt(f.readlines())
-        return self
-
-    @model_validator(mode='after')
-    def validate_prompt(self):
-        cnt_non_none = (self.prompt is not None)
-        cnt_non_none += (self.prompt_file is not None)
-        if cnt_non_none != 1:
-            raise ValueError("You must specify exactly one of prompt, prompt_file for each multi_run_prompt instance in test.json.")
-
-        if self.prompt_file is not None:
-            raise NotImplementedError("prompt_file is not supported for multi_run_prompt instances yet.")
-            
-        # at this point, self.prompt_file has been already loaded
-        if self.prompt is None:
-            raise ValueError(f"Must specify a prompt in {self.path}/test.json. Either fill in the test.prompt file, specify a prompt directly in test.json or specify a multi_run_prompt.")
-
-        return self
-
-
-TMultiPrompt = Union[MultiPrompt, list[MultiPrompt]]
-
 class LVE(BaseModel):
     """
     Represents an LVE from the repository.
@@ -119,7 +81,6 @@ class LVE(BaseModel):
         author: An author of the LVE
 
         prompt_file: Relative path to the file where prompt is located (None if specified directly)
-        multi_run_prompt: Boolean which indicates if the LVE is based on multi-run prompting
         prompt: Prompt given as string or list of messages (possibly None if read from file)
         prompt_parameters: List of parameters of the prompt (None if no parameters)
 
@@ -134,10 +95,10 @@ class LVE(BaseModel):
     checker_args: dict[str, Any]
     author: Optional[str] = None
 
-    prompt_file: str = None
-    multi_run_prompt: TMultiPrompt = None
-    prompt: TPrompt = None
-    prompt_parameters: Union[list[str], None] = None
+    prompt_file: Union[str, list[str]] = None
+    prompt: Union[str, list[Message], list[list[Message]]] = None
+    prompt_type: str = 'single'
+    prompt_parameters: Union[list[str], list[list[str]], None] = None
     prompt_parameters_validator: Optional[list[str]] = None
 
     tags: Optional[List[LVE_Tag]] = []
@@ -147,6 +108,7 @@ class LVE(BaseModel):
 
     def model_post_init(self, __context: Any) -> None:
         super().model_post_init(__context)
+
         if self.prompt_file is not None:
             # interpreter prompt_file relative to test path if it exists
             if os.path.exists(os.path.join(self.path, self.prompt_file)):
@@ -160,9 +122,8 @@ class LVE(BaseModel):
     def verify_fields_before(test):
         cnt_non_none = ("prompt" in test and test["prompt"] is not None)
         cnt_non_none += ("prompt_file" in test and test["prompt_file"] is not None)
-        cnt_non_none += ("multi_run_prompt" in test and test["multi_run_prompt"] is not None)
         if cnt_non_none != 1:
-            raise ValueError("You must specify exactly one of prompt, prompt_file, or multi_run_prompt in test.json.")
+            raise ValueError("You must specify either prompt or prompt_file in test.json.")
 
         # check if the test.json file is valid
         if "model" not in test:
@@ -175,19 +136,24 @@ class LVE(BaseModel):
 
     @model_validator(mode='after')
     def verify_test_config(self):
-        if self.prompt_file is not None:
-            assert self.prompt_file.endswith(".prompt"), "Prompt file should end with .prompt"
-            if not os.path.exists(self.prompt_file):
-                raise ValueError("Prompt file does not exist!")
-            
+        
+        prompt_types = ['single', 'multi_prompt'] 
+        if not self.prompt_type in prompt_types:
+            raise ValueError(f"Prompt Type must be one of { prompt_types }")
+
+        if self.prompt_type == 'single':
+            if self.prompt_file is not None:
+                assert self.prompt_file.endswith(".prompt"), "Prompt file should end with .prompt"
+                if not os.path.exists(self.prompt_file):
+                    raise ValueError("Prompt file does not exist!")
+        elif self.prompt_type == 'multi_prompt':
+            pass # TODO handle multiple prompt files
+        else: assert False
+                
         # at this point, self.prompt_file has been already loaded
-        if self.prompt is None and self.multi_run_prompt is None:
-            raise ValueError(f"Must specify a prompt in {self.path}/test.json. Either fill in the test.prompt file, specify a prompt directly in test.json or specify a multi_run_prompt.")
-        
-        if self.multi_run_prompt is not None:
-            if isinstance(self.multi_run_prompt, MultiPrompt):
-                self.multi_run_prompt = [self.multi_run_prompt]
-        
+        if self.prompt is None:
+            raise ValueError(f"Must specify a prompt in {self.path}/test.json. Either fill in the test.prompt file, specify a prompt directly in test.json")
+            
         if 'checker_name' not in self.checker_args:
             raise ValueError(f"You must specify a checker_name under chercker_args in in {self.path}/test.json.")
 
@@ -216,6 +182,17 @@ class LVE(BaseModel):
                     return False
             else: assert False
         return True
+    
+    @property
+    def is_multi_prompt(self):
+        return not self.prompt_type == 'single'
+    
+    def get_prompts(self, param_values):
+        if self.prompt_type == 'single':
+            return [self.fill_prompt(param_values)]
+        elif self.prompt_type == 'multi_prompt':
+            return [self.fill_prompt(param_values, prompt=p) for p in self.prompt]
+        else: assert False
 
     def fill_prompt(self, param_values, prompt=None, partial=False):
         """
@@ -261,23 +238,19 @@ class LVE(BaseModel):
         run_info = self.get_run_info()
 
         param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
-
-        if self.prompt is not None:
-            prompt = self.fill_prompt(param_values)
-            prompt_out = await self.execute(prompt, chunk_callback=chunk_callback, **model_args)
-        else:
-            prompt = []
-            prompt_out = []
-            for j, mrp in enumerate(self.multi_run_prompt):
-                p = self.fill_prompt(param_values, prompt=mrp.prompt)
-                ccb = chunk_callback if j == 0 else None 
-                po = await self.execute(p, chunk_callback=ccb, **model_args)
-                prompt.append(p)
-                prompt_out.append(po)
+        prompts = list(self.get_prompts(param_values))
+        prompts_out = []
+        for j, p in enumerate(prompts):
+            ccb = chunk_callback if j == 0 else None 
+            po = await self.execute(p, chunk_callback=ccb, **model_args)
+            prompts_out.append(po)
+        if not self.is_multi_prompt: 
+            prompts = prompts[-1]
+            prompts_out = prompts_out[-1]
 
         checker = self.get_checker(**kwargs)
-        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values, score_callback=score_callback)
-        hook("lve.check", prompt=prompt, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
+        is_safe, response = checker.invoke_check(prompts, prompts_out, param_values, score_callback=score_callback)
+        hook("lve.check", prompt=prompts, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
         
         response = checker.postprocess_response(response)
 

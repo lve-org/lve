@@ -5,25 +5,15 @@
         "checker_name": "MultiRunLambdaChecker",
         "func": "lambda rs, a, b: all(int(r) == int(a) + int(b) for r in rs)"
     },
-    "multi_run_prompt":
+    "prompt_type": "multi_prompt",
+    "prompt":
     [
-        {
-            "name": "a+b",
-            "prompt":
-            [
-                {"content": "Compute {a} + {b}. Write a single number.", "role": "user"}
-            ],
-            "repetitions": 1
-        },
-        {
-            "name": "b+a",
-            "prompt":
-            [
-                {"content": "Compute {b} + {a}. Write a single number.", "role": "user"}
-            ],
-            "repetitions": 1
-        }
-
+        [
+            {"content": "Compute {a} + {b}. Write a single number.", "role": "user"}
+        ],
+        [
+            {"content": "Compute {b} + {a}. Write a single number.", "role": "user"}
+        ]
     ],
     "prompt_parameters": ["a", "b"],
     "tags": [
