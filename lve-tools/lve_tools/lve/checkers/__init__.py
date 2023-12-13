@@ -13,6 +13,8 @@ def get_checker(checker_name: str, custom_checker_path: str = None) -> BaseCheck
     if custom_checker_path is not None:
         module_path = os.path.join(custom_checker_path)
         sys.path.append(module_path)
-        filename = os.listdir(module_path)[0]
-        import_module(filename[:filename.find(".py")])
+        files = os.listdir(module_path)
+        for filename in files:
+            if filename.startswith("checker") and filename.endswith(".py"):
+                import_module(filename[:filename.find(".py")])
     return CheckerRegistryHolder.get_checker_registry().get(checker_name)

@@ -67,12 +67,11 @@ class BaseChecker(metaclass=CheckerRegistryHolder):
             response = self._extract(response)
         return response
     
-    def invoke_check(self, prompt_in, prompt_out, param_values=None, score_callback=None):
+    def invoke_check(self, prompt_out, param_values=None, score_callback=None):
         """ Function called by LVE to invoke the checker.
             Main function exposed to the lve internals, but not the user.
             
             Args:
-                prompt_in: The chat corresponding to the input. Currently unused.
                 prompt_out: The chat including model responses.
                 param_values: The parameter values plugged into the prompt.
             
@@ -187,12 +186,11 @@ class RegexChecker(BaseChecker):
 
 class MultiRunBaseChecker(BaseChecker):
 
-    def invoke_check(self, prompts_in, prompts_out, param_values=None):
+    def invoke_check(self, prompts_out, param_values=None):
         """ Function called by LVE to invoke the checker.
             Main function exposed to the lve internals, but not the user.
             
             Args:
-                prompts_in: List of the chats corresponding to the inputs.
                 prompts_out: List of the chats including the model responses. Order should match prompts_in.
                 param_values: The parameter values plugged into the prompt.
 
@@ -200,7 +198,6 @@ class MultiRunBaseChecker(BaseChecker):
                 is_safe: Whether the response is safe as determined by is_safe.
                 response_or_variables: If there is only one response, returns the response as string, else returns all variables as a dictionary.
         """
-        assert len(prompts_in) == len(prompts_out)
         cnt_variables = sum(p.role == Role.assistant and p.variable is not None for p in prompts_out[0])
         is_safe = self.is_safe(prompts_out, param_values)
 

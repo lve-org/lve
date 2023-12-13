@@ -66,6 +66,7 @@ class TestInstance(BaseModel):
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
+    prompt_out: Optional[List[Message]] = None
 
 TPrompt = Union[str, list[Message]]
 class MultiPrompt(BaseModel):
@@ -256,7 +257,7 @@ class LVE(BaseModel):
         model_args_upd.update(model_args)
         return await execute_llm(self.model, prompt_in, verbose, **model_args_upd)
     
-    async def run(self, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
+    async def run(self, store_prompt_out=False, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
         if engine == 'lmql':
             return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
         else:
@@ -280,8 +281,8 @@ class LVE(BaseModel):
                 prompt_out.append(po)
 
         checker = self.get_checker(**kwargs)
-        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values, score_callback=score_callback)
-        hook("lve.check", prompt=prompt, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
+        is_safe, response = checker.invoke_check(prompt_out, param_values, score_callback=score_callback)
+        hook("lve.check", prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
         
         response = checker.postprocess_response(response)
 
@@ -291,6 +292,7 @@ class LVE(BaseModel):
             response=response,
             run_info=run_info,
             passed=is_safe,
+            prompt_out=prompt_out if store_prompt_out else None,
         )
 
     async def run_with_lmql(self, author=None, verbose=False, **kwargs):
@@ -314,7 +316,7 @@ class LVE(BaseModel):
 
         checker = self.get_checker()
         prompt_out = copy.deepcopy(prompt) + [Message(content=response, role=Role.assistant, variable='response')]
-        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
+        is_safe, response = checker.invoke_check(prompt_out, param_values)
 
         return TestInstance(
             author=author,

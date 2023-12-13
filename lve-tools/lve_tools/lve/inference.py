@@ -290,12 +290,16 @@ async def execute_dummy(model, prompt_in, verbose=False, chunk_callback=None, **
     """
     Dummy model which fills all assistant messages with "Hello world!"
     """
+    import random
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
     # go through all messages and fill in assistant messages, sending everything before as context
     for i in range(len(prompt)):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
-            prompt[i].content = model_args.get("response", "Hello world")
+            if "random_responses" in model_args:
+                prompt[i].content = random.choice(model_args["random_responses"])
+            else:
+                prompt[i].content = model_args.get("response", "Hello world")
             if chunk_callback is not None:
                 chunk_callback(prompt[i].content)
                 chunk_callback(None)
