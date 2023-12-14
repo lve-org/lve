@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 from importlib import import_module
 from lve.checkers.base import *
 from lve.checkers.bias import *
@@ -15,6 +16,8 @@ def get_checker(checker_name: str, custom_checker_path: str = None) -> BaseCheck
         sys.path.append(module_path)
         files = os.listdir(module_path)
         for filename in files:
+            if filename == "checker.py":
+                logging.warn(f"Please make custom checker in {module_path} unique (not checker.py)!")
             if filename.startswith("checker") and filename.endswith(".py"):
                 import_module(filename[:filename.find(".py")])
     return CheckerRegistryHolder.get_checker_registry().get(checker_name)
