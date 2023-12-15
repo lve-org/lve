@@ -125,14 +125,16 @@ def get_active_repo() -> LVERepo:
     Returns the active LVE repository (derives it from the current path by 
     traversing up, until it finds a file named .lverepo).
     """
-    path = os.getcwd()
-    try:
-        while path != "/" and path != "":
-            if os.path.exists(os.path.join(path, ".lverepo")):
-                with open(os.path.join(path, ".lverepo")) as f:
-                    remote = f.read().strip()
-                    return LVERepo(path, remote)
-            path = os.path.dirname(path)
-        return None
-    except:
-        raise LVEError("Could not determine root of LVE repository (no .lverepo file found in any parent directory).")
+    paths = [os.getcwd(), pathlib.Path(__file__).parent]
+    for path in paths:
+        try:
+            while path != "/" and path != "":
+                if os.path.exists(os.path.join(path, ".lverepo")):
+                    with open(os.path.join(path, ".lverepo")) as f:
+                        remote = f.read().strip()
+                        return LVERepo(path, remote)
+                path = os.path.dirname(path)
+            continue
+        except:
+            raise LVEError("Could not determine root of LVE repository (no .lverepo file found in any parent directory).")
+    raise LVEError("Could not determine root of LVE repository (no .lverepo file found in any parent directory).")

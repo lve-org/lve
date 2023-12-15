@@ -2,6 +2,7 @@ import json
 import os
 import time
 from enum import Enum
+from importlib.metadata import version
 from typing import Any, List, Union, Optional
 import inspect
 
@@ -9,7 +10,7 @@ import openai
 import lmql
 from lve.inference import execute_llm, get_openai_prompt
 from lve.errors import *
-from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS
+from lve.model_store import OPENAI_MODELS, REPLICATE_MODELS, DUMMY_MODELS, get_inference_lib
 from lve.checkers import BaseChecker
 from lve.prompt import Role, Message, get_prompt
 from lve.hooks import hook
@@ -65,6 +66,7 @@ class TestInstance(BaseModel):
     passed: bool = True
     author: Optional[str] = None
     run_info: dict
+    prompt_out: Optional[List[Message]] = None
 
 class LVE(BaseModel):
     """
@@ -92,6 +94,7 @@ class LVE(BaseModel):
     
     description: str
     model: str
+    default_model_args: Optional[dict[str, Any]] = None
     checker_args: dict[str, Any]
     author: Optional[str] = None
 
@@ -227,9 +230,11 @@ class LVE(BaseModel):
         return new_prompt
     
     async def execute(self, prompt_in, verbose=False, **model_args):
-        return await execute_llm(self.model, prompt_in, verbose, **model_args)
+        model_args_upd = self.default_model_args if self.default_model_args is not None else {}
+        model_args_upd.update(model_args)
+        return await execute_llm(self.model, prompt_in, verbose, **model_args_upd)
     
-    async def run(self, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
+    async def run(self, store_prompt_out=False, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
         if engine == 'lmql':
             return await self.run_with_lmql(author=author, verbose=verbose, **kwargs)
         else:
@@ -249,8 +254,13 @@ class LVE(BaseModel):
             prompts_out = prompts_out[-1]
 
         checker = self.get_checker(**kwargs)
+<<<<<<< HEAD
         is_safe, response = checker.invoke_check(prompts, prompts_out, param_values, score_callback=score_callback)
         hook("lve.check", prompt=prompts, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
+=======
+        is_safe, response = checker.invoke_check(prompt_out, param_values, score_callback=score_callback)
+        hook("lve.check", prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
+>>>>>>> origin/main
         
         response = checker.postprocess_response(response)
 
@@ -260,6 +270,7 @@ class LVE(BaseModel):
             response=response,
             run_info=run_info,
             passed=is_safe,
+            prompt_out=prompt_out if store_prompt_out else None,
         )
 
     async def run_with_lmql(self, author=None, verbose=False, **kwargs):
@@ -283,7 +294,7 @@ class LVE(BaseModel):
 
         checker = self.get_checker()
         prompt_out = copy.deepcopy(prompt) + [Message(content=response, role=Role.assistant, variable='response')]
-        is_safe, response = checker.invoke_check(prompt, prompt_out, param_values)
+        is_safe, response = checker.invoke_check(prompt_out, param_values)
 
         return TestInstance(
             author=author,
@@ -418,13 +429,19 @@ class LVE(BaseModel):
         return os.path.abspath(file).startswith(os.path.abspath(self.path))
 
     def get_run_info(self):
+        inference_lib = get_inference_lib(self.model)
         run_info = {
-            "openai": openai.__version__,
-            "openai-api_type": openai.api_type,
             "timestamp": time.ctime(),
         }
-        if openai.api_version is not None:
-            run_info["openai-api_version"] = openai.api_version
+        if inference_lib == "openai":
+            run_info["openai"] = version("openai")
+            run_info["openai-api_type"] = openai.api_type
+            if openai.api_version is not None:
+                run_info["openai-api_version"] = openai.api_version
+        elif inference_lib == "huggingface":
+            run_info["transformers"] = version("transformers")
+        elif inference_lib == "replicate":
+            run_info["replicate"] = version("replicate")
         return run_info
 
     def get_tag(self, name):

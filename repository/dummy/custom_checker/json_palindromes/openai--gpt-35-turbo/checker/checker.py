@@ -14,7 +14,8 @@ class JSON_PalindromeChecker(BaseChecker):
     def is_palindrome(self, s):
         return s == s[::-1]
 
-    def is_safe(self, prompt, response, param_values) -> bool:
+    def is_safe(self, prompt, param_values) -> bool:
+        response = self.extract_response_from_prompt(prompt, full=True)
         min_len, max_len = int(param_values["min_len"]), int(param_values["max_len"])
         beg, end = str.find(response, "{"), str.find(response, "}")
         if beg == -1 or end == -1:

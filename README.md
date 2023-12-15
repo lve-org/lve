@@ -3,8 +3,7 @@
   <h1 align="center">LVE Repository</h1>
   <p align="center">
     A repository of Language Model Vulnerabilities and Exposures (LVEs).
-    <br />print("\nMake sure you have cloned a copy of an LVE repository at this path.")
-    <br />
+    <br/><br/>
     <a href="https://lve-project.org/">Browse LVEs</a>
     ·
     <a href="#documenting-a-new-lve">Add LVEs</a>
