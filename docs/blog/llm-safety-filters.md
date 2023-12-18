@@ -1,20 +1,20 @@
 ---
-date: 2023-12-15
+date: 2023-12-19
 authors: Mislav Balunovic, Luca Beurer-Kellner
 subtitle: We investigate the effectiveness of LLM-based safety filters to defend against LLM vulnerabilities and exploits.
 ---
 # Adding Fuel To The Fire: How effective are LLM-based safety filters for AI systems?
 
-While our goal with the LVE Repository is to document and track vulnerabilities of language models, we also spend a lot of time thinking about defending against such attacks. One popular type of defense is the idea of filtering and guardrail systems that wrap around language models. In this post, we highlight the challenges of guardrailing LLMs effectively, and illustrate how easily current LLM-based filters break, based on the example of the recently released [Purple Llama](https://about.fb.com/news/2023/12/purple-llama-safe-responsible-ai-development/) system.
+While our goal with the LVE Repository is to document and track vulnerabilities of language models, we also spend a lot of time thinking about defending against such attacks. One popular type of defense is the idea of filtering and guardrail systems that wrap around language models. In this post, we highlight the challenges of effectively guardrailing LLMs, and illustrate how easily current LLM-based filters break, based on the example of the recently released [Purple Llama](https://about.fb.com/news/2023/12/purple-llama-safe-responsible-ai-development/) system.
 
-While initial filtering systems used hard-coded rules to determine whether a prompt is safe or not (e.g. via a list of filtered words), the complexity of more recent attacks easily circumvents this type of guardrail. In response to this, the idea of LLM-based filtering has emerged: 
+While early filtering systems used hard-coded rules to determine whether a prompt is safe or not (e.g. via a list of filtered words), the complexity of more recent attacks easily circumvents this type of guardrail. In response to this, the idea of LLM-based filtering has emerged: 
 Given a user input and a policy specified in natural language, a separate moderation LLM first classifies an input/output as safe for our AI system or chatbot. This moderation LLM can even be fine-tuned to be more effective at filtering undesired content. For instance, OpenAI has proposed using [GPT-4 for content moderation](https://openai.com/blog/using-gpt-4-for-content-moderation), although their model remains closed source and thus difficult to investigate. 
 
 ## Llama Guard
 
 Earlier this month, Meta [released Purple Llama](https://about.fb.com/news/2023/12/purple-llama-safe-responsible-ai-development/), a project of open source trust and safety tools for building responsible AI systems. We very much welcome this addition to the ecosystem, as we also believe that safe AI systems can only be built with openness and transparency in mind, just like with the LVE project itself. One of the Purple Llama components is a new foundation model called Llama Guard [2], which has been trained as a moderation LLM that filters inputs and outputs with respect to a given policy. The model is open and allows us to perform some more extensive red teaming, in order to investigate how much Llama Guard actually enhances overall system safety.
 
-Below we show a simple usage example of Llama Guard, by validating a user request for the Influenza 1918 virus synthesis procedure, like in the [responsibility/dual_use/jailbreak_influenza_1918_synthesis](https://lve-project.org/responsibility/dual_use/biology/jailbreak_influenza_1918_synthesis/openai--gpt-4.html) LVE.
+Below we show a simple usage example of Llama Guard, by validating a user request for the Influenza 1918 virus synthesis procedure, as in the [responsibility/dual_use/jailbreak_influenza_1918_synthesis](https://lve-project.org/responsibility/dual_use/biology/jailbreak_influenza_1918_synthesis/openai--gpt-4.html) LVE.
 
 <!-- <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/58907/291329704-93912386-0366-4bfa-8999-f140bb4f74ad.svg"> -->
 
@@ -25,7 +25,7 @@ We observe that Llama Guard correctly classifies this prompt as unsafe and also 
 
 ## How safe is Llama Guard really?
 
-Very quickly after the release of Purple Llama, researcher [Andy Zuo](https://andyzoujm.github.io/) demonstrated that Llama Guard can easily be tricked into misclassifying inputs, using a variant of adversarial attack suffixes [1]. Given a prompt P, the idea is to optimize for a suffix S such that the Llama Purple model outputs the string “Safe” when prompted with the concatenation P + S. In contrast to other jailbreaks that are typically handcrafted, suffix attacks can be generated automatically and thus can be applied at much larger scale. The key idea of the attack is to combine greedy and gradient-based optimization -- full details can be found in the corresponding research paper [1].
+Very quickly after the release of Purple Llama, researcher [Andy Zuo](https://andyzoujm.github.io/) demonstrated that Llama Guard can easily be tricked into misclassifying inputs, using a variant of the adversarial attack suffixes [1]. Given a prompt P, the idea is to optimize for a suffix S such that the Llama Purple model outputs the string “Safe” when prompted with the concatenation P + S. In contrast to other jailbreaks that are typically handcrafted, suffix attacks can be generated automatically and thus can be applied at much larger scale. The key idea of the attack is to combine greedy and gradient-based optimization -- full details can be found in the corresponding research paper [1].
 
 Here, we simply run the suffix attack on our example from above, with the goal of breaking Llama Guard into classifying our request as safe. Below, the attack suffix is shown bold and can simply be concatenated with the original prompt.
 
