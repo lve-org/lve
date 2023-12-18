@@ -1,5 +1,6 @@
 ---
 date: 2023-12-07
+authors: LVE Team
 ---
 # Launching LVE: The First Open Repository of LLM Vulnerabilities and Exposures
 
