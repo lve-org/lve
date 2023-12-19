@@ -5,7 +5,7 @@
         "checker_name": "MultiRunLambdaChecker",
         "func": "lambda rs, a, b: all(int(r) == int(a) + int(b) for r in rs)"
     },
-    "prompt_type": "multi_prompt",
+    "prompt_type": "multi_prompt_single_param",
     "prompt":
     [
         [

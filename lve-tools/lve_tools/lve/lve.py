@@ -19,19 +19,6 @@ import copy
 from pydantic import BaseModel, model_validator, ValidationError
 from pydantic.dataclasses import dataclass
 
-def split_instance_args(args, prompt_parameters):
-    if prompt_parameters is None:
-        return {}, args
-    param_values, model_args = {}, {}
-    for key in args:
-        if args[key] is None:
-            continue
-        if key in prompt_parameters:
-            param_values[key] = args[key]
-        else:
-            model_args[key] = args[key]
-    return param_values, model_args
-
 class LVE_Tag(BaseModel):
 
     name: str
@@ -100,7 +87,7 @@ class LVE(BaseModel):
 
     prompt_file: Union[str, list[str]] = None
     prompt: Union[str, list[Message], list[list[Message]]] = None
-    prompt_type: str = 'single'
+    prompt_type: str = 'single_prompt_single_param'
     prompt_parameters: Union[list[str], list[list[str]], None] = None
     prompt_parameters_validator: Optional[list[str]] = None
 
@@ -114,11 +101,19 @@ class LVE(BaseModel):
 
         if self.prompt_file is not None:
             # interpreter prompt_file relative to test path if it exists
-            if os.path.exists(os.path.join(self.path, self.prompt_file)):
-                self.prompt_file = os.path.join(self.path, self.prompt_file)
-        
-            with open(self.prompt_file, 'r') as f:
-                self.prompt = get_prompt(f.readlines())
+            if self.prompt_type in ['single_prompt_single_param', 'single_prompt_multi_param']:
+                if os.path.exists(os.path.join(self.path, self.prompt_file)):
+                    self.prompt_file = os.path.join(self.path, self.prompt_file)
+            
+                with open(self.prompt_file, 'r') as f:
+                    self.prompt = get_prompt(f.readlines())
+            elif self.prompt_type == 'multi_prompt_single_param':
+                self.prompt = []
+                for f in self.prompt_file:
+                    if os.path.exists(os.path.join(self.path, f)):
+                        f = os.path.join(self.path, f)
+                    with open(f, 'r') as fin:
+                        self.prompt.append(get_prompt(fin.readlines()))
         return self
     
     @model_validator(mode='before')
@@ -139,18 +134,21 @@ class LVE(BaseModel):
 
     @model_validator(mode='after')
     def verify_test_config(self):
-        
-        prompt_types = ['single', 'multi_prompt'] 
+        prompt_types = ['single_prompt_single_param', 'multi_prompt_single_param', 'single_prompt_multi_param']
         if not self.prompt_type in prompt_types:
             raise ValueError(f"Prompt Type must be one of { prompt_types }")
 
-        if self.prompt_type == 'single':
+        if self.prompt_type in ['single_prompt_single_param', 'single_prompt_multi_param']:
             if self.prompt_file is not None:
                 assert self.prompt_file.endswith(".prompt"), "Prompt file should end with .prompt"
-                if not os.path.exists(self.prompt_file):
-                    raise ValueError("Prompt file does not exist!")
-        elif self.prompt_type == 'multi_prompt':
-            pass # TODO handle multiple prompt files
+                # if not os.path.exists(self.prompt_file):
+                #     raise ValueError("Prompt file does not exist!")
+        elif self.prompt_type == 'multi_prompt_single_param':
+            if self.prompt_file is not None:
+                assert isinstance(self.prompt_file, list), "Prompt file should be a list of prompt files"
+                assert len(self.prompt_file) > 0, "Prompt file should be a list of prompt files"
+                assert all([f.endswith(".prompt") for f in self.prompt_file]), "Prompt file should end with .prompt"
+                #assert all([os.path.exists(f) for f in self.prompt_file]), "Prompt file does not exist!"
         else: assert False
                 
         # at this point, self.prompt_file has been already loaded
@@ -187,15 +185,30 @@ class LVE(BaseModel):
         return True
     
     @property
-    def is_multi_prompt(self):
-        return not self.prompt_type == 'single'
+    def is_multi_run(self):
+        return not self.is_single_run
+    
+    @property
+    def is_single_run(self):
+        return self.prompt_type == 'single_prompt_single_param'
+    
+    def get_prompts_params(self, param_values=None):
+        if param_values is None: param_values = self.prompt_parameters
+        if self.prompt_type == 'single_prompt_single_param':
+            yield self.prompt, param_values
+        elif self.prompt_type == 'multi_prompt_single_param':
+            for p in self.prompt:
+                yield p, param_values
+        elif self.prompt_type == 'single_prompt_multi_param':
+            length = len(next(iter(param_values.values())))
+            for i in range(length):
+                yield self.prompt, {k: v[i] for k, v in param_values.items()}
+        else: assert False
+
     
     def get_prompts(self, param_values):
-        if self.prompt_type == 'single':
-            return [self.fill_prompt(param_values)]
-        elif self.prompt_type == 'multi_prompt':
-            return [self.fill_prompt(param_values, prompt=p) for p in self.prompt]
-        else: assert False
+        for p, param_values in self.get_prompts_params(param_values):
+            yield self.fill_prompt(param_values, prompt=p)
 
     def fill_prompt(self, param_values, prompt=None, partial=False):
         """
@@ -242,26 +255,21 @@ class LVE(BaseModel):
 
         run_info = self.get_run_info()
 
-        param_values, model_args = split_instance_args(kwargs, self.prompt_parameters)
-        prompts = list(self.get_prompts(param_values))
-        prompts_out = []
-        for j, p in enumerate(prompts):
+        print(1, flush=True)
+        param_values, model_args = self.split_instance_args(kwargs)
+        print(2, param_values, flush=True)
+        prompts = []
+        for j, p in enumerate(self.get_prompts(param_values)):
+            print(3, p, flush=True)
             ccb = chunk_callback if j == 0 else None 
             po = await self.execute(p, chunk_callback=ccb, **model_args)
-            prompts_out.append(po)
-        if not self.is_multi_prompt: 
+            prompts.append(po)
+        if self.is_single_run:
             prompts = prompts[-1]
-            prompts_out = prompts_out[-1]
 
         checker = self.get_checker(**kwargs)
-<<<<<<< HEAD
-        is_safe, response = checker.invoke_check(prompts, prompts_out, param_values, score_callback=score_callback)
-        hook("lve.check", prompt=prompts, prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
-=======
-        is_safe, response = checker.invoke_check(prompt_out, param_values, score_callback=score_callback)
+        is_safe, response = checker.invoke_check(prompts, param_values, score_callback=score_callback)
         hook("lve.check", prompt_out=response, param_values=param_values, checker_name=self.checker_args.get("checker_name", "unknown"))
->>>>>>> origin/main
-        
         response = checker.postprocess_response(response)
 
         return TestInstance(
@@ -270,7 +278,7 @@ class LVE(BaseModel):
             response=response,
             run_info=run_info,
             passed=is_safe,
-            prompt_out=prompt_out if store_prompt_out else None,
+            prompt_out=prompts if store_prompt_out else None,
         )
 
     async def run_with_lmql(self, author=None, verbose=False, **kwargs):
@@ -324,6 +332,31 @@ class LVE(BaseModel):
 
     def __hash__(self):
         return hash(self.path)
+    
+    def split_instance_args(self, args):
+        if self.prompt_parameters is None:
+            return {}, args
+        param_values, model_args = {}, {}
+        for key in args:
+            if args[key] is None:
+                continue
+            if key in self.prompt_parameters:
+                param_values[key] = args[key]
+            else:
+                model_args[key] = args[key]
+        if self.prompt_type == 'single_prompt_multi_param':
+            c = None
+            keys = list(param_values.keys())
+            is_list = [isinstance(param_values[k], list) for k in keys]
+            if not any(is_list):
+                for k in keys: param_values[k] = [param_values[k]]
+            else:
+                lengths = [len(param_values[keys[i]]) for i in range(len(keys)) if is_list[i]]
+                assert len(set(lengths)) == 1, "All list parameters must have the same length"
+                for k in keys:
+                    if not is_list[k]:
+                        param_values[k] = [param_values[k]] * lengths[0]
+        return param_values, model_args
 
     @classmethod
     def load_from_file(cls, test_path):
