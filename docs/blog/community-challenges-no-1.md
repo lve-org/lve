@@ -1,6 +1,6 @@
 ---
 date: 2023-12-07
-authors: LVE Team
+authors: 
 ---
 # LVE Community Challenges, Batch 1
 

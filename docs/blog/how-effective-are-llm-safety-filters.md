@@ -1,14 +1,14 @@
 ---
 date: 2023-12-19
-authors: Mislav Balunovic, Luca Beurer-Kellner
+authors: "<a href='https://www.sri.inf.ethz.ch/people/mislav'>Mislav Balunovic</a>, <a href='https://www.sri.inf.ethz.ch/people/luca'>Luca Beurer-Kellner</a>"
 subtitle: We investigate the effectiveness of LLM-based safety filters to defend against LLM vulnerabilities and exploits.
 ---
 # Adding Fuel To The Fire: How effective are LLM-based safety filters for AI systems?
 
-While our goal with the LVE Repository is to document and track vulnerabilities of language models, we also spend a lot of time thinking about defending against such attacks. One popular type of defense is the idea of filtering and guardrail systems that wrap around language models. In this post, we highlight the challenges of effectively guardrailing LLMs, and illustrate how easily current LLM-based filters break, based on the example of the recently released [Purple Llama](https://about.fb.com/news/2023/12/purple-llama-safe-responsible-ai-development/) system.
+Our primary goal with the LVE Repository is to document and track vulnerabilities of language models. However, we also spend a lot of time thinking about defending against such attacks. One popular type of defense is the idea of a filtering or guardrail system that wrap around a language model. In this post, we highlight the challenges of effectively guardrailing LLMs, and illustrate how easily current LLM-based filters break, based on the example of the recently released [Purple Llama](https://about.fb.com/news/2023/12/purple-llama-safe-responsible-ai-development/) system.
 
 While early filtering systems used hard-coded rules to determine whether a prompt is safe or not (e.g. via a list of filtered words), the complexity of more recent attacks easily circumvents this type of guardrail. In response to this, the idea of LLM-based filtering has emerged: 
-Given a user input and a policy specified in natural language, a separate moderation LLM first classifies an input/output as safe for our AI system or chatbot. This moderation LLM can even be fine-tuned to be more effective at filtering undesired content. For instance, OpenAI has proposed using [GPT-4 for content moderation](https://openai.com/blog/using-gpt-4-for-content-moderation), although their model remains closed source and thus difficult to investigate. 
+Given a user input and a policy specified in natural language, a separate moderation LLM first classifies an input/output as safe or not. This moderation LLM can even be fine-tuned to be more effective at filtering undesired content. For instance, OpenAI has proposed using [GPT-4 for content moderation](https://openai.com/blog/using-gpt-4-for-content-moderation), although their model remains closed source and thus difficult to investigate. 
 
 ## Llama Guard
 
@@ -30,7 +30,7 @@ Very quickly after the release of Purple Llama, researcher [Andy Zuo](https://an
 Here, we simply run the suffix attack on our example from above, with the goal of breaking Llama Guard into classifying our request as safe. Below, the attack suffix is shown bold and can simply be concatenated with the original prompt.
 
 ![](https://github-production-user-asset-6210df.s3.amazonaws.com/58907/291406474-dfd55373-357e-4113-adff-de5c1b8a74de.png)
-*Figure 2. The Llama Guard filter can be bypassed by adding a specific suffix to the prompt.*
+*Figure 2. The Llama Guard filter can be bypassed by adding an attack suffix to the prompt.*
 
 Indeed, adding an adversarial suffix makes Purple Llama classify input prompt as safe, even though the user is still requesting information to synthesize the influenza virus. Note that suffixes typically correspond to mostly random character sequences, which might give an idea about how to detect them (e.g. checking perplexity of the suffix). However, overall this result just sets up an arms race between attackers and defenders, with no clear path to a reliable way to detect and defend against LLM attacks and exploits. The full code for running the suffix attack on Llama Guard can be found here: [https://github.com/andyzoujm/breaking-llama-guard/](https://github.com/andyzoujm/breaking-llama-guard/).
 
@@ -45,7 +45,7 @@ In line with LVE’s mission of tracking LLM vulnerabilities, we have added LVEs
 
 We have demonstrated that LLM-based safety filters like LlamaGuard clearly do not provide a real *solution* to the LLM safety problem. Adversaries can easily construct adversarial suffixes that can be added to their prompts to bypass the LLM-based filter (in this case LlamaGuard).
 
-More fundamentally, our experiments reveal a much more important insight: We have to resort to powerful language models to do moderation effectively, however, with this, we also inherit all the fundamental weaknesses and attack vectors of these models, only now, we integrate them in our defense systems. This means that our defenses are now vulnerable to the same exploits that our actual LLM systems are already vulnerable to. This sets up a dangerously circular safety narrative (our LLMs are as safe as our defense systems are as safe as LLMs) and thus cannot remain the only guardrails we put in place to responsibly build and deploy AI systems.
+More fundamentally, these experiments reveal a much more important insight: We have to resort to powerful language models to do moderation effectively, however, with this, we also inherit all the fundamental weaknesses and attack vectors of these models, only now, we integrate them in our defense systems. Thus, our defenses are now vulnerable to the same exploits that the actual LLM systems are already vulnerable to. This sets up a dangerously circular safety narrative (our LLMs are as safe as our defense systems are as safe as LLMs) and thus cannot remain the only guardrails we put in place to responsibly build and deploy AI systems.
 
 ## Acknowledgements 
 
@@ -63,5 +63,5 @@ We would like to highlight that our investigations are only possible because of 
     </a>
     <a href="https://discord.gg/MMQTF2nyer"><img class="center" src="/discord.svg" width="80"></a>
     <a href="https://github.com/lve-org/lve"><img class="center" src="/github.png" width="80"></a>
-    <h2> Let's make LLMs safe together! </h2>
+    <h2>Join the LVE community to help make LLMs safer!</h2>
 </div>

@@ -1,6 +1,6 @@
 ---
 date: 2023-12-07
-authors: LVE Team
+authors: 
 ---
 # Launching LVE: The First Open Repository of LLM Vulnerabilities and Exposures
 
@@ -60,6 +60,6 @@ We also encourage everyone to join the [LVE Discord](https://discord.gg/MMQTF2ny
     </a>
     <a href="https://discord.gg/MMQTF2nyer"><img class="center" src="/discord.svg" width="80"></a>
     <a href="https://github.com/lve-org/lve"><img class="center" src="/github.png" width="80"></a>
-    <h2> Let's make LLMs safe together! </h2>
+    <h2>Join the LVE community to help make LLMs safer!</h2>
 </div>
 
