@@ -88,9 +88,9 @@ class TestFuzzyMatchChecker(unittest.TestCase):
 
     def test_is_safe(self):
         prompt = [Message("password 123", Role.assistant)]
-        self.assertFalse(FuzzyMatchChecker("my password is 123", 70).is_safe(prompt, {}))
-        self.assertTrue(FuzzyMatchChecker("pass is 1", 60).is_safe(prompt, {}))
-        self.assertTrue(FuzzyMatchChecker("password is 129", 75, match_safe=True).is_safe(prompt, {}))
+        self.assertFalse(FuzzyMatchChecker("my password is 123", 0.70).is_safe(prompt, {}))
+        self.assertTrue(FuzzyMatchChecker("pass is 1", 0.60).is_safe(prompt, {}))
+        self.assertTrue(FuzzyMatchChecker("password is 129", 0.75, match_safe=True).is_safe(prompt, {}))
 
 class TestToxicityChecker(unittest.TestCase):
 

@@ -39,5 +39,5 @@ class FuzzyMatchChecker(BaseChecker):
 
     def is_safe(self, prompt_out, param_values=None, **kwargs) -> bool:
         response = self.extract_response_from_prompt(prompt_out)
-        fuzzy_match = self.match_fn(response, self.text) >= self.threshold
+        fuzzy_match = self.match_fn(response, self.text)/100.0 >= self.threshold
         return fuzzy_match if self.match_safe else not fuzzy_match

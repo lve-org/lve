@@ -255,6 +255,8 @@ class LVE(BaseModel):
     async def execute(self, prompt_in, verbose=False, **model_args):
         model_args_upd = self.default_model_args if self.default_model_args is not None else {}
         model_args_upd.update(model_args)
+        if "temperature" not in model_args_upd:
+            model_args_upd["temperature"] = 0.0
         return await execute_llm(self.model, prompt_in, verbose, **model_args_upd)
     
     async def run(self, store_prompt_out=False, author=None, verbose=False, engine='openai', score_callback=None, chunk_callback=None, **kwargs):
