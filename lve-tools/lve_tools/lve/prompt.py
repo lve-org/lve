@@ -19,7 +19,7 @@ class Role(str, Enum):
 class Message:
     content: Optional[str] = None
     role: Role = Role.user
-    variable: str = None
+    variable: Optional[str] = None
     image_url: Optional[str] = None
     
 

@@ -29,6 +29,7 @@ def main(args):
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestLambdaCheckerExtract))
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestRegexChecker))
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestExactMatchChecker))
+        suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestFuzzyMatchChecker))
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestToxicityChecker))
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestPII_Checker))
 
