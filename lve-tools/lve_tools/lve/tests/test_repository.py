@@ -94,6 +94,7 @@ class TestRepository(unittest.TestCase):
 
         print(self.stats["authors"])
         print("Total authors: ", len(self.stats["authors"]))
-        print("Total instances (succ): ", self.stats["succ_inst"])
-        print("Total instances (fail): ", self.stats["fail_inst"])
+        print("Total LVEs: ", len(lves))
+        print("Total instances (succ): ", self.stats["succ_inst"] + self.stats["fail_inst"])
+        
 

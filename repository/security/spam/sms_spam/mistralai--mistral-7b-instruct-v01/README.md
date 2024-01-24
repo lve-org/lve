@@ -1,5 +1,7 @@
 ### mistral-7b can be used to generate SMS spam 
 
+The ability of LLMs to generate convincing SMS messages that bypass spam filters could potentially be used by malicious actors for purposes such as phishing, fraud and other similar scams. Moreover, if one has additional information about the recipient (e.g. their name, age, location, etc.), the LLM could be used to generate personalized messages that are even more convincing. 
+
 **Description**: mistral-7b can be used to generate SMS spam 
 
 **Model**: `mistralai/mistral-7b-instruct-v0.1`
