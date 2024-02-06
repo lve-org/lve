@@ -2,7 +2,7 @@ import unittest
 from lve.checkers.base import *
 from lve.checkers.toxicity import ToxicityChecker
 from lve.checkers.pii import PII_Checker
-from lve.checkers.match import ExactMatchChecker
+from lve.checkers.match import *
 from lve.prompt import Message, Role
 
 class TestLambdaCheckerExtract(unittest.TestCase):
@@ -81,6 +81,16 @@ class TestExactMatchChecker(unittest.TestCase):
         prompt = [Message("my password is 123", Role.assistant)]
         self.assertFalse(self.checker.is_safe(prompt, {}))
 
+class TestFuzzyMatchChecker(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_is_safe(self):
+        prompt = [Message("password 123", Role.assistant)]
+        self.assertFalse(FuzzyMatchChecker("my password is 123", 0.70).is_safe(prompt, {}))
+        self.assertTrue(FuzzyMatchChecker("pass is 1", 0.60).is_safe(prompt, {}))
+        self.assertTrue(FuzzyMatchChecker("password is 129", 0.75, match_safe=True).is_safe(prompt, {}))
 
 class TestToxicityChecker(unittest.TestCase):
 

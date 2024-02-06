@@ -6,6 +6,7 @@ import replicate
 from lve.prompt import Role, Message
 from lve.model_store import *
 from lve.hooks import hook
+from lve.prompting.purple_llama import get_llama_purple_prompt
 
 openai_is_azure = os.getenv("AZURE_OPENAI_KEY") is not None
 if openai_is_azure:
@@ -144,8 +145,10 @@ def preprocess_prompt_model(model, prompt_in, verbose=False, **model_args):
     return prompt, model
 
 def get_model_prompt(model, prompt):
-    if model.startswith("meta/llama-2"):
+    if model.startswith("meta/llama-2") or model.startswith("meta-llama/Llama-2-"):
         return get_llama2_prompt(prompt)
+    elif model.startswith("meta-llama/LlamaGuard"):
+        return get_llama_purple_prompt(prompt)
     elif model.startswith("mistralai/mistral"):
         return get_mistral_prompt(prompt)
     elif model.startswith("openai/"):
@@ -170,21 +173,23 @@ async def execute_huggingface(model, prompt_in, verbose=False, chunk_callback=No
     Returns:
         A new prompt where all assistant messages have been filled in (assistant message always at the end)
     """
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
+    import torch
 
     # TODO make huggingface calls async
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
-    device = "cuda"
-    hf_model = AutoModelForCausalLM.from_pretrained(model).to(device)
+    hf_model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16, device_map='auto')
     tokenizer = AutoTokenizer.from_pretrained(model)
+
+    generation_cfg = GenerationConfig(**model_args)
 
     for i in range(len(prompt)):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
-            system_prompt, model_prompt = get_model_prompt(model, prompt[:i])
-            inputs = tokenizer(model_prompt, return_tensors="pt", return_attention_mask=False).to(device)
-            outputs = hf_model.generate(**inputs, **model_args)
-            response = tokenizer.batch_decode(outputs, max_length=200)[0]
+            _, model_prompt = get_model_prompt(model, prompt[:i])
+            inputs = tokenizer(model_prompt, return_tensors="pt", return_attention_mask=False).to(hf_model.device)
+            outputs = hf_model.generate(**inputs, generation_config=generation_cfg)
+            response = tokenizer.batch_decode(outputs[:, inputs['input_ids'].shape[1]:])[0]
             prompt[i].content = response
     return prompt
 
@@ -281,16 +286,23 @@ async def execute_openai(model, prompt_in, verbose=False, chunk_callback=None, *
 
     return prompt
 
-async def execute_dummy(model, prompt_in, verbose=False, **model_args):
+async def execute_dummy(model, prompt_in, verbose=False, chunk_callback=None, **model_args):
     """
     Dummy model which fills all assistant messages with "Hello world!"
     """
+    import random
     prompt, model = preprocess_prompt_model(model, prompt_in, verbose, **model_args)
 
     # go through all messages and fill in assistant messages, sending everything before as context
     for i in range(len(prompt)):
         if prompt[i].role == Role.assistant and prompt[i].content == None:
-            prompt[i].content = "Hello world"
+            if "random_responses" in model_args:
+                prompt[i].content = random.choice(model_args["random_responses"])
+            else:
+                prompt[i].content = model_args.get("response", "Hello world")
+            if chunk_callback is not None:
+                chunk_callback(prompt[i].content)
+                chunk_callback(None)
         if verbose:
             msg = prompt[i]
             print(f"[{msg.role}] {msg.content}")
@@ -308,3 +320,4 @@ async def execute_llm(model, prompt_in, verbose=False, **model_args):
     else:
         assert model in REPLICATE_MODELS, f"Model {model} is not supported."
         return await execute_replicate(model, prompt_in, verbose, **model_args)
+

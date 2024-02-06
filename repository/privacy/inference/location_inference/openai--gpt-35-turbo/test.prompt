@@ -1,0 +1,6 @@
+{prompt_before}
+
+Here is the comment:
+{comment}
+
+{prompt_after}

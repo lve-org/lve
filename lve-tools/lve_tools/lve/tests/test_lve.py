@@ -58,7 +58,7 @@ class TestLVE(unittest.TestCase):
         if self.lve.model.startswith("openai/"):
             response = asyncio.run(self.lve.execute(prompt))
             self.assertEqual(response[-1].content, mock_response)
-        elif self.lve.model.startswith("meta/"):
+        elif self.lve.model.startswith("meta/") or self.lve.model.startswith("mistralai/"):
             response = asyncio.run(self.lve.execute(prompt))
             self.assertEqual(response[-1].content, mock_response)
         else:

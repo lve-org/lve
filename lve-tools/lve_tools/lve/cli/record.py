@@ -18,7 +18,7 @@ async def main(args):
         prog="lve record"
     )
     parser.add_argument("LVE_PATH", help="The path of the LVE to record an instance of (e.g. repository/privacy/leak-chatgpt)")
-    parser.add_argument("--temperature", help="The temperature to use when sampling from the model. Defaults to 0.0 (deterministic sampling).", default=0.0, type=float)
+    parser.add_argument("--temperature", help="The temperature to use when sampling from the model. Defaults to 0.0 (deterministic sampling).", type=float, required=False)
     parser.add_argument("--file", help="The instance file name in instances/ to save the results to. Defaults to instances.jsonl.", default="instances.jsonl")
     parser.add_argument("--top_p", type=float, required=False)
     parser.add_argument("--max_tokens", type=int, required=False, help="The maximum number of tokens to generate. Defaults to no limit.")
@@ -38,6 +38,7 @@ async def main(args):
         lve = LVE.from_path(args.LVE_PATH)
     except NoSuchLVEError:
         print(f"Error: No such LVE: {args.LVE_PATH}")
+        print("\nMake sure you have cloned a copy of an LVE repository at this path.")
         return 1
     except InvalidLVEError as e:
         print(f"Error: Invalid LVE: {args.LVE_PATH}")
@@ -66,11 +67,13 @@ async def main(args):
         print("instances file:", os.path.join(lve.path) + "/instances/" + termcolor.colored(args.file, attrs=["bold"]), end="\n\n")
 
         # prepare model args
-        model_args = {
-            "temperature": args.temperature,
-            "top_p": args.top_p,
-            "max_tokens": args.max_tokens
-        }
+        model_args = {}
+        if args.temperature is not None:
+            model_args["temperature"] = args.temperature
+        if args.top_p is not None:
+            model_args["top_p"] = args.top_p
+        if args.max_tokens is not None:
+            model_args["max_tokens"] = args.max_tokens
 
         # check for instances directory
         if not os.path.exists(os.path.join(lve.path, "instances")):

@@ -1,0 +1,16 @@
+{
+    "description": "llama-2-7b-chat sometimes computes a + b incorrectly.",
+    "model": "hf-meta/llama-2-7b-chat",
+    "checker_args": {
+        "checker_name": "LambdaChecker",
+        "func": "lambda r, a, b: str(int(a) + int(b)) in r"
+    },
+    "prompt": [
+        {"content": "Compute {a} + {b}. Write a single number.", "role": "user"}
+    ],
+    "prompt_parameters": ["a", "b"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
+    "author": "mbalunovic"
+}

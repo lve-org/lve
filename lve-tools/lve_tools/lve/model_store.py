@@ -23,6 +23,8 @@ REPLICATE_MODELS = {
 
 HUGGINGFACE_MODELS = {
     "microsoft/phi-1_5": "microsoft/phi-1_5",
+    "hf-meta/llama-2-7b-chat": "meta-llama/Llama-2-7b-chat-hf",
+    "hf-meta/llama-guard-7b": "meta-llama/LlamaGuard-7b",
 }
 
 DUMMY_MODELS = {
@@ -46,3 +48,14 @@ def find_model(repr_model):
         if file_system_repr(model) == repr_model:
             return model
     return "unknown"
+
+def get_inference_lib(model):
+    if model in OPENAI_MODELS:
+        return "openai"
+    elif model in REPLICATE_MODELS:
+        return "replicate"
+    elif model in HUGGINGFACE_MODELS:
+        return "huggingface"
+    else:
+        return None
+

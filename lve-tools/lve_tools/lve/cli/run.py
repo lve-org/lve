@@ -22,6 +22,7 @@ async def main(args):
     except NoSuchLVEError as e:
         print(e)
         print(f"Error: No such LVE: {args.LVE_PATH}")
+        print("\nMake sure you have cloned a copy of an LVE repository at this path.")
         exit(1)
 
     instances = args.instances

@@ -3,8 +3,7 @@
   <h1 align="center">LVE Repository</h1>
   <p align="center">
     A repository of Language Model Vulnerabilities and Exposures (LVEs).
-    <br />
-    <br />
+    <br/><br/>
     <a href="https://lve-project.org/">Browse LVEs</a>
     ·
     <a href="#documenting-a-new-lve">Add LVEs</a>
@@ -68,6 +67,10 @@ Other ways to contribute include:
 To reproduce and help verify an LVE, you can record instances of existing LVEs:
 
 ```bash
+# make sure you have cloned a copy of the LVE repository
+git clone git@github.com:lve-org/lve.git
+cd lve
+
 # run 'lve record' for an interactive prompting session
 lve record repository/security/prompt_leakage/sys_prompt_leak_cipher/openai--gpt-35-turbo/
 ```
@@ -83,6 +86,10 @@ If you have found a model vulenerability or failure mode that is not yet covered
 To create and submit a new LVE, follow these steps:
 
 ```bash
+# make sure you have cloned a copy of the LVE repository
+git clone git@github.com:lve-org/lve.git
+cd lve
+
 # prepare a new LVE directory
 lve prepare repository/security/prompt_leakage/new_leak
 

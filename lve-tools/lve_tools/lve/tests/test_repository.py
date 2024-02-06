@@ -13,6 +13,11 @@ from lve.tests.test_lve import test_lve_instance
 class TestRepository(unittest.TestCase):
 
     def setUp(self):
+        self.stats = {
+            "authors": [],
+            "succ_inst": 0,
+            "fail_inst": 0,
+        }
         pass
 
     def get_lves(self):
@@ -48,6 +53,9 @@ class TestRepository(unittest.TestCase):
                 elif lve.model.startswith("meta/"):
                     response = await lve.execute(prompt)
                     self.assertEqual(response[-1].content, mock_response)
+                elif lve.model.startswith("mistral/"):
+                    response = await lve.execute(prompt)
+                    self.assertEqual(response[-1].content, mock_response)
                 else:
                     print("Skipped testing (not found model):", os.path.join(lve.path, "test.json"))
         asyncio.run(t())
@@ -55,6 +63,7 @@ class TestRepository(unittest.TestCase):
     def test_lve_instances(self):
         """Tests if we can run all instances in the LVEs"""
         lves = self.get_lves()
+        
         for lve in lves:
             if len(lve.instance_files) == 0:
                 continue
@@ -68,9 +77,13 @@ class TestRepository(unittest.TestCase):
 
                 cnt_fail = 0
                 for idx, instance in enumerate(instances):
+                    if instance.author not in self.stats["authors"]:
+                        self.stats["authors"] += [instance.author]
                     try:
                         test_lve_instance(self, lve, instance)
+                        self.stats["succ_inst"] += 1
                     except Exception as e:
+                        self.stats["fail_inst"] += 1
                         print(e)
                         cnt_fail += 1
                 
@@ -78,3 +91,10 @@ class TestRepository(unittest.TestCase):
                     print(f"SUCCESS: {path}")
                 else:
                     print(f"ERROR ({cnt_fail} failed): {path}")
+
+        print(self.stats["authors"])
+        print("Total authors: ", len(self.stats["authors"]))
+        print("Total LVEs: ", len(lves))
+        print("Total instances (succ): ", self.stats["succ_inst"] + self.stats["fail_inst"])
+        
+
