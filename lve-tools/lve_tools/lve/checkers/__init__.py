@@ -8,6 +8,7 @@ from lve.checkers.match import *
 from lve.checkers.pii import *
 from lve.checkers.toxicity import *
 from lve.checkers.consistency import *
+from lve.checkers.refuse import *
 
 # TODO: A bit of hack, need to make sure all custom checkers are named differently
 def get_checker(checker_name: str, custom_checker_path: str = None) -> BaseChecker:
