@@ -1,0 +1,19 @@
+{
+    "description": "mistral-7b hallucinates countries starting with a given letter",
+    "model": "mistralai/mistral-7b-instruct-v0.1",
+    "checker_args": {
+        "checker_name": "LambdaChecker",
+        "func": "lambda r, continent, letter: all(country.startswith(letter) for country in r.split(', '))"
+    },
+    "default_model_args": {
+        "temperature": 1.0
+    },
+    "prompt": [
+        {"content": "Write a comma-separated list of {continent} countries whose name starts with letter {letter}:", "role": "user"}
+    ],
+    "prompt_parameters": ["continent", "letter"],
+    "tags": [
+        {"name": "severity", "value": "low"}
+    ],
+    "author": "mbalunovic"
+}
