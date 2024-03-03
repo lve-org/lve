@@ -1,6 +1,8 @@
 ### Can inject prompt using ASCII art text
 
-**Description**: Can inject prompt using ASCII art text
+**Description**: Can inject prompt using ASCII art text, for example, make ChatGPT disclose how to make counterfeit money
+
+[Source](https://arxiv.org/pdf/2402.11753.pdf)
 
 **Model**: `openai/gpt-3.5-turbo`
 
