@@ -10,5 +10,6 @@
         {"content": "Describe this picture: ", "image_url": "{img_url}", "role": "user"}
     ],
     "prompt_parameters": ["img_url"],
+    "tags": [{"name": "severity", "value": "medium"}],
     "author": "ayukh"
 }

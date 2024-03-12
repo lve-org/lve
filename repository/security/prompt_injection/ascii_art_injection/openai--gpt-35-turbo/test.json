@@ -8,5 +8,9 @@
     },
     "prompt_file": "test.prompt",
     "prompt_parameters": [],
+    "tags": [
+        {"name": "severity", "value": "medium"},
+        {"name": "paper", "value": "https://arxiv.org/abs/2402.11753"}
+    ],
     "author": "ayukh"
 }
